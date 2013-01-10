@@ -479,10 +479,13 @@ public record SerializableChunkData(IRegistry<BiomeBase> biomeRegistry, ChunkCoo
     @Nullable
     private static Chunk.c postLoadChunk(WorldServer worldserver, List<NBTTagCompound> list, List<NBTTagCompound> list1) {
         return list.isEmpty() && list1.isEmpty() ? null : (chunk) -> {
+            worldserver.timings.syncChunkLoadEntitiesTimer.startTiming(); // Spigot
             if (!list.isEmpty()) {
                 worldserver.addLegacyChunkEntities(EntityTypes.loadEntitiesRecursive(list, worldserver, EntitySpawnReason.LOAD));
             }
+            worldserver.timings.syncChunkLoadEntitiesTimer.stopTiming(); // Spigot
 
+            worldserver.timings.syncChunkLoadTileEntitiesTimer.startTiming(); // Spigot
             for (NBTTagCompound nbttagcompound : list1) {
                 boolean flag = nbttagcompound.getBooleanOr("keepPacked", false);
 
@@ -497,6 +500,7 @@ public record SerializableChunkData(IRegistry<BiomeBase> biomeRegistry, ChunkCoo
                     }
                 }
             }
+            worldserver.timings.syncChunkLoadTileEntitiesTimer.stopTiming(); // Spigot
 
         };
     }

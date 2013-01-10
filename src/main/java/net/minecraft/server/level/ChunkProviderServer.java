@@ -160,11 +160,13 @@ public class ChunkProviderServer extends IChunkProvider {
             }
 
             gameprofilerfiller.incrementCounter("getChunkCacheMiss");
+            level.timings.syncChunkLoadTimer.startTiming(); // Spigot
             CompletableFuture<ChunkResult<IChunkAccess>> completablefuture = this.getChunkFutureMainThread(i, j, chunkstatus, flag);
             ChunkProviderServer.a chunkproviderserver_a = this.mainThreadProcessor;
 
             Objects.requireNonNull(completablefuture);
             chunkproviderserver_a.managedBlock(completablefuture::isDone);
+            level.timings.syncChunkLoadTimer.stopTiming(); // Spigot
             ChunkResult<IChunkAccess> chunkresult = (ChunkResult) completablefuture.join();
             IChunkAccess ichunkaccess1 = chunkresult.orElse(null); // CraftBukkit - decompile error
 
@@ -365,19 +367,25 @@ public class ChunkProviderServer extends IChunkProvider {
         GameProfilerFiller gameprofilerfiller = Profiler.get();
 
         gameprofilerfiller.push("purge");
+        this.level.timings.doChunkMap.startTiming(); // Spigot
         if (this.level.tickRateManager().runsNormally() || !flag) {
             this.ticketStorage.purgeStaleTickets();
         }
 
         this.runDistanceManagerUpdates();
+        this.level.timings.doChunkMap.stopTiming(); // Spigot
         gameprofilerfiller.popPush("chunks");
         if (flag) {
             this.tickChunks();
+            this.level.timings.tracker.startTiming(); // Spigot
             this.chunkMap.tick();
+            this.level.timings.tracker.stopTiming(); // Spigot
         }
 
+        this.level.timings.doChunkUnload.startTiming(); // Spigot
         gameprofilerfiller.popPush("unload");
         this.chunkMap.tick(booleansupplier);
+        this.level.timings.doChunkUnload.stopTiming(); // Spigot
         gameprofilerfiller.pop();
         this.clearCache();
     }
@@ -454,7 +462,9 @@ public class ChunkProviderServer extends IChunkProvider {
 
         gameprofilerfiller.popPush("tickTickingChunks");
         this.chunkMap.forEachBlockTickingChunk((chunk1) -> {
+            this.level.timings.doTickTiles.startTiming(); // Spigot
             this.level.tickChunk(chunk1, k);
+            this.level.timings.doTickTiles.stopTiming(); // Spigot
         });
         gameprofilerfiller.pop();
         gameprofilerfiller.popPush("customSpawners");

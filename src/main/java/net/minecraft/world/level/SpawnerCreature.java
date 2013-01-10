@@ -144,6 +144,7 @@ public final class SpawnerCreature {
         GameProfilerFiller gameprofilerfiller = Profiler.get();
 
         gameprofilerfiller.push("spawner");
+        worldserver.timings.mobSpawn.startTiming(); // Spigot
 
         for (EnumCreatureType enumcreaturetype : list) {
             if (spawnercreature_d.canSpawnForCategoryLocal(enumcreaturetype, chunk.getPos())) {
@@ -155,6 +156,7 @@ public final class SpawnerCreature {
             }
         }
 
+        worldserver.timings.mobSpawn.stopTiming(); // Spigot
         gameprofilerfiller.pop();
     }
 

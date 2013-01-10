@@ -178,6 +178,7 @@ import net.minecraft.world.level.levelgen.ChunkProviderFlat;
 import net.minecraft.world.level.storage.WorldDataServer;
 import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
+import org.bukkit.craftbukkit.SpigotTimings; // Spigot
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.generator.CustomWorldChunkManager;
 import org.bukkit.craftbukkit.util.CraftLocation;
@@ -381,6 +382,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
         }
 
         gameprofilerfiller.push("tickPending");
+        timings.doTickPending.startTiming(); // Spigot
         if (!this.isDebug() && flag) {
             long k = this.getGameTime();
 
@@ -390,6 +392,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
             this.fluidTicks.tick(k, 65536, this::tickFluid);
             gameprofilerfiller.pop();
         }
+        timings.doTickPending.stopTiming(); // Spigot
 
         gameprofilerfiller.popPush("raid");
         if (flag) {
@@ -400,7 +403,9 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
         this.getChunkSource().tick(booleansupplier, true);
         gameprofilerfiller.popPush("blockEvents");
         if (flag) {
+            timings.doSounds.startTiming(); // Spigot
             this.runBlockEvents();
+            timings.doSounds.stopTiming(); // Spigot
         }
 
         this.handlingTick = false;
@@ -413,12 +418,14 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
 
         if (flag1 || this.emptyTime++ < 300) {
             gameprofilerfiller.push("entities");
+            timings.tickEntities.startTiming(); // Spigot
             if (this.dragonFight != null && flag) {
                 gameprofilerfiller.push("dragonFight");
                 this.dragonFight.tick();
                 gameprofilerfiller.pop();
             }
 
+            timings.entityTick.startTiming(); // Spigot
             this.entityTickList.forEach((entity) -> {
                 if (!entity.isRemoved()) {
                     if (!tickratemanager.isEntityFrozen(entity)) {
@@ -443,6 +450,8 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
                     }
                 }
             });
+            timings.entityTick.stopTiming(); // Spigot
+            timings.tickEntities.stopTiming(); // Spigot
             gameprofilerfiller.pop();
             this.tickBlockEntities();
         }
@@ -849,6 +858,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
     }
 
     public void tickNonPassenger(Entity entity) {
+        entity.tickTimer.startTiming(); // Spigot
         entity.setOldPosAndRot();
         GameProfilerFiller gameprofilerfiller = Profiler.get();
 
@@ -864,6 +874,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
         for (Entity entity1 : entity.getPassengers()) {
             this.tickPassenger(entity, entity1);
         }
+        entity.tickTimer.stopTiming(); // Spigot
 
     }
 

@@ -164,6 +164,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 // CraftBukkit end
 
+import org.bukkit.craftbukkit.SpigotTimings; // Spigot
+
 public abstract class EntityLiving extends Entity implements Attackable {
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -3166,6 +3168,7 @@ public abstract class EntityLiving extends Entity implements Attackable {
 
     @Override
     public void tick() {
+        SpigotTimings.timerEntityBaseTick.startTiming(); // Spigot
         super.tick();
         this.updatingUsingItem();
         this.updateSwimAmount();
@@ -3207,7 +3210,9 @@ public abstract class EntityLiving extends Entity implements Attackable {
         }
 
         if (!this.isRemoved()) {
+            SpigotTimings.timerEntityBaseTick.stopTiming(); // Spigot
             this.aiStep();
+            SpigotTimings.timerEntityTickRest.startTiming(); // Spigot
         }
 
         double d0 = this.getX() - this.xo;
@@ -3282,6 +3287,7 @@ public abstract class EntityLiving extends Entity implements Attackable {
 
         this.refreshDirtyAttributes();
         this.elytraAnimationState.tick();
+        SpigotTimings.timerEntityTickRest.stopTiming(); // Spigot
     }
 
     public void detectEquipmentUpdatesPublic() { // CraftBukkit
@@ -3439,6 +3445,7 @@ public abstract class EntityLiving extends Entity implements Attackable {
         GameProfilerFiller gameprofilerfiller = Profiler.get();
 
         gameprofilerfiller.push("ai");
+        SpigotTimings.timerEntityAI.startTiming(); // Spigot
         this.applyInput();
         if (this.isImmobile()) {
             this.jumping = false;
@@ -3449,6 +3456,7 @@ public abstract class EntityLiving extends Entity implements Attackable {
             this.serverAiStep();
             gameprofilerfiller.pop();
         }
+        SpigotTimings.timerEntityAI.stopTiming(); // Spigot
 
         gameprofilerfiller.pop();
         gameprofilerfiller.push("jump");
@@ -3493,6 +3501,7 @@ public abstract class EntityLiving extends Entity implements Attackable {
             this.resetFallDistance();
         }
 
+        SpigotTimings.timerEntityAIMove.startTiming(); // Spigot
         label122:
         {
             EntityLiving entityliving = this.getControllingPassenger();
@@ -3508,6 +3517,7 @@ public abstract class EntityLiving extends Entity implements Attackable {
                 this.travel(vec3d1);
             }
         }
+        SpigotTimings.timerEntityAIMove.stopTiming(); // Spigot
 
         if (!this.level().isClientSide() || this.isLocalInstanceAuthoritative()) {
             this.applyEffectsFromBlocks();
@@ -3541,7 +3551,9 @@ public abstract class EntityLiving extends Entity implements Attackable {
             this.checkAutoSpinAttack(axisalignedbb, this.getBoundingBox());
         }
 
+        SpigotTimings.timerEntityAICollision.startTiming(); // Spigot
         this.pushEntities();
+        SpigotTimings.timerEntityAICollision.stopTiming(); // Spigot
         gameprofilerfiller.pop();
         world = this.level();
         if (world instanceof WorldServer worldserver1) {
