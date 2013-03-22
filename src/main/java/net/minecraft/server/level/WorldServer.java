@@ -276,8 +276,8 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
 
         this.entityManager = new PersistentEntitySectionManager<Entity>(Entity.class, new WorldServer.a(), entitypersistentstorage);
         StructureTemplateManager structuretemplatemanager = minecraftserver.getStructureManager();
-        int j = minecraftserver.getPlayerList().getViewDistance();
-        int k = minecraftserver.getPlayerList().getSimulationDistance();
+        int j = this.spigotConfig.viewDistance; // Spigot
+        int k = this.spigotConfig.simulationDistance; // Spigot
         PersistentEntitySectionManager persistententitysectionmanager = this.entityManager;
 
         Objects.requireNonNull(this.entityManager);
