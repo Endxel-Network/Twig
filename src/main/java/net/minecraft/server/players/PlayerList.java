@@ -639,6 +639,11 @@ public abstract class PlayerList {
         } else {
             teleporttransition = new TeleportTransition(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toVec3D(location), Vec3D.ZERO, location.getYaw(), location.getPitch(), TeleportTransition.DO_NOTHING);
         }
+        // Spigot Start
+        if (teleporttransition == null) {
+            return entityplayer;
+        }
+        // Spigot End
         WorldServer worldserver = teleporttransition.newLevel();
         entityplayer1.spawnIn(worldserver, flag);
         entityplayer1.unsetRemoved();

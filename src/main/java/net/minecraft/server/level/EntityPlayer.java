@@ -1272,6 +1272,11 @@ public class EntityPlayer extends EntityHuman {
 
         PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(respawnPlayer, location, isBedSpawn, isAnchorSpawn, reason);
         this.level().getCraftServer().getPluginManager().callEvent(respawnEvent);
+        // Spigot Start
+        if (this.connection.isDisconnected()) {
+            return null;
+        }
+        // Spigot End
 
         location = respawnEvent.getRespawnLocation();
 
