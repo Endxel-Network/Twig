@@ -483,7 +483,7 @@ public class ChunkProviderServer extends IChunkProvider {
         }
 
         if (!list.isEmpty()) {
-            if (this.level.canSpawnEntitiesInChunk(chunkcoordintpair)) {
+            if (this.level.canSpawnEntitiesInChunk(chunkcoordintpair) && this.chunkMap.anyPlayerCloseEnoughForSpawning(chunkcoordintpair, true)) { // Spigot
                 SpawnerCreature.spawnForChunk(this.level, chunk, spawnercreature_d, list);
             }
 

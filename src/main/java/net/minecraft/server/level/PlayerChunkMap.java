@@ -1060,14 +1060,31 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.b, Gener
     }
 
     boolean anyPlayerCloseEnoughForSpawning(ChunkCoordIntPair chunkcoordintpair) {
+        // Spigot start
+        return anyPlayerCloseEnoughForSpawning(chunkcoordintpair, false);
+    }
+
+    boolean anyPlayerCloseEnoughForSpawning(ChunkCoordIntPair chunkcoordintpair, boolean reducedRange) {
+        // Spigot end
         TriState tristate = this.distanceManager.hasPlayersNearby(chunkcoordintpair.toLong());
 
-        return tristate == TriState.DEFAULT ? this.anyPlayerCloseEnoughForSpawningInternal(chunkcoordintpair) : tristate.toBoolean(true);
+        return tristate == TriState.DEFAULT ? this.anyPlayerCloseEnoughForSpawningInternal(chunkcoordintpair, reducedRange) : tristate.toBoolean(true); // Spigot
     }
 
     private boolean anyPlayerCloseEnoughForSpawningInternal(ChunkCoordIntPair chunkcoordintpair) {
+        // Spigot start
+        return anyPlayerCloseEnoughForSpawningInternal(chunkcoordintpair, false);
+    }
+
+    private boolean anyPlayerCloseEnoughForSpawningInternal(ChunkCoordIntPair chunkcoordintpair, boolean reducedRange) {
+        int chunkRange = level.spigotConfig.mobSpawnRange;
+        chunkRange = (chunkRange > level.spigotConfig.viewDistance) ? (byte) level.spigotConfig.viewDistance : chunkRange;
+        chunkRange = (chunkRange > 8) ? 8 : chunkRange;
+
+        double blockRange = (reducedRange) ? Math.pow(chunkRange << 4, 2) : 16384.0D;
+        // Spigot end
         for (EntityPlayer entityplayer : this.playerMap.getAllPlayers()) {
-            if (this.playerIsCloseEnoughForSpawning(entityplayer, chunkcoordintpair)) {
+            if (this.playerIsCloseEnoughForSpawning(entityplayer, chunkcoordintpair, blockRange)) { // Spigot
                 return true;
             }
         }
@@ -1084,7 +1101,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.b, Gener
             ImmutableList.Builder<EntityPlayer> immutablelist_builder = ImmutableList.builder();
 
             for (EntityPlayer entityplayer : this.playerMap.getAllPlayers()) {
-                if (this.playerIsCloseEnoughForSpawning(entityplayer, chunkcoordintpair)) {
+                if (this.playerIsCloseEnoughForSpawning(entityplayer, chunkcoordintpair, 16384.0D)) { // Spigot
                     immutablelist_builder.add(entityplayer);
                 }
             }
@@ -1093,13 +1110,13 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.b, Gener
         }
     }
 
-    private boolean playerIsCloseEnoughForSpawning(EntityPlayer entityplayer, ChunkCoordIntPair chunkcoordintpair) {
+    private boolean playerIsCloseEnoughForSpawning(EntityPlayer entityplayer, ChunkCoordIntPair chunkcoordintpair, double range) { // Spigot
         if (entityplayer.isSpectator()) {
             return false;
         } else {
             double d0 = euclideanDistanceSquared(chunkcoordintpair, entityplayer.position());
 
-            return d0 < 16384.0D;
+            return d0 < range; // Spigot
         }
     }
 
