@@ -105,10 +105,10 @@ public class HandshakeListener implements PacketHandshakingInListener {
         if (packethandshakinginsetprotocol.protocolVersion() != SharedConstants.getCurrentVersion().getProtocolVersion()) {
             IChatBaseComponent ichatbasecomponent;
 
-            if (packethandshakinginsetprotocol.protocolVersion() < 754) {
-                ichatbasecomponent = IChatBaseComponent.translatable("multiplayer.disconnect.outdated_client", SharedConstants.getCurrentVersion().getName());
+            if (packethandshakinginsetprotocol.protocolVersion() < SharedConstants.getCurrentVersion().getProtocolVersion()) { // Spigot - SPIGOT-7546: Handle version check correctly for outdated client message
+                ichatbasecomponent = IChatBaseComponent.literal( java.text.MessageFormat.format( org.spigotmc.SpigotConfig.outdatedClientMessage.replaceAll("'", "''"), SharedConstants.getCurrentVersion().getName() ) ); // Spigot
             } else {
-                ichatbasecomponent = IChatBaseComponent.translatable("multiplayer.disconnect.incompatible", SharedConstants.getCurrentVersion().getName());
+                ichatbasecomponent = IChatBaseComponent.literal( java.text.MessageFormat.format( org.spigotmc.SpigotConfig.outdatedServerMessage.replaceAll("'", "''"), SharedConstants.getCurrentVersion().getName() ) ); // Spigot
             }
 
             this.connection.send(new PacketLoginOutDisconnect(ichatbasecomponent));
