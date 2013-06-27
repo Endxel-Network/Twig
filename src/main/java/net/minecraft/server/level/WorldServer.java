@@ -1124,6 +1124,15 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
     }
 
     public void unload(Chunk chunk) {
+        // Spigot Start
+        for (net.minecraft.world.level.block.entity.TileEntity tileentity : chunk.getBlockEntities().values()) {
+            if (tileentity instanceof net.minecraft.world.IInventory) {
+                for (org.bukkit.entity.HumanEntity h : Lists.newArrayList(((net.minecraft.world.IInventory) tileentity).getViewers())) {
+                    h.closeInventory();
+                }
+            }
+        }
+        // Spigot End
         chunk.clearAllBlockEntities();
         chunk.unregisterTickContainerFromLevel(this);
     }
@@ -2005,6 +2014,13 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
 
         public void onTrackingEnd(Entity entity) {
             org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
+            // Spigot Start
+            if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder && (!(entity instanceof EntityPlayer) || entity.getRemovalReason() != Entity.RemovalReason.KILLED)) { // SPIGOT-6876: closeInventory clears death message
+                for (org.bukkit.entity.HumanEntity h : Lists.newArrayList(((org.bukkit.inventory.InventoryHolder) entity.getBukkitEntity()).getInventory().getViewers())) {
+                    h.closeInventory();
+                }
+            }
+            // Spigot End
             WorldServer.this.getChunkSource().removeEntity(entity);
             if (entity instanceof EntityPlayer entityplayer) {
                 WorldServer.this.players.remove(entityplayer);
