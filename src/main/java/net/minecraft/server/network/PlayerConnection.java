@@ -2514,6 +2514,13 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements 
         if (this.player.hasClientLoaded()) {
             final WorldServer worldserver = this.player.serverLevel();
             final Entity entity = packetplayinuseentity.getTarget(worldserver);
+            // Spigot Start
+            if ( entity == player && !player.isSpectator() )
+            {
+                disconnect( IChatBaseComponent.literal( "Cannot interact with self!" ) );
+                return;
+            }
+            // Spigot End
 
             this.player.resetLastActionTime();
             this.player.setShiftKeyDown(packetplayinuseentity.isUsingSecondaryAction());
