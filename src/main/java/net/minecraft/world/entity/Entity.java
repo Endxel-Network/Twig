@@ -2229,6 +2229,7 @@ public abstract class Entity implements SyncedDataHolder, INamableTileEntity, En
             if (maxAirTicks != getDefaultMaxAirSupply()) {
                 nbttagcompound.putInt("Bukkit.MaxAirSupply", getMaxAirSupply());
             }
+            nbttagcompound.putInt("Spigot.ticksLived", this.tickCount);
             // CraftBukkit end
             IChatBaseComponent ichatbasecomponent = this.getCustomName();
 
@@ -2363,6 +2364,11 @@ public abstract class Entity implements SyncedDataHolder, INamableTileEntity, En
             }
 
             // CraftBukkit start
+            // Spigot start
+            if (this instanceof EntityLiving) {
+                this.tickCount = nbttagcompound.getIntOr("Spigot.ticksLived", this.tickCount);
+            }
+            // Spigot end
             this.persist = nbttagcompound.getBooleanOr("Bukkit.persist", this.persist);
             this.visibleByDefault = nbttagcompound.getBooleanOr("Bukkit.visibleByDefault", this.visibleByDefault);
             // SPIGOT-6907: re-implement LivingEntity#setMaximumAir()
