@@ -2352,6 +2352,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     // Spigot start
     private final Player.Spigot spigot = new Player.Spigot()
     {
+
+        @Override
+        public void respawn()
+        {
+            if ( getHealth() <= 0 && isOnline() )
+            {
+                server.getServer().getPlayerList().respawn( getHandle(), false, Entity.RemovalReason.KILLED, org.bukkit.event.player.PlayerRespawnEvent.RespawnReason.PLUGIN );
+            }
+        }
     };
 
     public Player.Spigot spigot()
