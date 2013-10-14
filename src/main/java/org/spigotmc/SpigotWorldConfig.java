@@ -246,4 +246,13 @@ public class SpigotWorldConfig
         hopperCanLoadChunks = getBoolean( "hopper-can-load-chunks", false );
         log( "Hopper Transfer: " + hopperTransfer + " Hopper Check: " + hopperCheck + " Hopper Amount: " + hopperAmount + " Hopper Can Load Chunks: " + hopperCanLoadChunks );
     }
+
+    public int arrowDespawnRate;
+    public int tridentDespawnRate;
+    private void arrowDespawnRate()
+    {
+        arrowDespawnRate = getInt( "arrow-despawn-rate", 1200 );
+        tridentDespawnRate = getInt( "trident-despawn-rate", arrowDespawnRate );
+        log( "Arrow Despawn Rate: " + arrowDespawnRate + " Trident Respawn Rate:" + tridentDespawnRate );
+    }
 }

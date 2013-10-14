@@ -389,7 +389,7 @@ public abstract class EntityArrow extends IProjectile {
 
     protected void tickDespawn() {
         ++this.life;
-        if (this.life >= 1200) {
+        if (this.life >= ((this instanceof EntityThrownTrident) ? this.level().spigotConfig.tridentDespawnRate : this.level().spigotConfig.arrowDespawnRate)) { // Spigot
             this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
         }
 
