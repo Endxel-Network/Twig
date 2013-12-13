@@ -130,7 +130,7 @@ public class EntityZombie extends EntityMonster {
         this.goalSelector.addGoal(7, new PathfinderGoalRandomStrollLand(this, 1.0D));
         this.targetSelector.addGoal(1, (new PathfinderGoalHurtByTarget(this, new Class[0])).setAlertOthers(EntityPigZombie.class));
         this.targetSelector.addGoal(2, new PathfinderGoalNearestAttackableTarget(this, EntityHuman.class, true));
-        this.targetSelector.addGoal(3, new PathfinderGoalNearestAttackableTarget(this, EntityVillagerAbstract.class, false));
+        if ( this.level().spigotConfig.zombieAggressiveTowardsVillager ) this.targetSelector.addGoal(3, new PathfinderGoalNearestAttackableTarget(this, EntityVillagerAbstract.class, false)); // Spigot
         this.targetSelector.addGoal(3, new PathfinderGoalNearestAttackableTarget(this, EntityIronGolem.class, true));
         this.targetSelector.addGoal(5, new PathfinderGoalNearestAttackableTarget(this, EntityTurtle.class, 10, true, false, EntityTurtle.BABY_ON_LAND_SELECTOR));
     }
