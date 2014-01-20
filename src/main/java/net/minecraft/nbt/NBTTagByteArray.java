@@ -25,6 +25,7 @@ public final class NBTTagByteArray implements NBTList {
         private static byte[] readAccounted(DataInput datainput, NBTReadLimiter nbtreadlimiter) throws IOException {
             nbtreadlimiter.accountBytes(24L);
             int i = datainput.readInt();
+            com.google.common.base.Preconditions.checkArgument( i < 1 << 24); // Spigot
 
             nbtreadlimiter.accountBytes(1L, (long) i);
             byte[] abyte = new byte[i];
