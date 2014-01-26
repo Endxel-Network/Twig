@@ -134,6 +134,13 @@ public class PacketStatusListener implements PacketStatusInListener {
                 }
             }
 
+            // Spigot Start
+            if ( !server.hidesOnlinePlayers() && !profiles.isEmpty() )
+            {
+                java.util.Collections.shuffle( profiles ); // This sucks, its inefficient but we have no simple way of doing it differently
+                profiles = profiles.subList( 0, Math.min( profiles.size(), org.spigotmc.SpigotConfig.playerSample ) ); // Cap the sample to n (or less) displayed players, ie: Vanilla behaviour
+            }
+            // Spigot End
             ServerPing.ServerPingPlayerSample playerSample = new ServerPing.ServerPingPlayerSample(event.getMaxPlayers(), event.getNumPlayers(), (server.hidesOnlinePlayers()) ? Collections.emptyList() : profiles);
 
             ServerPing ping = new ServerPing(
