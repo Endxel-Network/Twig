@@ -161,6 +161,12 @@ public abstract class MobSpawnerAbstract {
 
                             Objects.requireNonNull(entityinsentient);
                             optional1.ifPresent(entityinsentient::equip);
+                            // Spigot Start
+                            if ( entityinsentient.level().spigotConfig.nerfSpawnerMobs )
+                            {
+                                entityinsentient.aware = false;
+                            }
+                            // Spigot End
                         }
 
                         // CraftBukkit start
