@@ -1070,6 +1070,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
 
     // CraftBukkit start
     private boolean addEntity(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
+        org.spigotmc.AsyncCatcher.catchOp("entity add"); // Spigot
         if (entity.isRemoved()) {
             // WorldServer.LOGGER.warn("Tried to add entity {} but it was marked as removed already", EntityTypes.getKey(entity.getType())); // CraftBukkit
             return false;
@@ -1828,6 +1829,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
 
     @Override
     public LevelEntityGetter<Entity> getEntities() {
+        org.spigotmc.AsyncCatcher.catchOp("Chunk getEntities call"); // Spigot
         return this.entityManager.getEntityGetter();
     }
 
@@ -1955,6 +1957,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
         }
 
         public void onTrackingStart(Entity entity) {
+            org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
             WorldServer.this.getChunkSource().addEntity(entity);
             if (entity instanceof EntityPlayer entityplayer) {
                 WorldServer.this.players.add(entityplayer);
@@ -1982,6 +1985,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
         }
 
         public void onTrackingEnd(Entity entity) {
+            org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
             WorldServer.this.getChunkSource().removeEntity(entity);
             if (entity instanceof EntityPlayer entityplayer) {
                 WorldServer.this.players.remove(entityplayer);

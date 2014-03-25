@@ -496,6 +496,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void kickPlayer(String message) {
+        org.spigotmc.AsyncCatcher.catchOp("player kick"); // Spigot
         getHandle().transferCookieConnection.kickPlayer(CraftChatMessage.fromStringOrEmpty(message, true));
     }
 

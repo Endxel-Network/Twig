@@ -162,7 +162,9 @@ public abstract class BlockBase implements FeatureElement {
 
     protected void neighborChanged(IBlockData iblockdata, World world, BlockPosition blockposition, Block block, @Nullable Orientation orientation, boolean flag) {}
 
-    protected void onPlace(IBlockData iblockdata, World world, BlockPosition blockposition, IBlockData iblockdata1, boolean flag) {}
+    protected void onPlace(IBlockData iblockdata, World world, BlockPosition blockposition, IBlockData iblockdata1, boolean flag) {
+        org.spigotmc.AsyncCatcher.catchOp("block onPlace"); // Spigot
+    }
 
     // CraftBukkit start
     protected void onPlace(IBlockData iblockdata, World world, BlockPosition blockposition, IBlockData iblockdata1, boolean flag, @Nullable ItemActionContext context) {

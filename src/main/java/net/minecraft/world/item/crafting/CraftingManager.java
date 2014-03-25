@@ -117,6 +117,7 @@ public class CraftingManager extends ResourceDataAbstract<RecipeMap> implements 
 
     // CraftBukkit start
     public void addRecipe(RecipeHolder<?> irecipe) {
+        org.spigotmc.AsyncCatcher.catchOp("Recipe Add"); // Spigot
         this.recipes.addRecipe(irecipe);
         finalizeRecipeLoading();
     }

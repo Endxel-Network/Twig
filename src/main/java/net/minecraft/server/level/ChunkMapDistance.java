@@ -66,6 +66,7 @@ public abstract class ChunkMapDistance {
     protected abstract PlayerChunk updateChunkScheduling(long i, int j, @Nullable PlayerChunk playerchunk, int k);
 
     public boolean runAllUpdates(PlayerChunkMap playerchunkmap) {
+        org.spigotmc.AsyncCatcher.catchOp("chunk updates"); // Spigot
         this.naturalSpawnChunkCounter.runAllUpdates();
         this.simulationChunkTracker.runAllUpdates();
         this.playerTicketManager.runAllUpdates();
@@ -240,6 +241,7 @@ public abstract class ChunkMapDistance {
 
         @Override
         protected void setLevel(long i, int j) {
+            org.spigotmc.AsyncCatcher.catchOp("chunk level update"); // Spigot
             byte b0;
 
             if (j > this.maxDistance) {
