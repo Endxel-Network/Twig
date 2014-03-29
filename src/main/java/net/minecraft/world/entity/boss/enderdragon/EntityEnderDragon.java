@@ -645,7 +645,24 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {
             }
 
             if (this.dragonDeathTime == 1 && !this.isSilent()) {
-                worldserver.globalLevelEvent(1028, this.blockPosition(), 0);
+                // CraftBukkit start - Use relative location for far away sounds
+                // worldserver.globalLevelEvent(1028, this.blockPosition(), 0);
+                int viewDistance = worldserver.getCraftServer().getViewDistance() * 16;
+                for (net.minecraft.server.level.EntityPlayer player : worldserver.getServer().getPlayerList().players) {
+                    double deltaX = this.getX() - player.getX();
+                    double deltaZ = this.getZ() - player.getZ();
+                    double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+                    if ( worldserver.spigotConfig.dragonDeathSoundRadius > 0 && distanceSquared > worldserver.spigotConfig.dragonDeathSoundRadius * worldserver.spigotConfig.dragonDeathSoundRadius ) continue; // Spigot
+                    if (distanceSquared > viewDistance * viewDistance) {
+                        double deltaLength = Math.sqrt(distanceSquared);
+                        double relativeX = player.getX() + (deltaX / deltaLength) * viewDistance;
+                        double relativeZ = player.getZ() + (deltaZ / deltaLength) * viewDistance;
+                        player.connection.send(new net.minecraft.network.protocol.game.PacketPlayOutWorldEvent(1028, new BlockPosition((int) relativeX, (int) this.getY(), (int) relativeZ), 0, true));
+                    } else {
+                        player.connection.send(new net.minecraft.network.protocol.game.PacketPlayOutWorldEvent(1028, new BlockPosition((int) this.getX(), (int) this.getY(), (int) this.getZ()), 0, true));
+                    }
+                }
+                // CraftBukkit end
             }
         }
 
