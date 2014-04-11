@@ -1645,7 +1645,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
 
     @DontObfuscate
     public String getServerModName() {
-        return server.getName(); // CraftBukkit - cb > vanilla!
+        return "Spigot"; // Spigot - Spigot > // CraftBukkit - cb > vanilla!
     }
 
     public SystemReport fillSystemReport(SystemReport systemreport) {
