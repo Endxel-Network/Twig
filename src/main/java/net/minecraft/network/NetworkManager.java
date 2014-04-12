@@ -95,6 +95,10 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
     private final Queue<Consumer<NetworkManager>> pendingActions = Queues.newConcurrentLinkedQueue();
     public Channel channel;
     public SocketAddress address;
+    // Spigot Start
+    public java.util.UUID spoofedUUID;
+    public com.mojang.authlib.properties.Property[] spoofedProfile;
+    // Spigot End
     @Nullable
     private volatile PacketListener disconnectListener;
     @Nullable

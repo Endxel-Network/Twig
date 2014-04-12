@@ -182,7 +182,7 @@ public class LoginListener implements PacketLoginInListener, TickablePacketListe
                     @Override
                     public void run() {
                         try {
-                            GameProfile gameprofile = UUIDUtil.createOfflineProfile(LoginListener.this.requestedUsername);
+                            GameProfile gameprofile = createOfflineProfile(LoginListener.this.requestedUsername); // Spigot
 
                             LoginListener.this.callPlayerPreLoginEvents(gameprofile);
                             LoginListener.LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
@@ -294,7 +294,7 @@ public class LoginListener implements PacketLoginInListener, TickablePacketListe
                         LoginListener.this.startClientVerification(gameprofile);
                     } else if (LoginListener.this.server.isSingleplayer()) {
                         LoginListener.LOGGER.warn("Failed to verify username but will let them in anyway!");
-                        LoginListener.this.startClientVerification(UUIDUtil.createOfflineProfile(s1));
+                        LoginListener.this.startClientVerification(LoginListener.this.createOfflineProfile(s1)); // Spigot
                     } else {
                         LoginListener.this.disconnect(IChatBaseComponent.translatable("multiplayer.disconnect.unverified_username"));
                         LoginListener.LOGGER.error("Username '{}' tried to join with an invalid session", s1);
@@ -302,7 +302,7 @@ public class LoginListener implements PacketLoginInListener, TickablePacketListe
                 } catch (AuthenticationUnavailableException authenticationunavailableexception) {
                     if (LoginListener.this.server.isSingleplayer()) {
                         LoginListener.LOGGER.warn("Authentication servers are down but will let them in anyway!");
-                        LoginListener.this.startClientVerification(UUIDUtil.createOfflineProfile(s1));
+                        LoginListener.this.startClientVerification(LoginListener.this.createOfflineProfile(s1)); // Spigot
                     } else {
                         LoginListener.this.disconnect(IChatBaseComponent.translatable("multiplayer.disconnect.authservers_down"));
                         LoginListener.LOGGER.error("Couldn't verify username because servers are unavailable");
@@ -400,6 +400,32 @@ public class LoginListener implements PacketLoginInListener, TickablePacketListe
         // CraftBukkit end
         this.disconnect(ServerCommonPacketListenerImpl.DISCONNECT_UNEXPECTED_QUERY);
     }
+
+    // Spigot start
+    protected GameProfile createOfflineProfile(String s) {
+        java.util.UUID uuid;
+        if ( connection.spoofedUUID != null )
+        {
+            uuid = connection.spoofedUUID;
+        } else
+        {
+            uuid = UUIDUtil.createOfflinePlayerUUID( s );
+        }
+
+        GameProfile gameProfile = new GameProfile( uuid, s );
+
+        if (connection.spoofedProfile != null)
+        {
+            for ( com.mojang.authlib.properties.Property property : connection.spoofedProfile )
+            {
+                if ( !HandshakeListener.PROP_PATTERN.matcher( property.name()).matches() ) continue;
+                gameProfile.getProperties().put( property.name(), property );
+            }
+        }
+
+        return gameProfile;
+    }
+    // Spigot end
 
     private static enum EnumProtocolState {
 

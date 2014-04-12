@@ -19,6 +19,11 @@ import java.util.HashMap;
 
 public class HandshakeListener implements PacketHandshakingInListener {
 
+    // Spigot start
+    private static final com.google.gson.Gson gson = new com.google.gson.Gson();
+    static final java.util.regex.Pattern HOST_PATTERN = java.util.regex.Pattern.compile("[0-9a-f\\.:]{0,45}");
+    static final java.util.regex.Pattern PROP_PATTERN = java.util.regex.Pattern.compile("\\w{0,16}");
+    // Spigot end
     // CraftBukkit start - add fields
     private static final HashMap<InetAddress, Long> throttleTracker = new HashMap<InetAddress, Long>();
     private static int throttleCounter = 0;
@@ -115,6 +120,31 @@ public class HandshakeListener implements PacketHandshakingInListener {
             this.connection.disconnect(ichatbasecomponent);
         } else {
             this.connection.setupInboundProtocol(LoginProtocols.SERVERBOUND, new LoginListener(this.server, this.connection, flag));
+            // Spigot Start
+            String[] split = packethandshakinginsetprotocol.hostName().split("\00");
+            if (org.spigotmc.SpigotConfig.bungee) {
+                if ( ( split.length == 3 || split.length == 4 ) && ( HOST_PATTERN.matcher( split[1] ).matches() ) ) {
+                    connection.hostname = split[0];
+                    connection.address = new java.net.InetSocketAddress(split[1], ((java.net.InetSocketAddress) connection.getRemoteAddress()).getPort());
+                    connection.spoofedUUID = com.mojang.util.UndashedUuid.fromStringLenient( split[2] );
+                } else
+                {
+                    IChatBaseComponent chatmessage = IChatBaseComponent.literal("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
+                    this.connection.send(new PacketLoginOutDisconnect(chatmessage));
+                    this.connection.disconnect(chatmessage);
+                    return;
+                }
+                if ( split.length == 4 )
+                {
+                    connection.spoofedProfile = gson.fromJson(split[3], com.mojang.authlib.properties.Property[].class);
+                }
+            } else if ( ( split.length == 3 || split.length == 4 ) && ( HOST_PATTERN.matcher( split[1] ).matches() ) ) {
+                IChatBaseComponent chatmessage = IChatBaseComponent.literal("Unknown data in login hostname, did you forget to enable BungeeCord in spigot.yml?");
+                this.connection.send(new PacketLoginOutDisconnect(chatmessage));
+                this.connection.disconnect(chatmessage);
+                return;
+            }
+            // Spigot End
         }
 
     }
