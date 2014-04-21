@@ -69,6 +69,10 @@ public interface NeighborUpdater {
             }
             // CraftBukkit end
             iblockdata.handleNeighborChanged(world, blockposition, block, orientation, flag);
+            // Spigot Start
+        } catch (StackOverflowError ex) {
+            world.lastPhysicsProblem = new BlockPosition(blockposition);
+            // Spigot End
         } catch (Throwable throwable) {
             CrashReport crashreport = CrashReport.forThrowable(throwable, "Exception while updating neighbours");
             CrashReportSystemDetails crashreportsystemdetails = crashreport.addCategory("Block being updated");
