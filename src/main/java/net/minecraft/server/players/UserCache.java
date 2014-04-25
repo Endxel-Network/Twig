@@ -216,7 +216,7 @@ public class UserCache {
         JsonArray jsonarray = new JsonArray();
         DateFormat dateformat = createDateFormat();
 
-        this.getTopMRUProfiles(1000).forEach((usercache_usercacheentry) -> {
+        this.getTopMRUProfiles(org.spigotmc.SpigotConfig.userCacheCap).forEach((usercache_usercacheentry) -> { // Spigot
             jsonarray.add(writeGameProfile(usercache_usercacheentry, dateformat));
         });
         String s = this.gson.toJson(jsonarray);
