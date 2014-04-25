@@ -98,6 +98,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
     // Spigot Start
     public java.util.UUID spoofedUUID;
     public com.mojang.authlib.properties.Property[] spoofedProfile;
+    public boolean preparing = true;
     // Spigot End
     @Nullable
     private volatile PacketListener disconnectListener;
@@ -127,6 +128,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
         super.channelActive(channelhandlercontext);
         this.channel = channelhandlercontext.channel();
         this.address = this.channel.remoteAddress();
+        // Spigot Start
+        this.preparing = false;
+        // Spigot End
         if (this.delayedDisconnect != null) {
             this.disconnect(this.delayedDisconnect);
         }
@@ -468,6 +472,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
     }
 
     public void disconnect(DisconnectionDetails disconnectiondetails) {
+        // Spigot Start
+        this.preparing = false;
+        // Spigot End
         if (this.channel == null) {
             this.delayedDisconnect = disconnectiondetails;
         }
