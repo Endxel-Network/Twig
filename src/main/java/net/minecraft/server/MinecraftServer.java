@@ -962,6 +962,12 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
         } catch (IOException ioexception1) {
             MinecraftServer.LOGGER.error("Failed to unlock level {}", this.storageSource.getLevelId(), ioexception1);
         }
+        // Spigot start
+        if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
+            LOGGER.info("Saving usercache.json");
+            this.getProfileCache().save();
+        }
+        // Spigot end
 
     }
 
