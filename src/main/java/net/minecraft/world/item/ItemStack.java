@@ -203,6 +203,10 @@ public final class ItemStack implements DataComponentHolder {
                     registryfriendlybytebuf.writeVarInt(0);
                 } else {
                     registryfriendlybytebuf.writeVarInt(itemstack.getCount());
+                    // Spigot start - filter
+                    itemstack = itemstack.copy();
+                    CraftItemStack.setItemMeta(itemstack, CraftItemStack.getItemMeta(itemstack));
+                    // Spigot end
                     Item.STREAM_CODEC.encode(registryfriendlybytebuf, itemstack.getItemHolder());
                     streamcodec.encode(registryfriendlybytebuf, itemstack.components.asPatch());
                 }
