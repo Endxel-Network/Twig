@@ -344,7 +344,7 @@ public class EntitySlime extends EntityInsentient implements IMonster {
             }
 
             ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(blockposition);
-            boolean flag = SeededRandom.seedSlimeChunk(chunkcoordintpair.x, chunkcoordintpair.z, ((GeneratorAccessSeed) generatoraccess).getSeed(), 987234911L).nextInt(10) == 0;
+            boolean flag = SeededRandom.seedSlimeChunk(chunkcoordintpair.x, chunkcoordintpair.z, ((GeneratorAccessSeed) generatoraccess).getSeed(), generatoraccess.getMinecraftWorld().spigotConfig.slimeSeed).nextInt(10) == 0; // Spigot
 
             if (randomsource.nextInt(10) == 0 && flag && blockposition.getY() < 40) {
                 return checkMobSpawnRules(entitytypes, generatoraccess, entityspawnreason, blockposition, randomsource);

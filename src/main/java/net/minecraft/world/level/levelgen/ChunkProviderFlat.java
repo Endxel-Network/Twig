@@ -48,14 +48,14 @@ public class ChunkProviderFlat extends ChunkGenerator {
     }
 
     @Override
-    public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> holderlookup, RandomState randomstate, long i) {
+    public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> holderlookup, RandomState randomstate, long i, org.spigotmc.SpigotWorldConfig conf) { // Spigot
         Stream<Holder<StructureSet>> stream = (Stream) this.settings.structureOverrides().map(HolderSet::stream).orElseGet(() -> {
             return holderlookup.listElements().map((holder_c) -> {
                 return holder_c;
             });
         });
 
-        return ChunkGeneratorStructureState.createForFlat(randomstate, i, this.biomeSource, stream);
+        return ChunkGeneratorStructureState.createForFlat(randomstate, i, this.biomeSource, stream, conf); // Spigot
     }
 
     @Override

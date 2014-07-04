@@ -209,7 +209,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.b, Gener
             this.randomState = RandomState.create(GeneratorSettingBase.dummy(), iregistrycustom.lookupOrThrow(Registries.NOISE), j);
         }
 
-        this.chunkGeneratorState = chunkgenerator.createState(iregistrycustom.lookupOrThrow(Registries.STRUCTURE_SET), this.randomState, j);
+        this.chunkGeneratorState = chunkgenerator.createState(iregistrycustom.lookupOrThrow(Registries.STRUCTURE_SET), this.randomState, j, worldserver.spigotConfig); // Spigot
         this.mainThreadExecutor = iasynctaskhandler;
         ConsecutiveExecutor consecutiveexecutor = new ConsecutiveExecutor(executor, "worldgen");
 
