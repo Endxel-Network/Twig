@@ -583,7 +583,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements 
                 d10 = d6 * d6 + d7 * d7 + d8 * d8;
                 boolean flag2 = false;
 
-                if (d10 > 0.0625D) {
+                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot
                     flag2 = true;
                     PlayerConnection.LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", new Object[]{entity.getName().getString(), this.player.getName().getString(), Math.sqrt(d10)});
                 }
@@ -1400,7 +1400,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements 
                                 d10 = d6 * d6 + d7 * d7 + d8 * d8;
                                 boolean flag3 = false;
 
-                                if (!this.player.isChangingDimension() && d10 > 0.0625D && !this.player.isSleeping() && !this.player.isCreative() && !this.player.isSpectator()) {
+                                if (!this.player.isChangingDimension() && d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.isCreative() && !this.player.isSpectator()) { // Spigot
                                     flag3 = true;
                                     PlayerConnection.LOGGER.warn("{} moved wrongly!", this.player.getName().getString());
                                 }
