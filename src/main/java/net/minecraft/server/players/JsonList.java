@@ -145,6 +145,14 @@ public abstract class JsonList<K, V extends JsonListEntry<K>> {
                         this.map.put(this.getKeyForUser(jsonlistentry.getUser()), (V) jsonlistentry); // CraftBukkit - decompile error
                     }
                 }
+            // Spigot Start
+            } catch ( com.google.gson.JsonParseException | NullPointerException ex )
+            {
+                org.bukkit.Bukkit.getLogger().log( java.util.logging.Level.WARNING, "Unable to read file " + this.file + ", backing it up to {0}.backup and creating new copy.", ex );
+                File backup = new File( this.file + ".backup" );
+                this.file.renameTo( backup );
+                this.file.delete();
+                // Spigot End
             }
 
         }
