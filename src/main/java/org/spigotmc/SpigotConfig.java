@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.MinecraftKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.ai.attributes.AttributeRanged;
+import net.minecraft.world.entity.ai.attributes.GenericAttributes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -337,5 +339,21 @@ public class SpigotConfig
     private static void movedTooQuicklyMultiplier()
     {
         movedTooQuicklyMultiplier = getDouble( "settings.moved-too-quickly-multiplier", 10.0D );
+    }
+
+    public static double maxAbsorption = 2048;
+    public static double maxHealth = 2048;
+    public static double movementSpeed = 2048;
+    public static double attackDamage = 2048;
+    private static void attributeMaxes()
+    {
+        maxAbsorption = getDouble( "settings.attribute.maxAbsorption.max", maxAbsorption );
+        ( (AttributeRanged) GenericAttributes.MAX_ABSORPTION.value() ).maxValue = maxAbsorption;
+        maxHealth = getDouble( "settings.attribute.maxHealth.max", maxHealth );
+        ( (AttributeRanged) GenericAttributes.MAX_HEALTH.value() ).maxValue = maxHealth;
+        movementSpeed = getDouble( "settings.attribute.movementSpeed.max", movementSpeed );
+        ( (AttributeRanged) GenericAttributes.MOVEMENT_SPEED.value() ).maxValue = movementSpeed;
+        attackDamage = getDouble( "settings.attribute.attackDamage.max", attackDamage );
+        ( (AttributeRanged) GenericAttributes.ATTACK_DAMAGE.value() ).maxValue = attackDamage;
     }
 }
