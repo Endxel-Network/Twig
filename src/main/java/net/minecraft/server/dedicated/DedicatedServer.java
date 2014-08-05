@@ -277,7 +277,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
                 this.rconThread = RemoteControlListener.create(this);
             }
 
-            if (this.getMaxTickLength() > 0L) {
+            if (false && this.getMaxTickLength() > 0L) {  // Spigot - disable
                 Thread thread1 = new Thread(new ThreadWatchdog(this));
 
                 thread1.setUncaughtExceptionHandler(new ThreadNamedUncaughtExceptionHandler(DedicatedServer.LOGGER));
