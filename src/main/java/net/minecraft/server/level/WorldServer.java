@@ -2014,6 +2014,29 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
 
         public void onTrackingEnd(Entity entity) {
             org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
+            // Spigot start
+            if ( entity instanceof EntityHuman )
+            {
+                com.google.common.collect.Streams.stream( getServer().getAllLevels() ).map( WorldServer::getDataStorage ).forEach( (worldData) ->
+                {
+                    for (Object o : worldData.cache.values() )
+                    {
+                        if ( o instanceof WorldMap )
+                        {
+                            WorldMap map = (WorldMap) o;
+                            map.carriedByPlayers.remove( (EntityHuman) entity );
+                            for ( java.util.Iterator<WorldMap.WorldMapHumanTracker> iter = (java.util.Iterator<WorldMap.WorldMapHumanTracker>) map.carriedBy.iterator(); iter.hasNext(); )
+                            {
+                                if ( iter.next().player == entity )
+                                {
+                                    iter.remove();
+                                }
+                            }
+                        }
+                    }
+                } );
+            }
+            // Spigot end
             // Spigot Start
             if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder && (!(entity instanceof EntityPlayer) || entity.getRemovalReason() != Entity.RemovalReason.KILLED)) { // SPIGOT-6876: closeInventory clears death message
                 for (org.bukkit.entity.HumanEntity h : Lists.newArrayList(((org.bukkit.inventory.InventoryHolder) entity.getBukkitEntity()).getInventory().getViewers())) {
