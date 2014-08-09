@@ -50,7 +50,7 @@ public abstract class BlockAttachedEntity extends Entity {
 
         if (world instanceof WorldServer worldserver) {
             this.checkBelowWorld();
-            if (this.checkInterval++ == 100) {
+            if (this.checkInterval++ == this.level().spigotConfig.hangingTickFrequency) { // Spigot
                 this.checkInterval = 0;
                 if (!this.isRemoved() && !this.survives()) {
                     // CraftBukkit start - fire break events
