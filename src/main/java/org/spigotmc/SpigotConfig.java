@@ -18,6 +18,9 @@ import net.minecraft.resources.MinecraftKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.ai.attributes.AttributeRanged;
 import net.minecraft.world.entity.ai.attributes.GenericAttributes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -355,5 +358,28 @@ public class SpigotConfig
         ( (AttributeRanged) GenericAttributes.MOVEMENT_SPEED.value() ).maxValue = movementSpeed;
         attackDamage = getDouble( "settings.attribute.attackDamage.max", attackDamage );
         ( (AttributeRanged) GenericAttributes.ATTACK_DAMAGE.value() ).maxValue = attackDamage;
+    }
+
+    public static boolean debug;
+    private static void debug()
+    {
+        debug = getBoolean( "settings.debug", false );
+
+        if ( debug && !LogManager.getRootLogger().isTraceEnabled() )
+        {
+            // Enable debug logging
+            LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
+            Configuration conf = ctx.getConfiguration();
+            conf.getLoggerConfig( LogManager.ROOT_LOGGER_NAME ).setLevel( org.apache.logging.log4j.Level.ALL );
+            ctx.updateLoggers( conf );
+        }
+
+        if ( LogManager.getRootLogger().isTraceEnabled() )
+        {
+            Bukkit.getLogger().info( "Debug logging is enabled" );
+        } else
+        {
+            Bukkit.getLogger().info( "Debug logging is disabled" );
+        }
     }
 }
