@@ -104,6 +104,7 @@ public class EntityTNTPrimed extends Entity implements TraceableEntity {
 
     @Override
     public void tick() {
+        if (this.level().spigotConfig.maxTntTicksPerTick > 0 && ++this.level().spigotConfig.currentPrimedTnt > this.level().spigotConfig.maxTntTicksPerTick) { return; } // Spigot
         this.handlePortal();
         this.applyGravity();
         this.move(EnumMoveType.SELF, this.getDeltaMovement());
