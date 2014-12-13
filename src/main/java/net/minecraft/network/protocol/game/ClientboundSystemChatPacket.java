@@ -13,6 +13,12 @@ public record ClientboundSystemChatPacket(IChatBaseComponent content, boolean ov
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSystemChatPacket> STREAM_CODEC = StreamCodec.composite(ComponentSerialization.TRUSTED_STREAM_CODEC, ClientboundSystemChatPacket::content, ByteBufCodecs.BOOL, ClientboundSystemChatPacket::overlay, ClientboundSystemChatPacket::new);
 
+    // Spigot start
+    public ClientboundSystemChatPacket(net.md_5.bungee.api.chat.BaseComponent[] content, boolean overlay) {
+        this(org.bukkit.craftbukkit.util.CraftChatMessage.fromJSON(org.bukkit.craftbukkit.util.CraftChatMessage.getBungee().toString(content)), overlay);
+    }
+    // Spigot end
+
     @Override
     public PacketType<ClientboundSystemChatPacket> type() {
         return GamePacketTypes.CLIENTBOUND_SYSTEM_CHAT;
