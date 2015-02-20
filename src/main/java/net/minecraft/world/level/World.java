@@ -165,6 +165,9 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
 
     public final SpigotTimings.WorldTimingsHandler timings; // Spigot
     public static BlockPosition lastPhysicsProblem; // Spigot
+    private org.spigotmc.TickLimiter entityLimiter;
+    private org.spigotmc.TickLimiter tileLimiter;
+    private int tileTickPosition;
 
     public CraftWorld getWorld() {
         return this.world;
@@ -254,6 +257,8 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
         });
         // CraftBukkit end
         timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
+        this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
+        this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
     }
 
     @Override
@@ -650,14 +655,23 @@ public abstract class World implements GeneratorAccess, UUIDLookup<Entity>, Auto
         timings.tileEntityPending.stopTiming(); // Spigot
 
         timings.tileEntityTick.startTiming(); // Spigot
-        Iterator<TickingBlockEntity> iterator = this.blockEntityTickers.iterator();
+        // Spigot start
+        // Iterator<TickingBlockEntity> iterator = this.blockEntityTickers.iterator();
         boolean flag = this.tickRateManager().runsNormally();
 
-        while (iterator.hasNext()) {
-            TickingBlockEntity tickingblockentity = (TickingBlockEntity) iterator.next();
+        int tilesThisCycle = 0;
+        for (tileLimiter.initTick();
+                tilesThisCycle < blockEntityTickers.size() && (tilesThisCycle % 10 != 0 || tileLimiter.shouldContinue());
+                tileTickPosition++, tilesThisCycle++) {
+            tileTickPosition = (tileTickPosition < blockEntityTickers.size()) ? tileTickPosition : 0;
+            TickingBlockEntity tickingblockentity = (TickingBlockEntity) this.blockEntityTickers.get(tileTickPosition);
+            // Spigot end
 
             if (tickingblockentity.isRemoved()) {
-                iterator.remove();
+                // Spigot start
+                tilesThisCycle--;
+                this.blockEntityTickers.remove(tileTickPosition--);
+                // Spigot end
             } else if (flag && this.shouldTickBlocksAt(tickingblockentity.getPos())) {
                 tickingblockentity.tick();
             }
