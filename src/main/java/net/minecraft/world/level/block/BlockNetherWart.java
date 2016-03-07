@@ -54,7 +54,7 @@ public class BlockNetherWart extends VegetationBlock {
     protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
         int i = (Integer) iblockdata.getValue(BlockNetherWart.AGE);
 
-        if (i < 3 && randomsource.nextInt(10) == 0) {
+        if (i < 3 && randomsource.nextFloat() < (worldserver.spigotConfig.wartModifier / (100.0f * 10))) { // Spigot - SPIGOT-7159: Better modifier resolution
             iblockdata = (IBlockData) iblockdata.setValue(BlockNetherWart.AGE, i + 1);
             org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(worldserver, blockposition, iblockdata, 2); // CraftBukkit
         }

@@ -163,7 +163,7 @@ public class BlockVine extends Block {
     @Override
     protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
         if (worldserver.getGameRules().getBoolean(GameRules.RULE_DO_VINES_SPREAD)) {
-            if (randomsource.nextInt(4) == 0) {
+            if (randomsource.nextFloat() < (worldserver.spigotConfig.vineModifier / (100.0f * 4))) { // Spigot - SPIGOT-7159: Better modifier resolution
                 EnumDirection enumdirection = EnumDirection.getRandom(randomsource);
                 BlockPosition blockposition1 = blockposition.above();
 

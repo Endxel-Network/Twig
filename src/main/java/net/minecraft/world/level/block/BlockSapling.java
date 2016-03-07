@@ -56,7 +56,7 @@ public class BlockSapling extends VegetationBlock implements IBlockFragilePlantE
 
     @Override
     protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
-        if (worldserver.getMaxLocalRawBrightness(blockposition.above()) >= 9 && randomsource.nextInt(7) == 0) {
+        if (worldserver.getMaxLocalRawBrightness(blockposition.above()) >= 9 && randomsource.nextFloat() < (worldserver.spigotConfig.saplingModifier / (100.0f * 7))) { // Spigot - SPIGOT-7159: Better modifier resolution
             this.advanceTree(worldserver, blockposition, iblockdata, randomsource);
         }
 

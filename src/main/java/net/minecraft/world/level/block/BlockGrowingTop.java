@@ -44,7 +44,19 @@ public abstract class BlockGrowingTop extends BlockGrowingAbstract implements IB
 
     @Override
     protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
-        if ((Integer) iblockdata.getValue(BlockGrowingTop.AGE) < 25 && randomsource.nextDouble() < this.growPerTickProbability) {
+        // Spigot start
+        int modifier;
+        if (this == Blocks.KELP) {
+            modifier = worldserver.spigotConfig.kelpModifier;
+        } else if (this == Blocks.TWISTING_VINES) {
+            modifier = worldserver.spigotConfig.twistingVinesModifier;
+        } else if (this == Blocks.WEEPING_VINES) {
+            modifier = worldserver.spigotConfig.weepingVinesModifier;
+        } else {
+            modifier = worldserver.spigotConfig.caveVinesModifier;
+        }
+        if ((Integer) iblockdata.getValue(BlockGrowingTop.AGE) < 25 && randomsource.nextDouble() < ((modifier / 100.0D) * this.growPerTickProbability)) { // Spigot - SPIGOT-7159: Better modifier resolution
+            // Spigot end
             BlockPosition blockposition1 = blockposition.relative(this.growthDirection);
 
             if (this.canGrowInto(worldserver.getBlockState(blockposition1))) {

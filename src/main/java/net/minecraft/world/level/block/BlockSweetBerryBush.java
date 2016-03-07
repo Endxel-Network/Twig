@@ -88,7 +88,7 @@ public class BlockSweetBerryBush extends VegetationBlock implements IBlockFragil
     protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
         int i = (Integer) iblockdata.getValue(BlockSweetBerryBush.AGE);
 
-        if (i < 3 && randomsource.nextInt(5) == 0 && worldserver.getRawBrightness(blockposition.above(), 0) >= 9) {
+        if (i < 3 && randomsource.nextFloat() < (worldserver.spigotConfig.sweetBerryModifier / (100.0f * 5)) && worldserver.getRawBrightness(blockposition.above(), 0) >= 9) { // Spigot - SPIGOT-7159: Better modifier resolution
             IBlockData iblockdata1 = (IBlockData) iblockdata.setValue(BlockSweetBerryBush.AGE, i + 1);
 
             if (!CraftEventFactory.handleBlockGrowEvent(worldserver, blockposition, iblockdata1, 2)) return; // CraftBukkit

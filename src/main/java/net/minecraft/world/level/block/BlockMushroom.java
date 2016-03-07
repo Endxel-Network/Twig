@@ -50,7 +50,7 @@ public class BlockMushroom extends VegetationBlock implements IBlockFragilePlant
 
     @Override
     protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
-        if (randomsource.nextInt(25) == 0) {
+        if (randomsource.nextFloat() < (worldserver.spigotConfig.mushroomModifier / (100.0f * 25))) { // Spigot - SPIGOT-7159: Better modifier resolution
             int i = 5;
             int j = 4;
 

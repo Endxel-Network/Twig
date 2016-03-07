@@ -60,10 +60,11 @@ public class BlockReed extends Block {
             if (i < 3) {
                 int j = (Integer) iblockdata.getValue(BlockReed.AGE);
 
-                if (j == 15) {
+                int modifier = worldserver.spigotConfig.caneModifier; // Spigot - SPIGOT-7159: Better modifier resolution
+                if (j >= 15 || (modifier != 100 && randomsource.nextFloat() < (modifier / (100.0f * 16)))) { // Spigot - SPIGOT-7159: Better modifier resolution
                     org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(worldserver, blockposition.above(), this.defaultBlockState()); // CraftBukkit
                     worldserver.setBlock(blockposition, (IBlockData) iblockdata.setValue(BlockReed.AGE, 0), 260);
-                } else {
+                } else if (modifier == 100 || randomsource.nextFloat() < (modifier / (100.0f * 16))) { // Spigot - SPIGOT-7159: Better modifier resolution
                     worldserver.setBlock(blockposition, (IBlockData) iblockdata.setValue(BlockReed.AGE, j + 1), 260);
                 }
             }

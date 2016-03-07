@@ -70,6 +70,12 @@ public class BlockCactus extends Block {
                 }
             }
 
+            // Spigot start - SPIGOT-7159: Better modifier resolution
+            int modifier = worldserver.spigotConfig.cactusModifier;
+            if (modifier != 100 && randomsource.nextFloat() >= (modifier / (100.0f * 16))) {
+                return;
+            }
+            // Spigot end
             if (j == 8 && this.canSurvive(this.defaultBlockState(), worldserver, blockposition.above())) {
                 double d0 = i >= 3 ? 0.25D : 0.1D;
 
