@@ -312,6 +312,12 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
     public CommandDispatcher vanillaCommandDispatcher;
     private boolean forceTicks;
     // CraftBukkit end
+    // Spigot start
+    public static final int TPS = 20;
+    public static final int TICK_TIME = 1000000000 / TPS;
+    private static final int SAMPLE_INTERVAL = 100;
+    public final double[] recentTps = new double[ 3 ];
+    // Spigot end
 
     public static <S extends MinecraftServer> S spin(Function<Thread, S> function) {
         AtomicReference<S> atomicreference = new AtomicReference();
@@ -983,6 +989,13 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
 
     }
 
+    // Spigot Start
+    private static double calcTps(double avg, double exp, double tps)
+    {
+        return ( avg * exp ) + ( tps * ( 1 - exp ) );
+    }
+    // Spigot End
+
     protected void runServer() {
         try {
             if (!this.initServer()) {
@@ -993,6 +1006,9 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
             this.statusIcon = (ServerPing.a) this.loadStatusIcon().orElse(null); // CraftBukkit - decompile error
             this.status = this.buildServerStatus();
 
+            // Spigot start
+            Arrays.fill( recentTps, 20 );
+            long tickSection = SystemUtils.getMillis(), tickCount = 1;
             while (this.running) {
                 long i;
 
@@ -1013,6 +1029,17 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
                         this.lastOverloadWarningNanos = this.nextTickTimeNanos;
                     }
                 }
+                // Spigot start
+                if ( tickCount++ % SAMPLE_INTERVAL == 0 )
+                {
+                    long curTime = SystemUtils.getMillis();
+                    double currentTps = 1E3 / ( curTime - tickSection ) * SAMPLE_INTERVAL;
+                    recentTps[0] = calcTps( recentTps[0], 0.92, currentTps ); // 1/exp(5sec/1min)
+                    recentTps[1] = calcTps( recentTps[1], 0.9835, currentTps ); // 1/exp(5sec/5min)
+                    recentTps[2] = calcTps( recentTps[2], 0.9945, currentTps ); // 1/exp(5sec/15min)
+                    tickSection = curTime;
+                }
+                // Spigot end
 
                 boolean flag = i == 0L;
 
