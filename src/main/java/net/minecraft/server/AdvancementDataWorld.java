@@ -39,6 +39,11 @@ public class AdvancementDataWorld extends ResourceDataJson<Advancement> {
         ImmutableMap.Builder<MinecraftKey, AdvancementHolder> immutablemap_builder = ImmutableMap.builder();
 
         map.forEach((minecraftkey, advancement) -> {
+            // Spigot start
+            if (org.spigotmc.SpigotConfig.disabledAdvancements != null && (org.spigotmc.SpigotConfig.disabledAdvancements.contains("*") || org.spigotmc.SpigotConfig.disabledAdvancements.contains(minecraftkey.toString()) || org.spigotmc.SpigotConfig.disabledAdvancements.contains(minecraftkey.getNamespace()))) {
+                return;
+            }
+            // Spigot end
             this.validate(minecraftkey, advancement);
             immutablemap_builder.put(minecraftkey, new AdvancementHolder(minecraftkey, advancement));
         });
