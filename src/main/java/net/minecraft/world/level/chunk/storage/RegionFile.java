@@ -90,6 +90,14 @@ public class RegionFile implements AutoCloseable {
                     if (l != 0) {
                         int i1 = getSectorNumber(l);
                         int j1 = getNumSectors(l);
+                        // Spigot start
+                        if (j1 == 255) {
+                            // We're maxed out, so we need to read the proper length from the section
+                            ByteBuffer realLen = ByteBuffer.allocate(4);
+                            this.file.read(realLen, i1 * 4096);
+                            j1 = (realLen.getInt(0) + 4) / 4096 + 1;
+                        }
+                        // Spigot end
 
                         if (i1 < 2) {
                             RegionFile.LOGGER.warn("Region file {} has invalid sector at index: {}; sector {} overlaps with header", new Object[]{path, k, i1});
@@ -129,6 +137,13 @@ public class RegionFile implements AutoCloseable {
         } else {
             int j = getSectorNumber(i);
             int k = getNumSectors(i);
+            // Spigot start
+            if (k == 255) {
+                ByteBuffer realLen = ByteBuffer.allocate(4);
+                this.file.read(realLen, j * 4096);
+                k = (realLen.getInt(0) + 4) / 4096 + 1;
+            }
+            // Spigot end
             int l = k * 4096;
             ByteBuffer bytebuffer = ByteBuffer.allocate(l);
 
