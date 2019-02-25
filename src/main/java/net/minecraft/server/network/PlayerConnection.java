@@ -865,7 +865,7 @@ public class PlayerConnection extends ServerCommonPacketListenerImpl implements 
                 ItemStack itemstack = iblockdata.getCloneItemStack(worldserver, blockposition, flag);
 
                 if (!itemstack.isEmpty()) {
-                    if (flag) {
+                    if (flag && this.player.getBukkitEntity().hasPermission("minecraft.nbt.copy")) { // Spigot
                         addBlockDataToItem(iblockdata, worldserver, blockposition, itemstack);
                     }
 

@@ -208,7 +208,7 @@ public class ItemBlock extends Item {
                         return false;
                     }
 
-                    if (!tileentitytypes1.onlyOpCanSetNbt() || entityhuman != null && entityhuman.canUseGameMasterBlocks()) {
+                    if (!tileentitytypes1.onlyOpCanSetNbt() || entityhuman != null && (entityhuman.canUseGameMasterBlocks() || (entityhuman.getAbilities().instabuild && entityhuman.getBukkitEntity().hasPermission("minecraft.nbt.place")))) { // Spigot - add permission
                         return customdata.loadInto(tileentity, world.registryAccess());
                     }
 

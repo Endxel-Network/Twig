@@ -209,6 +209,14 @@ public class PlayerInteractManager {
                     return;
                 }
 
+                // Spigot start - handle debug stick left click for non-creative
+                if (this.player.getMainHandItem().is(net.minecraft.world.item.Items.DEBUG_STICK)
+                        && ((net.minecraft.world.item.ItemDebugStick) net.minecraft.world.item.Items.DEBUG_STICK).handleInteraction(this.player, this.level.getBlockState(blockposition), this.level, blockposition, false, this.player.getMainHandItem())) {
+                    this.player.connection.send(new PacketPlayOutBlockChange(this.level, blockposition));
+                    return;
+                }
+                // Spigot end
+
                 if (this.player.blockActionRestricted(this.level, blockposition, this.gameModeForPlayer)) {
                     this.player.connection.send(new PacketPlayOutBlockChange(blockposition, this.level.getBlockState(blockposition)));
                     this.debugLogging(blockposition, false, j, "block action restricted");
