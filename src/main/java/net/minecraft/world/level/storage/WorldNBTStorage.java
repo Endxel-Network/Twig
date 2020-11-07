@@ -35,6 +35,7 @@ public class WorldNBTStorage {
     }
 
     public void save(EntityHuman entityhuman) {
+        if (org.spigotmc.SpigotConfig.disablePlayerDataSaving) return; // Spigot
         try {
             NBTTagCompound nbttagcompound = entityhuman.saveWithoutId(new NBTTagCompound());
             Path path = this.playerDir.toPath();

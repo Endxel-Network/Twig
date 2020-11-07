@@ -396,4 +396,9 @@ public class SpigotConfig
         logVillagerDeaths = getBoolean("settings.log-villager-deaths", true);
         logNamedDeaths = getBoolean("settings.log-named-deaths", true);
     }
+
+    public static boolean disablePlayerDataSaving;
+    private static void disablePlayerDataSaving() {
+        disablePlayerDataSaving = getBoolean("players.disable-saving", false);
+    }
 }
