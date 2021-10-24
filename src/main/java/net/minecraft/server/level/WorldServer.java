@@ -558,7 +558,7 @@ public class WorldServer extends World implements ServerEntityGetter, GeneratorA
         GameProfilerFiller gameprofilerfiller = Profiler.get();
 
         gameprofilerfiller.push("thunder");
-        if (flag && this.isThundering() && this.random.nextInt(100000) == 0) {
+        if (flag && this.isThundering() && this.spigotConfig.thunderChance > 0 && this.random.nextInt(this.spigotConfig.thunderChance) == 0) { // Spigot
             BlockPosition blockposition = this.findLightningTargetAround(this.getBlockRandomPos(i, 0, j, 15));
 
             if (this.isRainingAt(blockposition)) {
