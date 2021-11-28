@@ -109,8 +109,22 @@ public class IChunkLoader implements AutoCloseable {
                     }
                 }
 
+                // Spigot start - SPIGOT-6806: Quick and dirty way to prevent below zero generation in old chunks, by setting the status to heightmap instead of empty
+                boolean stopBelowZero = false;
+                boolean belowZeroGenerationInExistingChunks = (generatoraccess != null) ? ((WorldServer) generatoraccess).spigotConfig.belowZeroGenerationInExistingChunks : org.spigotmc.SpigotConfig.belowZeroGenerationInExistingChunks;
+
+                if (i <= 2730 && !belowZeroGenerationInExistingChunks) {
+                    stopBelowZero = "full".equals(nbttagcompound.getCompoundOrEmpty("Level").getStringOr("Status", ""));
+                }
+                // Spigot end
+
                 injectDatafixingContext(nbttagcompound, resourcekey, optional);
                 nbttagcompound = DataFixTypes.CHUNK.updateToCurrentVersion(this.fixerUpper, nbttagcompound, Math.max(1493, i));
+                // Spigot start
+                if (stopBelowZero) {
+                    nbttagcompound.putString("Status", net.minecraft.core.registries.BuiltInRegistries.CHUNK_STATUS.getKey(ChunkStatus.SPAWN).toString());
+                }
+                // Spigot end
                 removeDatafixingContext(nbttagcompound);
                 GameProfileSerializer.addCurrentDataVersion(nbttagcompound);
                 return nbttagcompound;
