@@ -368,7 +368,7 @@ public class ChunkProviderServer extends IChunkProvider {
 
         gameprofilerfiller.push("purge");
         this.level.timings.doChunkMap.startTiming(); // Spigot
-        if (this.level.tickRateManager().runsNormally() || !flag) {
+        if (this.level.tickRateManager().runsNormally() || !flag || this.level.spigotConfig.unloadFrozenChunks) { // Spigot
             this.ticketStorage.purgeStaleTickets();
         }
 
