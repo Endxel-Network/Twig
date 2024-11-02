@@ -245,6 +245,17 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
         return this.assignProfessionWhenSpawned;
     }
 
+    // Spigot Start
+    @Override
+    public void inactiveTick() {
+        // SPIGOT-3874, SPIGOT-3894, SPIGOT-3846, SPIGOT-5286 :(
+        if (this.level().spigotConfig.tickInactiveVillagers && this.isEffectiveAi()) {
+            this.customServerAiStep((WorldServer) this.level());
+        }
+        super.inactiveTick();
+    }
+    // Spigot End
+
     @Override
     protected void customServerAiStep(WorldServer worldserver) {
         GameProfilerFiller gameprofilerfiller = Profiler.get();

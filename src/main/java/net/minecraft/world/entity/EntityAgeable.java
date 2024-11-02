@@ -29,6 +29,31 @@ public abstract class EntityAgeable extends EntityCreature {
         super(entitytypes, world);
     }
 
+    // Spigot start
+    @Override
+    public void inactiveTick()
+    {
+        super.inactiveTick();
+        if ( this.level().isClientSide || this.ageLocked )
+        { // CraftBukkit
+            this.refreshDimensions();
+        } else
+        {
+            int i = this.getAge();
+
+            if ( i < 0 )
+            {
+                ++i;
+                this.setAge( i );
+            } else if ( i > 0 )
+            {
+                --i;
+                this.setAge( i );
+            }
+        }
+    }
+    // Spigot end
+
     @Override
     public GroupDataEntity finalizeSpawn(WorldAccess worldaccess, DifficultyDamageScaler difficultydamagescaler, EntitySpawnReason entityspawnreason, @Nullable GroupDataEntity groupdataentity) {
         if (groupdataentity == null) {

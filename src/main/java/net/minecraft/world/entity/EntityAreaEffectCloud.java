@@ -168,6 +168,18 @@ public class EntityAreaEffectCloud extends Entity implements TraceableEntity {
         this.duration = i;
     }
 
+    // Spigot start - copied from below
+    @Override
+    public void inactiveTick() {
+        super.inactiveTick();
+
+        if (this.tickCount >= this.waitTime + this.duration) {
+            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
+            return;
+        }
+    }
+    // Spigot end
+
     @Override
     public void tick() {
         super.tick();

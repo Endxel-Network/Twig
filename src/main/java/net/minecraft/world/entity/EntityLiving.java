@@ -291,6 +291,13 @@ public abstract class EntityLiving extends Entity implements Attackable {
         return getYHeadRot();
     }
     // CraftBukkit end
+    // Spigot start
+    public void inactiveTick()
+    {
+        super.inactiveTick();
+        ++this.noActionTime; // Above all the floats
+    }
+    // Spigot end
 
     protected EntityLiving(EntityTypes<? extends EntityLiving> entitytypes, World world) {
         super(entitytypes, world);

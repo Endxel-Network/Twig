@@ -97,6 +97,28 @@ public class EntityFireworks extends IProjectile implements ItemSupplier {
         this.setOwner(entity);
     }
 
+    // Spigot Start - copied from tick
+    @Override
+    public void inactiveTick() {
+        this.life += 1;
+
+        if (this.life > this.lifetime) {
+            World world = this.level();
+
+            if (world instanceof WorldServer) {
+                WorldServer worldserver = (WorldServer) world;
+
+                // CraftBukkit start
+                if (!org.bukkit.craftbukkit.event.CraftEventFactory.callFireworkExplodeEvent(this).isCancelled()) {
+                    this.explode(worldserver);
+                }
+                // CraftBukkit end
+            }
+        }
+        super.inactiveTick();
+    }
+    // Spigot End
+
     @Override
     protected void defineSynchedData(DataWatcher.a datawatcher_a) {
         datawatcher_a.define(EntityFireworks.DATA_ID_FIREWORKS_ITEM, getDefaultItem());
