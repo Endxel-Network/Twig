@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import net.minecraft.core.Holder;
 import net.minecraft.core.IRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.RegistryMaterials;
@@ -33,14 +34,14 @@ public class RegistryLoadOrderTest {
                 Arguments.of(
                         (Supplier<Boolean>) () -> initInterface,
                         BukkitInterfaceTestType.class,
-                        (BiFunction<NamespacedKey, MinecraftTestType, Keyed>) CraftBukkitInterfaceTestType::new,
+                        (BiFunction<NamespacedKey, Holder<MinecraftTestType>, Keyed>) CraftBukkitInterfaceTestType::new,
                         (Supplier<Keyed>) () -> BukkitInterfaceTestType.TEST_ONE,
                         (Supplier<Keyed>) () -> BukkitInterfaceTestType.TEST_TWO
                 ),
                 Arguments.of(
                         (Supplier<Boolean>) () -> initAbstract,
                         BukkitAbstractTestType.class,
-                        (BiFunction<NamespacedKey, MinecraftTestType, Keyed>) CraftBukkitAbstractTestType::new,
+                        (BiFunction<NamespacedKey, Holder<MinecraftTestType>, Keyed>) CraftBukkitAbstractTestType::new,
                         (Supplier<Keyed>) () -> BukkitAbstractTestType.TEST_ONE,
                         (Supplier<Keyed>) () -> BukkitAbstractTestType.TEST_TWO
                 )
@@ -49,7 +50,7 @@ public class RegistryLoadOrderTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testRegistryLoadOrder(Supplier<Boolean> init, Class<Keyed> keyedClass, BiFunction<NamespacedKey, MinecraftTestType, Keyed> minecraftToBukkit, Supplier<Keyed> first, Supplier<Keyed> second) {
+    public void testRegistryLoadOrder(Supplier<Boolean> init, Class<Keyed> keyedClass, BiFunction<NamespacedKey, Holder<MinecraftTestType>, Keyed> minecraftToBukkit, Supplier<Keyed> first, Supplier<Keyed> second) {
         testClassNotLoaded(init.get());
 
         ResourceKey<IRegistry<MinecraftTestType>> resourceKey = ResourceKey.createRegistryKey(MinecraftKey.tryBuild("bukkit", "test-registry"));
@@ -106,7 +107,7 @@ public class RegistryLoadOrderTest {
 
         private final NamespacedKey key;
 
-        public CraftBukkitInterfaceTestType(NamespacedKey key, MinecraftTestType minecraftTestType) {
+        public CraftBukkitInterfaceTestType(NamespacedKey key, Holder<MinecraftTestType> minecraftTestType) {
             this.key = key;
         }
 
@@ -135,7 +136,7 @@ public class RegistryLoadOrderTest {
 
         private final NamespacedKey key;
 
-        public CraftBukkitAbstractTestType(NamespacedKey key, MinecraftTestType minecraftTestType) {
+        public CraftBukkitAbstractTestType(NamespacedKey key, Holder<MinecraftTestType> minecraftTestType) {
             this.key = key;
         }
 

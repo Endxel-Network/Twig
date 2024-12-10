@@ -1,24 +1,40 @@
 package org.bukkit.craftbukkit;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Holder;
-import net.minecraft.core.IRegistry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.Instrument;
 import org.bukkit.MusicInstrument;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.craftbukkit.util.Handleable;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.util.HolderHandleable;
 import org.jetbrains.annotations.NotNull;
 
-public class CraftMusicInstrument extends MusicInstrument implements Handleable<Instrument> {
+public class CraftMusicInstrument extends MusicInstrument implements HolderHandleable<Instrument> {
 
     public static MusicInstrument minecraftToBukkit(Instrument minecraft) {
         return CraftRegistry.minecraftToBukkit(minecraft, Registries.INSTRUMENT, Registry.INSTRUMENT);
     }
 
     public static MusicInstrument minecraftHolderToBukkit(Holder<Instrument> minecraft) {
-        return minecraftToBukkit(minecraft.value());
+        Preconditions.checkArgument(minecraft != null);
+
+        if (minecraft instanceof Holder.c<Instrument> holder) {
+            MusicInstrument bukkit = Registry.INSTRUMENT.get(CraftNamespacedKey.fromMinecraft(holder.key().location()));
+
+            Preconditions.checkArgument(bukkit != null);
+
+            return bukkit;
+        }
+
+        return new CraftMusicInstrument(null, minecraft);
     }
 
     public static Instrument bukkitToMinecraft(MusicInstrument bukkit) {
@@ -26,69 +42,91 @@ public class CraftMusicInstrument extends MusicInstrument implements Handleable<
     }
 
     public static Holder<Instrument> bukkitToMinecraftHolder(MusicInstrument bukkit) {
-        Preconditions.checkArgument(bukkit != null);
-
-        IRegistry<Instrument> registry = CraftRegistry.getMinecraftRegistry(Registries.INSTRUMENT);
-
-        if (registry.wrapAsHolder(bukkitToMinecraft(bukkit)) instanceof Holder.c<Instrument> holder) {
-            return holder;
-        }
-
-        throw new IllegalArgumentException("No Reference holder found for " + bukkit
-                + ", this can happen if a plugin creates its own instrument without properly registering it.");
+        return ((HolderHandleable<Instrument>) bukkit).getHandleHolder();
     }
 
     public static String bukkitToString(MusicInstrument bukkit) {
         Preconditions.checkArgument(bukkit != null);
 
-        return bukkit.getKey().toString();
+        Holder<Instrument> holder = bukkitToMinecraftHolder(bukkit);
+
+        return Instrument.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, CraftRegistry.getMinecraftRegistry()), holder).result().get().toString();
     }
 
     public static MusicInstrument stringToBukkit(String string) {
         Preconditions.checkArgument(string != null);
 
-        return Registry.INSTRUMENT.get(NamespacedKey.fromString(string));
+        NamespacedKey key = NamespacedKey.fromString(string);
+        if (key != null) {
+            MusicInstrument bukkit = Registry.INSTRUMENT.get(key);
+
+            if (bukkit != null) {
+                return bukkit;
+            }
+        }
+
+        JsonElement json = JsonParser.parseString(string);
+        DataResult<Pair<Holder<Instrument>, JsonElement>> result = Instrument.CODEC.decode(RegistryOps.create(JsonOps.INSTANCE, CraftRegistry.getMinecraftRegistry()), json);
+
+        return CraftMusicInstrument.minecraftHolderToBukkit(result.getOrThrow().getFirst());
     }
 
     private final NamespacedKey key;
-    private final Instrument handle;
+    private final Holder<Instrument> handle;
 
-    public CraftMusicInstrument(NamespacedKey key, Instrument handle) {
+    public CraftMusicInstrument(NamespacedKey key, Holder<Instrument> handle) {
         this.key = key;
         this.handle = handle;
     }
 
     @Override
     public Instrument getHandle() {
+        return handle.value();
+    }
+
+    @Override
+    public Holder<Instrument> getHandleHolder() {
         return handle;
     }
 
     @NotNull
     @Override
     public NamespacedKey getKey() {
+        if (key == null) {
+            throw new IllegalStateException("Music instrument is not registered.");
+        }
+
         return key;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
 
-        if (!(other instanceof CraftMusicInstrument)) {
+        if (!(o instanceof CraftMusicInstrument other)) {
             return false;
         }
 
-        return getKey().equals(((MusicInstrument) other).getKey());
+        if (this.key != null && other.key != null) {
+            return this.key.equals(other.key);
+        }
+
+        return getHandle().equals(other.getHandle());
     }
 
     @Override
     public int hashCode() {
-        return getKey().hashCode();
+        if (key != null) {
+            return key.hashCode();
+        }
+
+        return getHandle().hashCode();
     }
 
     @Override
     public String toString() {
-        return "CraftMusicInstrument{key=" + key + "}";
+        return "CraftMusicInstrument{key=" + key + ", handle=" + handle + "}";
     }
 }
