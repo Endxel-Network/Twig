@@ -8,7 +8,6 @@
 +import com.mojang.datafixers.util.Pair;
 +import java.util.Arrays;
 +import java.util.concurrent.ExecutionException;
-+import java.util.concurrent.atomic.AtomicInteger;
 +import java.util.function.Function;
 +import net.minecraft.network.chat.OutgoingChatMessage;
 +import net.minecraft.network.protocol.game.PacketPlayOutAttachEntity;
@@ -25,6 +24,7 @@
 +import net.minecraft.world.level.RayTrace;
 +import net.minecraft.world.phys.MovingObjectPosition;
 +import org.bukkit.Location;
++import org.bukkit.block.Block;
 +import org.bukkit.craftbukkit.CraftInput;
 +import org.bukkit.craftbukkit.entity.CraftEntity;
 +import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -34,7 +34,6 @@
 +import org.bukkit.craftbukkit.inventory.CraftRecipe;
 +import org.bukkit.craftbukkit.util.CraftChatMessage;
 +import org.bukkit.craftbukkit.util.CraftLocation;
-+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 +import org.bukkit.craftbukkit.util.LazyPlayerSet;
 +import org.bukkit.craftbukkit.util.Waitable;
 +import org.bukkit.entity.Player;
@@ -67,6 +66,7 @@
 +import org.bukkit.inventory.EquipmentSlot;
 +import org.bukkit.inventory.InventoryView;
 +import org.bukkit.inventory.SmithingInventory;
++import org.bukkit.util.Vector;
 +// CraftBukkit end
 +
  public class PlayerConnection extends ServerCommonPacketListenerImpl implements PacketListenerPlayIn, ServerPlayerConnection, TickablePacketListener {
@@ -1064,7 +1064,7 @@
              this.disconnect((IChatBaseComponent) IChatBaseComponent.translatable("disconnect.spam"));
          }
  
-@@ -1601,7 +2235,33 @@
+@@ -1601,7 +2235,39 @@
      @Override
      public void handleAnimate(PacketPlayInArmAnimation packetplayinarmanimation) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinarmanimation, this, this.player.serverLevel());
@@ -1087,6 +1087,12 @@
 +        });
 +        if (result == null) {
 +            CraftEventFactory.callPlayerInteractEvent(this.player, Action.LEFT_CLICK_AIR, this.player.getInventory().getSelected(), EnumHand.MAIN_HAND);
++        } else if (this.player.gameMode.getGameModeForPlayer() == EnumGamemode.ADVENTURE) {
++            Block block = result.getHitBlock();
++            if (block != null) {
++                Vector hitPosition = result.getHitPosition().subtract(block.getLocation().toVector());
++                CraftEventFactory.callPlayerInteractEvent(this.player, Action.LEFT_CLICK_BLOCK, block, result.getHitBlockFace(), this.player.getInventory().getSelected(), true, EnumHand.MAIN_HAND, hitPosition);
++            }
 +        }
 +
 +        // Arm swing animation
@@ -1098,7 +1104,7 @@
          this.player.swing(packetplayinarmanimation.getHand());
      }
  
-@@ -1609,6 +2269,29 @@
+@@ -1609,6 +2275,29 @@
      public void handlePlayerCommand(PacketPlayInEntityAction packetplayinentityaction) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinentityaction, this, this.player.serverLevel());
          if (this.player.hasClientLoaded()) {
@@ -1128,7 +1134,7 @@
              this.player.resetLastActionTime();
              Entity entity;
              IJumpable ijumpable;
-@@ -1691,6 +2374,12 @@
+@@ -1691,6 +2380,12 @@
      }
  
      public void sendPlayerChatMessage(PlayerChatMessage playerchatmessage, ChatMessageType.a chatmessagetype_a) {
@@ -1141,7 +1147,7 @@
          this.send(new ClientboundPlayerChatPacket(playerchatmessage.link().sender(), playerchatmessage.link().index(), playerchatmessage.signature(), playerchatmessage.signedBody().pack(this.messageSignatureCache), playerchatmessage.unsignedContent(), playerchatmessage.filterMask(), chatmessagetype_a));
          this.addPendingMessage(playerchatmessage);
      }
-@@ -1718,6 +2407,7 @@
+@@ -1718,6 +2413,7 @@
      @Override
      public void handleInteract(PacketPlayInUseEntity packetplayinuseentity) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinuseentity, this, this.player.serverLevel());
@@ -1149,7 +1155,7 @@
          if (this.player.hasClientLoaded()) {
              final WorldServer worldserver = this.player.serverLevel();
              final Entity entity = packetplayinuseentity.getTarget(worldserver);
-@@ -1733,13 +2423,51 @@
+@@ -1733,13 +2429,51 @@
  
                  if (this.player.canInteractWithEntity(axisalignedbb, 3.0D)) {
                      packetplayinuseentity.dispatch(new PacketPlayInUseEntity.c() {
@@ -1202,7 +1208,7 @@
                                  if (enuminteractionresult instanceof EnumInteractionResult.d) {
                                      EnumInteractionResult.d enuminteractionresult_d = (EnumInteractionResult.d) enuminteractionresult;
                                      ItemStack itemstack2 = enuminteractionresult_d.wasItemInteraction() ? itemstack1 : ItemStack.EMPTY;
-@@ -1755,19 +2483,20 @@
+@@ -1755,19 +2489,20 @@
  
                          @Override
                          public void onInteraction(EnumHand enumhand) {
@@ -1226,7 +1232,7 @@
                                  label23:
                                  {
                                      if (entity instanceof EntityArrow) {
-@@ -1785,6 +2514,11 @@
+@@ -1785,6 +2520,11 @@
                                      }
  
                                      PlayerConnection.this.player.attack(entity);
@@ -1238,7 +1244,7 @@
                                      return;
                                  }
                              }
-@@ -1809,7 +2543,7 @@
+@@ -1809,7 +2549,7 @@
              case PERFORM_RESPAWN:
                  if (this.player.wonGame) {
                      this.player.wonGame = false;
@@ -1247,7 +1253,7 @@
                      this.resetPosition();
                      CriterionTriggers.CHANGED_DIMENSION.trigger(this.player, World.END, World.OVERWORLD);
                  } else {
-@@ -1817,11 +2551,11 @@
+@@ -1817,11 +2557,11 @@
                          return;
                      }
  
@@ -1261,7 +1267,7 @@
                      }
                  }
                  break;
-@@ -1834,15 +2568,21 @@
+@@ -1834,15 +2574,21 @@
      @Override
      public void handleContainerClose(PacketPlayInCloseWindow packetplayinclosewindow) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinclosewindow, this, this.player.serverLevel());
@@ -1285,7 +1291,7 @@
                  this.player.containerMenu.sendAllDataToRemote();
              } else if (!this.player.containerMenu.stillValid(this.player)) {
                  PlayerConnection.LOGGER.debug("Player {} interacted with invalid menu {}", this.player, this.player.containerMenu);
-@@ -1855,7 +2595,284 @@
+@@ -1855,7 +2601,284 @@
                      boolean flag = packetplayinwindowclick.getStateId() != this.player.containerMenu.getStateId();
  
                      this.player.containerMenu.suppressRemoteUpdates();
@@ -1571,7 +1577,7 @@
                      ObjectIterator objectiterator = Int2ObjectMaps.fastIterable(packetplayinwindowclick.getChangedSlots()).iterator();
  
                      while (objectiterator.hasNext()) {
-@@ -1901,7 +2918,21 @@
+@@ -1901,7 +2924,21 @@
                                  return;
                              }
  
@@ -1594,7 +1600,7 @@
  
                              if (containerrecipebook_a == ContainerRecipeBook.a.PLACE_GHOST_RECIPE) {
                                  this.player.connection.send(new PacketPlayOutAutoRecipe(this.player.containerMenu.containerId, craftingmanager_d.display().display()));
-@@ -1917,6 +2948,7 @@
+@@ -1917,6 +2954,7 @@
      @Override
      public void handleContainerButtonClick(PacketPlayInEnchantItem packetplayinenchantitem) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinenchantitem, this, this.player.serverLevel());
@@ -1602,7 +1608,7 @@
          this.player.resetLastActionTime();
          if (this.player.containerMenu.containerId == packetplayinenchantitem.containerId() && !this.player.isSpectator()) {
              if (!this.player.containerMenu.stillValid(this.player)) {
-@@ -1945,6 +2977,43 @@
+@@ -1945,6 +2983,43 @@
  
              boolean flag1 = packetplayinsetcreativeslot.slotNum() >= 1 && packetplayinsetcreativeslot.slotNum() <= 45;
              boolean flag2 = itemstack.isEmpty() || itemstack.getCount() <= itemstack.getMaxStackSize();
@@ -1646,7 +1652,7 @@
  
              if (flag1 && flag2) {
                  this.player.inventoryMenu.getSlot(packetplayinsetcreativeslot.slotNum()).setByPlayer(itemstack);
-@@ -1972,6 +3041,7 @@
+@@ -1972,6 +3047,7 @@
      }
  
      private void updateSignText(PacketPlayInUpdateSign packetplayinupdatesign, List<FilteredText> list) {
@@ -1654,7 +1660,7 @@
          this.player.resetLastActionTime();
          WorldServer worldserver = this.player.serverLevel();
          BlockPosition blockposition = packetplayinupdatesign.getPos();
-@@ -1993,7 +3063,17 @@
+@@ -1993,7 +3069,17 @@
      @Override
      public void handlePlayerAbilities(PacketPlayInAbilities packetplayinabilities) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinabilities, this, this.player.serverLevel());
@@ -1673,7 +1679,7 @@
      }
  
      @Override
-@@ -2058,7 +3138,7 @@
+@@ -2058,7 +3144,7 @@
          if (!this.waitingForSwitchToConfig) {
              throw new IllegalStateException("Client acknowledged config, but none was requested");
          } else {
@@ -1682,7 +1688,7 @@
          }
      }
  
-@@ -2083,8 +3163,10 @@
+@@ -2083,8 +3169,10 @@
          });
      }
  

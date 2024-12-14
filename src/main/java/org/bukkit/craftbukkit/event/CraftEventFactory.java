@@ -542,21 +542,24 @@ public class CraftEventFactory {
     }
 
     public static PlayerInteractEvent callPlayerInteractEvent(EntityHuman who, Action action, BlockPosition position, EnumDirection direction, ItemStack itemstack, boolean cancelledBlock, EnumHand hand, Vec3D targetPos) {
-        Player player = (who == null) ? null : (Player) who.getBukkitEntity();
-        CraftItemStack itemInHand = CraftItemStack.asCraftMirror(itemstack);
-
         Vector clickedPos = null;
         if (position != null && targetPos != null) {
             clickedPos = CraftVector.toBukkit(targetPos.subtract(Vec3D.atLowerCornerOf(position)));
         }
 
-        CraftWorld craftWorld = (CraftWorld) player.getWorld();
-        CraftServer craftServer = (CraftServer) player.getServer();
-
         Block blockClicked = null;
         if (position != null) {
-            blockClicked = craftWorld.getBlockAt(position.getX(), position.getY(), position.getZ());
-        } else {
+            blockClicked = CraftBlock.at(who.level(), position);
+        }
+
+        return callPlayerInteractEvent(who, action, blockClicked, CraftBlock.notchToBlockFace(direction), itemstack, cancelledBlock, hand, clickedPos);
+    }
+
+    public static PlayerInteractEvent callPlayerInteractEvent(EntityHuman who, Action action, Block blockClicked, BlockFace blockFace, ItemStack itemstack, boolean cancelledBlock, EnumHand hand, Vector clickedPos) {
+        Player player = (Player) who.getBukkitEntity();
+        CraftItemStack itemInHand = CraftItemStack.asCraftMirror(itemstack);
+
+        if (blockClicked == null) {
             switch (action) {
                 case LEFT_CLICK_BLOCK:
                     action = Action.LEFT_CLICK_AIR;
@@ -566,7 +569,6 @@ public class CraftEventFactory {
                     break;
             }
         }
-        BlockFace blockFace = CraftBlock.notchToBlockFace(direction);
 
         if (itemInHand.getType() == Material.AIR || itemInHand.getAmount() == 0) {
             itemInHand = null;
@@ -576,7 +578,7 @@ public class CraftEventFactory {
         if (cancelledBlock) {
             event.setUseInteractedBlock(Event.Result.DENY);
         }
-        craftServer.getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
 
         return event;
     }
