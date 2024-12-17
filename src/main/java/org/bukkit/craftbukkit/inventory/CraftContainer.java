@@ -127,7 +127,7 @@ public class CraftContainer extends Container {
                 if (menu == null) {
                     return Containers.GENERIC_9x3;
                 } else {
-                    return ((CraftMenuType<?>) menu).getHandle();
+                    return ((CraftMenuType<?, ?>) menu).getHandle();
                 }
         }
     }

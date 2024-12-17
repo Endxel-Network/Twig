@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/ContainerShulkerBox.java
 +++ b/net/minecraft/world/inventory/ContainerShulkerBox.java
-@@ -6,10 +6,29 @@
+@@ -6,10 +6,34 @@
  import net.minecraft.world.entity.player.PlayerInventory;
  import net.minecraft.world.item.ItemStack;
  
@@ -26,19 +26,26 @@
 +        bukkitEntity = new CraftInventoryView(this.player.player.getBukkitEntity(), new CraftInventory(this.container), this);
 +        return bukkitEntity;
 +    }
++
++    @Override
++    public void startOpen() {
++        container.startOpen(player.player);
++    }
 +    // CraftBukkit end
  
      public ContainerShulkerBox(int i, PlayerInventory playerinventory) {
          this(i, playerinventory, new InventorySubcontainer(27));
-@@ -19,6 +38,7 @@
+@@ -19,7 +43,8 @@
          super(Containers.SHULKER_BOX, i);
          checkContainerSize(iinventory, 27);
          this.container = iinventory;
+-        iinventory.startOpen(playerinventory.player);
 +        this.player = playerinventory; // CraftBukkit - save player
-         iinventory.startOpen(playerinventory.player);
++        // iinventory.startOpen(playerinventory.player); // CraftBukkit - don't startOpen until menu actually opens
          boolean flag = true;
          boolean flag1 = true;
-@@ -34,6 +54,7 @@
+ 
+@@ -34,6 +59,7 @@
  
      @Override
      public boolean stillValid(EntityHuman entityhuman) {

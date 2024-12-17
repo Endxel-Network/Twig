@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EnumMainHand;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.entity.projectile.EntityFireworks;
 import net.minecraft.world.inventory.Container;
+import net.minecraft.world.inventory.ContainerMerchant;
 import net.minecraft.world.inventory.Containers;
 import net.minecraft.world.item.ItemCooldown;
 import net.minecraft.world.item.crafting.CraftingManager;
@@ -49,6 +50,7 @@ import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.inventory.CraftMerchantCustom;
 import org.bukkit.craftbukkit.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.inventory.util.CraftMenus;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Firework;
@@ -403,6 +405,11 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
         // Now open the window
         Containers<?> windowType = CraftContainer.getNotchInventoryType(inventory.getTopInventory());
+        // we can open these now delegeate for now
+        if (windowType == Containers.MERCHANT) {
+            CraftMenus.openMerchantMenu(player, (ContainerMerchant) container);
+            return;
+        }
         String title = inventory.getTitle();
         player.connection.send(new PacketPlayOutOpenWindow(container.containerId, windowType, CraftChatMessage.fromString(title)[0]));
         player.containerMenu = container;

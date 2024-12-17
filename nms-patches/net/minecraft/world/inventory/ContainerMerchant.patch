@@ -37,7 +37,15 @@
          this.addStandardInventorySlots(playerinventory, 108, 84);
      }
  
-@@ -143,7 +159,7 @@
+@@ -62,6 +78,7 @@
+ 
+     @Override
+     public boolean stillValid(EntityHuman entityhuman) {
++        if (!checkReachable) return true; // CraftBukkit - checkReachable
+         return this.trader.stillValid(entityhuman);
+     }
+ 
+@@ -143,7 +160,7 @@
      }
  
      private void playTradeSound() {
