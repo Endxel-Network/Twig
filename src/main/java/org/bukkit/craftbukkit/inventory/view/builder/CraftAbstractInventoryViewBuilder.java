@@ -9,7 +9,6 @@ import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.view.builder.InventoryViewBuilder;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class CraftAbstractInventoryViewBuilder<V extends InventoryView> implements InventoryViewBuilder<V> {
 
@@ -22,9 +21,8 @@ public abstract class CraftAbstractInventoryViewBuilder<V extends InventoryView>
         this.handle = handle;
     }
 
-    @NotNull
     @Override
-    public InventoryViewBuilder<V> title(@NotNull final String title) {
+    public InventoryViewBuilder<V> title(final String title) {
         this.title = title;
         return this;
     }

@@ -14,7 +14,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.view.builder.MerchantInventoryViewBuilder;
-import org.jetbrains.annotations.NotNull;
 
 public class CraftMerchantInventoryViewBuilder<V extends InventoryView> extends CraftAbstractInventoryViewBuilder<V> implements MerchantInventoryViewBuilder<V> {
 
@@ -25,12 +24,16 @@ public class CraftMerchantInventoryViewBuilder<V extends InventoryView> extends 
     }
 
     @Override
+    public MerchantInventoryViewBuilder<V> title(final String title) {
+        return (MerchantInventoryViewBuilder<V>) super.title(title);
+    }
+
+    @Override
     public MerchantInventoryViewBuilder<V> merchant(final Merchant merchant) {
         this.merchant = ((CraftMerchant) merchant).getMerchant();
         return this;
     }
 
-    @NotNull
     @Override
     public MerchantInventoryViewBuilder<V> checkReachable(final boolean checkReachable) {
         super.checkReachable = checkReachable;

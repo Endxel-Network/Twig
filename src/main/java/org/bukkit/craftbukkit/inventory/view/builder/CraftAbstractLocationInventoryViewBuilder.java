@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CraftAbstractLocationInventoryViewBuilder<V extends InventoryView> extends CraftAbstractInventoryViewBuilder<V> implements LocationInventoryViewBuilder<V> {
 
@@ -17,6 +18,16 @@ public abstract class CraftAbstractLocationInventoryViewBuilder<V extends Invent
 
     public CraftAbstractLocationInventoryViewBuilder(final Containers<?> handle) {
         super(handle);
+    }
+
+    @Override
+    public LocationInventoryViewBuilder<V> title(@NotNull final String title) {
+        return (LocationInventoryViewBuilder<V>) super.title(title);
+    }
+
+    @Override
+    public LocationInventoryViewBuilder<V> copy() {
+        throw new UnsupportedOperationException("copy is not implemented on CraftAbstractLocationInventoryViewBuilder");
     }
 
     @Override
