@@ -17,7 +17,7 @@ public abstract class CraftAbstractWindCharge extends CraftFireball implements A
 
     @Override
     public net.minecraft.world.entity.projectile.windcharge.AbstractWindCharge getHandle() {
-        return (net.minecraft.world.entity.projectile.windcharge.AbstractWindCharge) this.entity;
+        return (net.minecraft.world.entity.projectile.windcharge.AbstractWindCharge) super.getHandle();
     }
 
     @Override

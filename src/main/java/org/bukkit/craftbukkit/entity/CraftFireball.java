@@ -9,7 +9,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-public class CraftFireball extends AbstractProjectile implements Fireball {
+public class CraftFireball extends CraftProjectile implements Fireball {
     public CraftFireball(CraftServer server, EntityFireball entity) {
         super(server, entity);
     }

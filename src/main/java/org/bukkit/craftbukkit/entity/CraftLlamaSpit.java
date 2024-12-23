@@ -5,7 +5,7 @@ import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.LlamaSpit;
 import org.bukkit.projectiles.ProjectileSource;
 
-public class CraftLlamaSpit extends AbstractProjectile implements LlamaSpit {
+public class CraftLlamaSpit extends CraftProjectile implements LlamaSpit {
 
     public CraftLlamaSpit(CraftServer server, EntityLlamaSpit entity) {
         super(server, entity);

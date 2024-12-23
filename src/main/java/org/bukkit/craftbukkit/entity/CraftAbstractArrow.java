@@ -12,7 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
-public class CraftAbstractArrow extends AbstractProjectile implements AbstractArrow {
+public class CraftAbstractArrow extends CraftProjectile implements AbstractArrow {
 
     public CraftAbstractArrow(CraftServer server, EntityArrow entity) {
         super(server, entity);

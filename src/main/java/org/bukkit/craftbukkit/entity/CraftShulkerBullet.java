@@ -7,7 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ShulkerBullet;
 import org.bukkit.projectiles.ProjectileSource;
 
-public class CraftShulkerBullet extends AbstractProjectile implements ShulkerBullet {
+public class CraftShulkerBullet extends CraftProjectile implements ShulkerBullet {
 
     public CraftShulkerBullet(CraftServer server, EntityShulkerBullet entity) {
         super(server, entity);
