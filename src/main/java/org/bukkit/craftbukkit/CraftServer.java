@@ -2081,6 +2081,11 @@ public final class CraftServer implements Server {
     }
 
     @Override
+    public Merchant createMerchant() {
+        return new CraftMerchantCustom(""); // if opened with the old methods title won't render, but will be empty.
+    }
+
+    @Override
     public int getMaxChainedNeighborUpdates() {
         return this.getServer().getMaxChainedNeighborUpdates();
     }

@@ -58,6 +58,11 @@ public final class CraftMenus {
         if (minecraftMerchant instanceof EntityVillager villager) {
             level = villager.getVillagerData().getLevel();
         }
+
+        if (minecraftMerchant.getTradingPlayer() != null) { // merchant's can only have one trader
+            minecraftMerchant.getTradingPlayer().closeContainer();
+        }
+
         minecraftMerchant.setTradingPlayer(player);
 
         player.connection.send(new PacketPlayOutOpenWindow(merchant.containerId, Containers.MERCHANT, merchant.getTitle()));
