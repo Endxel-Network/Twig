@@ -70,18 +70,19 @@
              @Nullable
              @Override
              public <T> T get(DataComponentType<T> datacomponenttype) {
-@@ -287,6 +317,10 @@
+@@ -287,6 +317,11 @@
          DataComponentPatch datacomponentpatch1 = datacomponentpatch.forget(set::contains);
  
          this.components = datacomponentpatch1.split().added();
 +        // CraftBukkit start
 +        set.remove(DataComponents.BLOCK_ENTITY_DATA); // Remove as never actually added by applyImplicitComponents
++        set.remove(DataComponents.BLOCK_STATE); // Remove as never actually added by applyImplicitComponents
 +        return set;
 +        // CraftBukkit end
      }
  
      protected void collectImplicitComponents(DataComponentMap.a datacomponentmap_a) {}
-@@ -321,6 +355,15 @@
+@@ -321,6 +356,15 @@
          }
      }
  
