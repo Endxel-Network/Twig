@@ -16,7 +16,7 @@
  public class IChunkLoader implements AutoCloseable {
  
      public static final int LAST_MONOLYTH_STRUCTURE_DATA_VERSION = 1493;
-@@ -39,13 +48,57 @@
+@@ -39,13 +48,56 @@
          return this.worker.isOldChunkAround(chunkcoordintpair, i);
      }
  
@@ -25,7 +25,6 @@
 +    private boolean check(ChunkProviderServer cps, int x, int z) {
 +        ChunkCoordIntPair pos = new ChunkCoordIntPair(x, z);
 +        if (cps != null) {
-+            com.google.common.base.Preconditions.checkState(org.bukkit.Bukkit.isPrimaryThread(), "primary thread");
 +            if (cps.hasChunk(x, z)) {
 +                return true;
 +            }
@@ -75,7 +74,7 @@
                  if (i < 1493) {
                      nbttagcompound = DataFixTypes.CHUNK.update(this.fixerUpper, nbttagcompound, i, 1493);
                      if (nbttagcompound.getCompound("Level").getBoolean("hasLegacyStructureData")) {
-@@ -70,7 +123,7 @@
+@@ -70,7 +122,7 @@
          }
      }
  
@@ -84,7 +83,7 @@
          PersistentStructureLegacy persistentstructurelegacy = this.legacyStructureHandler;
  
          if (persistentstructurelegacy == null) {
-@@ -85,7 +138,7 @@
+@@ -85,7 +137,7 @@
          return persistentstructurelegacy;
      }
  
