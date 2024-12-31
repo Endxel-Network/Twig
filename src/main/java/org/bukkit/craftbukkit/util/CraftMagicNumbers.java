@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.SharedConstants;
@@ -32,6 +33,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataConverterRegistry;
 import net.minecraft.util.datafix.fixes.DataConverterTypes;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.ai.village.ReputationEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.PotionRegistry;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +58,7 @@ import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.damage.CraftDamageEffect;
 import org.bukkit.craftbukkit.damage.CraftDamageSourceBuilder;
+import org.bukkit.craftbukkit.entity.CraftVillager;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.legacy.CraftLegacy;
 import org.bukkit.craftbukkit.legacy.FieldRename;
@@ -65,6 +68,7 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.CreativeCategory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -420,6 +424,18 @@ public final class CraftMagicNumbers implements UnsafeValues {
         }
 
         return customBiome;
+    }
+
+    @Override
+    public Villager.ReputationType createReputationType(String key) {
+        return Optional.ofNullable(CraftVillager.CraftReputationType.BY_ID.get(key))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid ReputationType key: " + key));
+    }
+
+    @Override
+    public Villager.ReputationEvent createReputationEvent(String key) {
+        return Optional.ofNullable(ReputationEvent.BY_ID.get(key)).map(CraftVillager.CraftReputationEvent::new)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid ReputationEvent key: " + key));
     }
 
     /**

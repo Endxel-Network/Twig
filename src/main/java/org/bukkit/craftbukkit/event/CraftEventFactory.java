@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -220,6 +221,7 @@ import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.entity.StriderTemperatureChangeEvent;
 import org.bukkit.event.entity.TrialSpawnerSpawnEvent;
 import org.bukkit.event.entity.VillagerCareerChangeEvent;
+import org.bukkit.event.entity.VillagerReputationChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -1927,5 +1929,12 @@ public class CraftEventFactory {
         }
 
         Bukkit.getPluginManager().callEvent(new EntityRemoveEvent(entity.getBukkitEntity(), cause));
+    }
+
+    public static VillagerReputationChangeEvent callVillagerReputationChangeEvent(Villager villager, UUID targetUuid, Villager.ReputationEvent reason, Villager.ReputationType reputationType, int oldValue, int newValue, int maxValue) {
+        VillagerReputationChangeEvent event = new VillagerReputationChangeEvent(villager, targetUuid, reason, reputationType, oldValue, newValue, maxValue);
+
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
     }
 }

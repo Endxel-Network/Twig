@@ -16,7 +16,28 @@
  public class EntityVillager extends EntityVillagerAbstract implements ReputationHandler, VillagerDataHolder {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -150,7 +159,7 @@
+@@ -133,6 +142,9 @@
+     }, MemoryModuleType.MEETING_POINT, (entityvillager, holder) -> {
+         return holder.is(PoiTypes.MEETING);
+     });
++    // CraftBukkit start
++    public long gossipDecayInterval = GOSSIP_DECAY_INTERVAL;
++    // CraftBukkit end
+ 
+     public EntityVillager(EntityTypes<? extends EntityVillager> entitytypes, World world) {
+         this(entitytypes, world, VillagerType.PLAINS);
+@@ -140,7 +152,9 @@
+ 
+     public EntityVillager(EntityTypes<? extends EntityVillager> entitytypes, World world, VillagerType villagertype) {
+         super(entitytypes, world);
+-        this.gossips = new Reputation();
++        // CraftBukkit start - add constructor parameter in Reputation
++        this.gossips = new Reputation(this);
++        // CraftBukkit end
+         ((Navigation) this.getNavigation()).setCanOpenDoors(true);
+         this.getNavigation().setCanFloat(true);
+         this.getNavigation().setRequiredPathLength(48.0F);
+@@ -150,7 +164,7 @@
  
      @Override
      public BehaviorController<EntityVillager> getBrain() {
@@ -25,7 +46,7 @@
      }
  
      @Override
-@@ -235,7 +244,7 @@
+@@ -235,7 +249,7 @@
                      this.increaseProfessionLevelOnUpdate = false;
                  }
  
@@ -34,7 +55,7 @@
              }
          }
  
-@@ -360,7 +369,13 @@
+@@ -360,7 +374,13 @@
          while (iterator.hasNext()) {
              MerchantRecipe merchantrecipe = (MerchantRecipe) iterator.next();
  
@@ -49,7 +70,7 @@
          }
  
          this.resendOffersToTradingPlayer();
-@@ -429,7 +444,13 @@
+@@ -429,7 +449,13 @@
              while (iterator.hasNext()) {
                  MerchantRecipe merchantrecipe = (MerchantRecipe) iterator.next();
  
@@ -64,7 +85,7 @@
              }
          }
  
-@@ -489,7 +510,7 @@
+@@ -489,7 +515,7 @@
      @Override
      public void addAdditionalSaveData(NBTTagCompound nbttagcompound) {
          super.addAdditionalSaveData(nbttagcompound);
@@ -73,7 +94,7 @@
          Logger logger = EntityVillager.LOGGER;
  
          Objects.requireNonNull(logger);
-@@ -512,7 +533,7 @@
+@@ -512,7 +538,7 @@
      public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
          super.readAdditionalSaveData(nbttagcompound);
          if (nbttagcompound.contains("VillagerData", 10)) {
@@ -82,7 +103,7 @@
              Logger logger = EntityVillager.LOGGER;
  
              Objects.requireNonNull(logger);
-@@ -808,7 +829,7 @@
+@@ -808,7 +834,7 @@
                  entitywitch1.finalizeSpawn(worldserver, worldserver.getCurrentDifficultyAt(entitywitch1.blockPosition()), EntitySpawnReason.CONVERSION, (GroupDataEntity) null);
                  entitywitch1.setPersistenceRequired();
                  this.releaseAllPois();
@@ -91,7 +112,16 @@
  
              if (entitywitch == null) {
                  super.thunderHit(worldserver, entitylightning);
-@@ -906,7 +927,7 @@
+@@ -891,7 +917,7 @@
+ 
+         if (this.lastGossipDecayTime == 0L) {
+             this.lastGossipDecayTime = i;
+-        } else if (i >= this.lastGossipDecayTime + 24000L) {
++        } else if (i >= this.lastGossipDecayTime + gossipDecayInterval) { // CraftBukkit - use variable for decay interval
+             this.gossips.decay();
+             this.lastGossipDecayTime = i;
+         }
+@@ -906,7 +932,7 @@
              }).limit(5L).toList();
  
              if (list1.size() >= j) {
@@ -100,7 +130,31 @@
                      list.forEach(SensorGolemLastSeen::golemDetected);
                  }
              }
-@@ -963,7 +984,7 @@
+@@ -919,15 +945,18 @@
+ 
+     @Override
+     public void onReputationEventFrom(ReputationEvent reputationevent, Entity entity) {
++        Villager.ReputationEvent bukkitReputationEvent = org.bukkit.craftbukkit.entity.CraftVillager.CraftReputationEvent.minecraftToBukkit(reputationevent); // CraftBukkit - convert event to bukkit
+         if (reputationevent == ReputationEvent.ZOMBIE_VILLAGER_CURED) {
+-            this.gossips.add(entity.getUUID(), ReputationType.MAJOR_POSITIVE, 20);
+-            this.gossips.add(entity.getUUID(), ReputationType.MINOR_POSITIVE, 25);
++            // CraftBukkit start - add change reason parameter
++            this.gossips.add(entity.getUUID(), ReputationType.MAJOR_POSITIVE, 20, bukkitReputationEvent);
++            this.gossips.add(entity.getUUID(), ReputationType.MINOR_POSITIVE, 25, bukkitReputationEvent);
++            // CraftBukkit end
+         } else if (reputationevent == ReputationEvent.TRADE) {
+-            this.gossips.add(entity.getUUID(), ReputationType.TRADING, 2);
++            this.gossips.add(entity.getUUID(), ReputationType.TRADING, 2, bukkitReputationEvent); // CraftBukkit - add change reason parameter
+         } else if (reputationevent == ReputationEvent.VILLAGER_HURT) {
+-            this.gossips.add(entity.getUUID(), ReputationType.MINOR_NEGATIVE, 25);
++            this.gossips.add(entity.getUUID(), ReputationType.MINOR_NEGATIVE, 25, bukkitReputationEvent); // CraftBukkit - add change reason parameter
+         } else if (reputationevent == ReputationEvent.VILLAGER_KILLED) {
+-            this.gossips.add(entity.getUUID(), ReputationType.MAJOR_NEGATIVE, 25);
++            this.gossips.add(entity.getUUID(), ReputationType.MAJOR_NEGATIVE, 25, bukkitReputationEvent); // CraftBukkit - add change reason parameter
+         }
+ 
+     }
+@@ -963,7 +992,7 @@
      @Override
      public void startSleeping(BlockPosition blockposition) {
          super.startSleeping(blockposition);
@@ -109,7 +163,7 @@
          this.brain.eraseMemory(MemoryModuleType.WALK_TARGET);
          this.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
      }
-@@ -971,7 +992,7 @@
+@@ -971,7 +1000,7 @@
      @Override
      public void stopSleeping() {
          super.stopSleeping();

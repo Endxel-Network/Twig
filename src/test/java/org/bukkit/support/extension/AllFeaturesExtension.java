@@ -10,6 +10,7 @@ import org.bukkit.Keyed;
 import org.bukkit.Registry;
 import org.bukkit.Server;
 import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.support.DummyServerHelper;
 import org.bukkit.support.RegistryHelper;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -55,6 +56,9 @@ public class AllFeaturesExtension extends BaseExtension {
 
                     return spy;
                 });
+
+        PluginManager pluginManager = mock(withSettings().stubOnly());
+        when(server.getPluginManager()).thenReturn(pluginManager);
 
         CraftRegistry.setMinecraftRegistry(RegistryHelper.getRegistry());
     }
