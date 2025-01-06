@@ -153,7 +153,7 @@
  
                      slot.setChanged();
 +                    // CraftBukkit start - Make sure the client has the right slot contents
-+                    if (entityhuman instanceof EntityPlayer && slot.getMaxStackSize() != 64) {
++                    if (entityhuman instanceof EntityPlayer && slot.getMaxStackSize() != IInventory.MAX_STACK) {
 +                        ((EntityPlayer) entityhuman).connection.send(new PacketPlayOutSetSlot(this.containerId, this.incrementStateId(), slot.index, slot.getItem()));
 +                        // Updating a crafting inventory makes the client reset the result slot, have to send it again
 +                        if (this.getBukkitView().getType() == InventoryType.WORKBENCH || this.getBukkitView().getType() == InventoryType.CRAFTING) {
