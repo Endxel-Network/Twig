@@ -8,10 +8,10 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import org.bukkit.JukeboxSong;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.craftbukkit.util.Handleable;
+import org.bukkit.craftbukkit.registry.CraftRegistryItem;
 import org.jetbrains.annotations.NotNull;
 
-public class CraftJukeboxSong implements JukeboxSong, Handleable<net.minecraft.world.item.JukeboxSong> {
+public class CraftJukeboxSong extends CraftRegistryItem<net.minecraft.world.item.JukeboxSong> implements JukeboxSong {
 
     public static JukeboxSong minecraftToBukkit(net.minecraft.world.item.JukeboxSong minecraft) {
         return CraftRegistry.minecraftToBukkit(minecraft, Registries.JUKEBOX_SONG, Registry.JUKEBOX_SONG);
@@ -38,28 +38,19 @@ public class CraftJukeboxSong implements JukeboxSong, Handleable<net.minecraft.w
                 + ", this can happen if a plugin creates its own trim pattern without properly registering it.");
     }
 
-    private final NamespacedKey key;
-    private final net.minecraft.world.item.JukeboxSong handle;
-
-    public CraftJukeboxSong(NamespacedKey key, net.minecraft.world.item.JukeboxSong handle) {
-        this.key = key;
-        this.handle = handle;
-    }
-
-    @Override
-    public net.minecraft.world.item.JukeboxSong getHandle() {
-        return handle;
+    public CraftJukeboxSong(NamespacedKey key, Holder<net.minecraft.world.item.JukeboxSong> handle) {
+        super(key, handle);
     }
 
     @Override
     @NotNull
     public NamespacedKey getKey() {
-        return key;
+        return getKeyOrThrow();
     }
 
     @NotNull
     @Override
     public String getTranslationKey() {
-        return ((TranslatableContents) handle.description().getContents()).getKey();
+        return ((TranslatableContents) getHandle().description().getContents()).getKey();
     }
 }

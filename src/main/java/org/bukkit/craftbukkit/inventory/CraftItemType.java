@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
@@ -26,8 +27,8 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.attribute.CraftAttribute;
 import org.bukkit.craftbukkit.attribute.CraftAttributeInstance;
 import org.bukkit.craftbukkit.block.CraftBlockType;
+import org.bukkit.craftbukkit.registry.CraftRegistryItem;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.util.Handleable;
 import org.bukkit.inventory.CreativeCategory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -36,10 +37,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Handleable<Item> {
+public class CraftItemType<M extends ItemMeta> extends CraftRegistryItem<Item> implements ItemType.Typed<M> {
 
-    private final NamespacedKey key;
-    private final Item item;
     private final Supplier<CraftItemMetas.ItemMetaData<M>> itemMetaData;
 
     public static Material minecraftToBukkit(Item item) {
@@ -58,9 +57,8 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
         return CraftRegistry.bukkitToMinecraft(bukkit);
     }
 
-    public CraftItemType(NamespacedKey key, Item item) {
-        this.key = key;
-        this.item = item;
+    public CraftItemType(NamespacedKey key, Holder<Item> handle) {
+        super(key, handle);
         this.itemMetaData = Suppliers.memoize(() -> CraftItemMetas.getItemMetaData(this));
     }
 
@@ -76,7 +74,7 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
     public <Other extends ItemMeta> Typed<Other> typed(@NotNull final Class<Other> itemMetaType) {
         if (itemMetaType.isAssignableFrom(this.itemMetaData.get().metaClass())) return (Typed<Other>) this;
 
-        throw new IllegalArgumentException("Cannot type item type " + this.key.toString() + " to meta type " + itemMetaType.getSimpleName());
+        throw new IllegalArgumentException("Cannot type item type " + (isRegistered() ? getKeyOrThrow() : toString()) + " to meta type " + itemMetaType.getSimpleName());
     }
 
     @NotNull
@@ -109,11 +107,6 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
         return itemStack;
     }
 
-    @Override
-    public Item getHandle() {
-        return item;
-    }
-
     public M getItemMeta(net.minecraft.world.item.ItemStack itemStack) {
         return itemMetaData.get().fromItemStack().apply(itemStack);
     }
@@ -124,14 +117,14 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
 
     @Override
     public boolean hasBlockType() {
-        return item instanceof ItemBlock;
+        return getHandle() instanceof ItemBlock;
     }
 
     @NotNull
     @Override
     public BlockType getBlockType() {
-        if (!(item instanceof ItemBlock block)) {
-            throw new IllegalStateException("The item type " + getKey() + " has no corresponding block type");
+        if (!(getHandle() instanceof ItemBlock block)) {
+            throw new IllegalStateException("The item type " + (isRegistered() ? getKeyOrThrow() : toString()) + " has no corresponding block type");
         }
 
         return CraftBlockType.minecraftToBukkitNew(block.getBlock());
@@ -152,43 +145,43 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
         if (this == AIR) {
             return 0;
         }
-        return item.components().getOrDefault(DataComponents.MAX_STACK_SIZE, 64);
+        return getHandle().components().getOrDefault(DataComponents.MAX_STACK_SIZE, 64);
     }
 
     @Override
     public short getMaxDurability() {
-        return item.components().getOrDefault(DataComponents.MAX_DAMAGE, 0).shortValue();
+        return getHandle().components().getOrDefault(DataComponents.MAX_DAMAGE, 0).shortValue();
     }
 
     @Override
     public boolean isEdible() {
-        return item.components().has(DataComponents.FOOD);
+        return getHandle().components().has(DataComponents.FOOD);
     }
 
     @Override
     public boolean isRecord() {
-        return item.components().has(DataComponents.JUKEBOX_PLAYABLE);
+        return getHandle().components().has(DataComponents.JUKEBOX_PLAYABLE);
     }
 
     @Override
     public boolean isFuel() {
-        return MinecraftServer.getServer().fuelValues().isFuel(new net.minecraft.world.item.ItemStack(item));
+        return MinecraftServer.getServer().fuelValues().isFuel(new net.minecraft.world.item.ItemStack(getHandle()));
     }
 
     @Override
     public boolean isCompostable() {
-        return BlockComposter.COMPOSTABLES.containsKey(item);
+        return BlockComposter.COMPOSTABLES.containsKey(getHandle());
     }
 
     @Override
     public float getCompostChance() {
-        Preconditions.checkArgument(isCompostable(), "The item type " + getKey() + " is not compostable");
-        return BlockComposter.COMPOSTABLES.getFloat(item);
+        Preconditions.checkArgument(isCompostable(), "The item type " + (isRegistered() ? getKeyOrThrow() : toString()) + " is not compostable");
+        return BlockComposter.COMPOSTABLES.getFloat(getHandle());
     }
 
     @Override
     public ItemType getCraftingRemainingItem() {
-        net.minecraft.world.item.ItemStack expectedItem = item.getCraftingRemainder();
+        net.minecraft.world.item.ItemStack expectedItem = getHandle().getCraftingRemainder();
         return expectedItem.isEmpty() ? null : minecraftToBukkitNew(expectedItem.getItem());
     }
 
@@ -201,7 +194,7 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> defaultAttributes = ImmutableMultimap.builder();
 
-        ItemAttributeModifiers nmsDefaultAttributes = item.components().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        ItemAttributeModifiers nmsDefaultAttributes = getHandle().components().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
 
         nmsDefaultAttributes.forEach(CraftEquipmentSlot.getNMS(slot), (key, value) -> {
             Attribute attribute = CraftAttribute.minecraftToBukkit(key.value());
@@ -225,16 +218,16 @@ public class CraftItemType<M extends ItemMeta> implements ItemType.Typed<M>, Han
     @NotNull
     @Override
     public String getTranslationKey() {
-        return item.getDescriptionId();
+        return getHandle().getDescriptionId();
     }
 
     @Override
     public NamespacedKey getKey() {
-        return key;
+        return getKeyOrThrow();
     }
 
     @Override
     public Material asMaterial() {
-        return Registry.MATERIAL.get(this.key);
+        return Registry.MATERIAL.get(getKeyOrThrow());
     }
 }

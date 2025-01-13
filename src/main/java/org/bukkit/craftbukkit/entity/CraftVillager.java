@@ -2,13 +2,13 @@ package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPosition;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.ai.gossip.ReputationType;
 import net.minecraft.world.entity.monster.EntityZombie;
@@ -23,6 +23,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.registry.CraftOldEnumRegistryItem;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.craftbukkit.util.Handleable;
 import org.bukkit.entity.Villager;
@@ -208,7 +209,7 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
         return getHandle().gossipDecayInterval;
     }
 
-    public static class CraftType implements Type, Handleable<VillagerType> {
+    public static class CraftType extends CraftOldEnumRegistryItem<Type, VillagerType> implements Type {
         private static int count = 0;
 
         public static Type minecraftToBukkit(VillagerType minecraft) {
@@ -219,77 +220,17 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
             return CraftRegistry.bukkitToMinecraft(bukkit);
         }
 
-        private final NamespacedKey key;
-        private final VillagerType villagerType;
-        private final String name;
-        private final int ordinal;
-
-        public CraftType(NamespacedKey key, VillagerType villagerType) {
-            this.key = key;
-            this.villagerType = villagerType;
-            // For backwards compatibility, minecraft values will still return the uppercase name without the namespace,
-            // in case plugins use for example the name as key in a config file to receive type specific values.
-            // Custom types will return the key with namespace. For a plugin this should look than like a new type
-            // (which can always be added in new minecraft versions and the plugin should therefore handle it accordingly).
-            if (NamespacedKey.MINECRAFT.equals(key.getNamespace())) {
-                this.name = key.getKey().toUpperCase(Locale.ROOT);
-            } else {
-                this.name = key.toString();
-            }
-            this.ordinal = count++;
-        }
-
-        @Override
-        public VillagerType getHandle() {
-            return villagerType;
+        public CraftType(NamespacedKey key, Holder<VillagerType> handle) {
+            super(key, handle, count++);
         }
 
         @Override
         public NamespacedKey getKey() {
-            return key;
-        }
-
-        @Override
-        public int compareTo(Type type) {
-            return ordinal - type.ordinal();
-        }
-
-        @Override
-        public String name() {
-            return name;
-        }
-
-        @Override
-        public int ordinal() {
-            return ordinal;
-        }
-
-        @Override
-        public String toString() {
-            // For backwards compatibility
-            return name();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (this == other) {
-                return true;
-            }
-
-            if (!(other instanceof CraftType)) {
-                return false;
-            }
-
-            return getKey().equals(((Type) other).getKey());
-        }
-
-        @Override
-        public int hashCode() {
-            return getKey().hashCode();
+            return getKeyOrThrow();
         }
     }
 
-    public static class CraftProfession implements Profession, Handleable<VillagerProfession> {
+    public static class CraftProfession extends CraftOldEnumRegistryItem<Profession, VillagerProfession> implements Profession {
         private static int count = 0;
 
         public static Profession minecraftToBukkit(VillagerProfession minecraft) {
@@ -300,73 +241,13 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
             return CraftRegistry.bukkitToMinecraft(bukkit);
         }
 
-        private final NamespacedKey key;
-        private final VillagerProfession villagerProfession;
-        private final String name;
-        private final int ordinal;
-
-        public CraftProfession(NamespacedKey key, VillagerProfession villagerProfession) {
-            this.key = key;
-            this.villagerProfession = villagerProfession;
-            // For backwards compatibility, minecraft values will still return the uppercase name without the namespace,
-            // in case plugins use for example the name as key in a config file to receive profession specific values.
-            // Custom professions will return the key with namespace. For a plugin this should look than like a new profession
-            // (which can always be added in new minecraft versions and the plugin should therefore handle it accordingly).
-            if (NamespacedKey.MINECRAFT.equals(key.getNamespace())) {
-                this.name = key.getKey().toUpperCase(Locale.ROOT);
-            } else {
-                this.name = key.toString();
-            }
-            this.ordinal = count++;
-        }
-
-        @Override
-        public VillagerProfession getHandle() {
-            return villagerProfession;
+        public CraftProfession(NamespacedKey key, Holder<VillagerProfession> handle) {
+            super(key, handle, count++);
         }
 
         @Override
         public NamespacedKey getKey() {
-            return key;
-        }
-
-        @Override
-        public int compareTo(Profession profession) {
-            return ordinal - profession.ordinal();
-        }
-
-        @Override
-        public String name() {
-            return name;
-        }
-
-        @Override
-        public int ordinal() {
-            return ordinal;
-        }
-
-        @Override
-        public String toString() {
-            // For backwards compatibility
-            return name();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (this == other) {
-                return true;
-            }
-
-            if (!(other instanceof CraftProfession)) {
-                return false;
-            }
-
-            return getKey().equals(((Profession) other).getKey());
-        }
-
-        @Override
-        public int hashCode() {
-            return getKey().hashCode();
+            return getKeyOrThrow();
         }
     }
 

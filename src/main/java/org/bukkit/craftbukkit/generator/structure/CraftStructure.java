@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.generator.structure;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +10,8 @@ import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.util.Handleable;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.generator.structure.StructureType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CraftStructure extends Structure implements Handleable<net.minecraft.world.level.levelgen.structure.Structure> {
 
@@ -42,6 +45,24 @@ public class CraftStructure extends Structure implements Handleable<net.minecraf
 
     @Override
     public NamespacedKey getKey() {
-        return key;
+        return getKeyOrThrow();
+    }
+
+    @NotNull
+    @Override
+    public NamespacedKey getKeyOrThrow() {
+        Preconditions.checkState(isRegistered(), "Cannot get key of this registry item, because it is not registered. Use #isRegistered() before calling this method.");
+        return this.key;
+    }
+
+    @Nullable
+    @Override
+    public NamespacedKey getKeyOrNull() {
+        return this.key;
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return this.key != null;
     }
 }

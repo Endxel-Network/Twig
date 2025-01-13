@@ -12,7 +12,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.util.Handleable;
+import org.bukkit.craftbukkit.registry.CraftRegistryItem;
 import org.bukkit.entity.Wolf;
 
 public class CraftWolf extends CraftTameableAnimal implements Wolf {
@@ -81,7 +81,7 @@ public class CraftWolf extends CraftTameableAnimal implements Wolf {
         getHandle().setVariant(CraftVariant.bukkitToMinecraftHolder(variant));
     }
 
-    public static class CraftVariant implements Variant, Handleable<WolfVariant> {
+    public static class CraftVariant extends CraftRegistryItem<WolfVariant> implements Variant {
 
         public static Variant minecraftToBukkit(WolfVariant minecraft) {
             return CraftRegistry.minecraftToBukkit(minecraft, Registries.WOLF_VARIANT, Registry.WOLF_VARIANT);
@@ -108,45 +108,13 @@ public class CraftWolf extends CraftTameableAnimal implements Wolf {
                     + ", this can happen if a plugin creates its own wolf variant with out properly registering it.");
         }
 
-        private final NamespacedKey key;
-        private final WolfVariant variant;
-
-        public CraftVariant(NamespacedKey key, WolfVariant variant) {
-            this.key = key;
-            this.variant = variant;
-        }
-
-        @Override
-        public WolfVariant getHandle() {
-            return variant;
+        public CraftVariant(NamespacedKey key, Holder<WolfVariant> handle) {
+            super(key, handle);
         }
 
         @Override
         public NamespacedKey getKey() {
-            return key;
-        }
-
-        @Override
-        public String toString() {
-            return key.toString();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (this == other) {
-                return true;
-            }
-
-            if (!(other instanceof CraftVariant otherVariant)) {
-                return false;
-            }
-
-            return getKey().equals(otherVariant.getKey());
-        }
-
-        @Override
-        public int hashCode() {
-            return getKey().hashCode();
+            return getKeyOrThrow();
         }
     }
 }

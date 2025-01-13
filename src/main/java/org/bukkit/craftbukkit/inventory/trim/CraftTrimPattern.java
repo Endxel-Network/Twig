@@ -8,11 +8,11 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.CraftRegistry;
-import org.bukkit.craftbukkit.util.Handleable;
+import org.bukkit.craftbukkit.registry.CraftRegistryItem;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.jetbrains.annotations.NotNull;
 
-public class CraftTrimPattern implements TrimPattern, Handleable<net.minecraft.world.item.equipment.trim.TrimPattern> {
+public class CraftTrimPattern extends CraftRegistryItem<net.minecraft.world.item.equipment.trim.TrimPattern> implements TrimPattern {
 
     public static TrimPattern minecraftToBukkit(net.minecraft.world.item.equipment.trim.TrimPattern minecraft) {
         return CraftRegistry.minecraftToBukkit(minecraft, Registries.TRIM_PATTERN, Registry.TRIM_PATTERN);
@@ -39,28 +39,19 @@ public class CraftTrimPattern implements TrimPattern, Handleable<net.minecraft.w
                 + ", this can happen if a plugin creates its own trim pattern without properly registering it.");
     }
 
-    private final NamespacedKey key;
-    private final net.minecraft.world.item.equipment.trim.TrimPattern handle;
-
-    public CraftTrimPattern(NamespacedKey key, net.minecraft.world.item.equipment.trim.TrimPattern handle) {
-        this.key = key;
-        this.handle = handle;
-    }
-
-    @Override
-    public net.minecraft.world.item.equipment.trim.TrimPattern getHandle() {
-        return handle;
+    public CraftTrimPattern(NamespacedKey key, Holder<net.minecraft.world.item.equipment.trim.TrimPattern> handle) {
+        super(key, handle);
     }
 
     @Override
     @NotNull
     public NamespacedKey getKey() {
-        return key;
+        return getKeyOrThrow();
     }
 
     @NotNull
     @Override
     public String getTranslationKey() {
-        return ((TranslatableContents) handle.description().getContents()).getKey();
+        return ((TranslatableContents) getHandle().description().getContents()).getKey();
     }
 }

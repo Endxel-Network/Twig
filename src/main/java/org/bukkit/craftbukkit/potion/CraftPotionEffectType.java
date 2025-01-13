@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.potion;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectList;
@@ -12,6 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffectTypeCategory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CraftPotionEffectType extends PotionEffectType implements Handleable<MobEffectList> {
 
@@ -49,7 +51,7 @@ public class CraftPotionEffectType extends PotionEffectType implements Handleabl
     @NotNull
     @Override
     public NamespacedKey getKey() {
-        return key;
+        return getKeyOrThrow();
     }
 
     @Override
@@ -150,5 +152,23 @@ public class CraftPotionEffectType extends PotionEffectType implements Handleabl
     @Override
     public String toString() {
         return "CraftPotionEffectType[" + getKey() + "]";
+    }
+
+    @NotNull
+    @Override
+    public NamespacedKey getKeyOrThrow() {
+        Preconditions.checkState(isRegistered(), "Cannot get key of this registry item, because it is not registered. Use #isRegistered() before calling this method.");
+        return this.key;
+    }
+
+    @Nullable
+    @Override
+    public NamespacedKey getKeyOrNull() {
+        return this.key;
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return this.key != null;
     }
 }

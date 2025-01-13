@@ -8,11 +8,11 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.CraftRegistry;
-import org.bukkit.craftbukkit.util.Handleable;
+import org.bukkit.craftbukkit.registry.CraftRegistryItem;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.jetbrains.annotations.NotNull;
 
-public class CraftTrimMaterial implements TrimMaterial, Handleable<net.minecraft.world.item.equipment.trim.TrimMaterial> {
+public class CraftTrimMaterial extends CraftRegistryItem<net.minecraft.world.item.equipment.trim.TrimMaterial> implements TrimMaterial {
 
     public static TrimMaterial minecraftToBukkit(net.minecraft.world.item.equipment.trim.TrimMaterial minecraft) {
         return CraftRegistry.minecraftToBukkit(minecraft, Registries.TRIM_MATERIAL, Registry.TRIM_MATERIAL);
@@ -39,28 +39,19 @@ public class CraftTrimMaterial implements TrimMaterial, Handleable<net.minecraft
                 + ", this can happen if a plugin creates its own trim material without properly registering it.");
     }
 
-    private final NamespacedKey key;
-    private final net.minecraft.world.item.equipment.trim.TrimMaterial handle;
-
-    public CraftTrimMaterial(NamespacedKey key, net.minecraft.world.item.equipment.trim.TrimMaterial handle) {
-        this.key = key;
-        this.handle = handle;
-    }
-
-    @Override
-    public net.minecraft.world.item.equipment.trim.TrimMaterial getHandle() {
-        return handle;
+    public CraftTrimMaterial(NamespacedKey key, Holder<net.minecraft.world.item.equipment.trim.TrimMaterial> handle) {
+        super(key, handle);
     }
 
     @Override
     @NotNull
     public NamespacedKey getKey() {
-        return key;
+        return getKeyOrThrow();
     }
 
     @NotNull
     @Override
     public String getTranslationKey() {
-        return ((TranslatableContents) handle.description().getContents()).getKey();
+        return ((TranslatableContents) getHandle().description().getContents()).getKey();
     }
 }

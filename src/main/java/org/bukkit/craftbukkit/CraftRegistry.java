@@ -141,19 +141,19 @@ public class CraftRegistry<B extends Keyed, M> implements Registry<B> {
      */
     public static <B extends Keyed> Registry<?> createRegistry(Class<? super B> bukkitClass, IRegistryCustom registryHolder) {
         if (bukkitClass == Art.class) {
-            return new CraftRegistry<>(Art.class, registryHolder.lookupOrThrow(Registries.PAINTING_VARIANT), wrap(CraftArt::new), FieldRename.NONE);
+            return new CraftRegistry<>(Art.class, registryHolder.lookupOrThrow(Registries.PAINTING_VARIANT), CraftArt::new, FieldRename.NONE);
         }
         if (bukkitClass == Attribute.class) {
-            return new CraftRegistry<>(Attribute.class, registryHolder.lookupOrThrow(Registries.ATTRIBUTE), wrap(CraftAttribute::new), FieldRename.ATTRIBUTE_RENAME);
+            return new CraftRegistry<>(Attribute.class, registryHolder.lookupOrThrow(Registries.ATTRIBUTE), CraftAttribute::new, FieldRename.ATTRIBUTE_RENAME);
         }
         if (bukkitClass == Biome.class) {
-            return new CraftRegistry<>(Biome.class, registryHolder.lookupOrThrow(Registries.BIOME), wrap(CraftBiome::new), FieldRename.BIOME_RENAME);
+            return new CraftRegistry<>(Biome.class, registryHolder.lookupOrThrow(Registries.BIOME), CraftBiome::new, FieldRename.BIOME_RENAME);
         }
         if (bukkitClass == Enchantment.class) {
             return new CraftRegistry<>(Enchantment.class, registryHolder.lookupOrThrow(Registries.ENCHANTMENT), wrap(CraftEnchantment::new), FieldRename.ENCHANTMENT_RENAME);
         }
         if (bukkitClass == Fluid.class) {
-            return new CraftRegistry<>(Fluid.class, registryHolder.lookupOrThrow(Registries.FLUID), wrap(CraftFluid::new), FieldRename.NONE);
+            return new CraftRegistry<>(Fluid.class, registryHolder.lookupOrThrow(Registries.FLUID), CraftFluid::new, FieldRename.NONE);
         }
         if (bukkitClass == GameEvent.class) {
             return new CraftRegistry<>(GameEvent.class, registryHolder.lookupOrThrow(Registries.GAME_EVENT), wrap(CraftGameEvent::new), FieldRename.NONE);
@@ -162,13 +162,13 @@ public class CraftRegistry<B extends Keyed, M> implements Registry<B> {
             return new CraftRegistry<>(MusicInstrument.class, registryHolder.lookupOrThrow(Registries.INSTRUMENT), CraftMusicInstrument::new, FieldRename.NONE);
         }
         if (bukkitClass == MenuType.class) {
-            return new CraftRegistry<>(MenuType.class, registryHolder.lookupOrThrow(Registries.MENU), wrap(CraftMenuType::new), FieldRename.NONE);
+            return new CraftRegistry<>(MenuType.class, registryHolder.lookupOrThrow(Registries.MENU), CraftMenuType::new, FieldRename.NONE);
         }
         if (bukkitClass == PotionEffectType.class) {
             return new CraftRegistry<>(PotionEffectType.class, registryHolder.lookupOrThrow(Registries.MOB_EFFECT), wrap(CraftPotionEffectType::new), FieldRename.NONE);
         }
         if (bukkitClass == Sound.class) {
-            return new CraftRegistry<>(Sound.class, registryHolder.lookupOrThrow(Registries.SOUND_EVENT), wrap(CraftSound::new), FieldRename.NONE);
+            return new CraftRegistry<>(Sound.class, registryHolder.lookupOrThrow(Registries.SOUND_EVENT), CraftSound::new, FieldRename.NONE);
         }
         if (bukkitClass == Structure.class) {
             return new CraftRegistry<>(Structure.class, registryHolder.lookupOrThrow(Registries.STRUCTURE), wrap(CraftStructure::new), FieldRename.NONE);
@@ -177,43 +177,43 @@ public class CraftRegistry<B extends Keyed, M> implements Registry<B> {
             return new CraftRegistry<>(StructureType.class, registryHolder.lookupOrThrow(Registries.STRUCTURE_TYPE), wrap(CraftStructureType::new), FieldRename.NONE);
         }
         if (bukkitClass == Villager.Type.class) {
-            return new CraftRegistry<>(Villager.Type.class, registryHolder.lookupOrThrow(Registries.VILLAGER_TYPE), wrap(CraftVillager.CraftType::new), FieldRename.NONE);
+            return new CraftRegistry<>(Villager.Type.class, registryHolder.lookupOrThrow(Registries.VILLAGER_TYPE), CraftVillager.CraftType::new, FieldRename.NONE);
         }
         if (bukkitClass == Villager.Profession.class) {
-            return new CraftRegistry<>(Villager.Profession.class, registryHolder.lookupOrThrow(Registries.VILLAGER_PROFESSION), wrap(CraftVillager.CraftProfession::new), FieldRename.NONE);
+            return new CraftRegistry<>(Villager.Profession.class, registryHolder.lookupOrThrow(Registries.VILLAGER_PROFESSION), CraftVillager.CraftProfession::new, FieldRename.NONE);
         }
         if (bukkitClass == TrimMaterial.class) {
-            return new CraftRegistry<>(TrimMaterial.class, registryHolder.lookupOrThrow(Registries.TRIM_MATERIAL), wrap(CraftTrimMaterial::new), FieldRename.NONE);
+            return new CraftRegistry<>(TrimMaterial.class, registryHolder.lookupOrThrow(Registries.TRIM_MATERIAL), CraftTrimMaterial::new, FieldRename.NONE);
         }
         if (bukkitClass == TrimPattern.class) {
-            return new CraftRegistry<>(TrimPattern.class, registryHolder.lookupOrThrow(Registries.TRIM_PATTERN), wrap(CraftTrimPattern::new), FieldRename.NONE);
+            return new CraftRegistry<>(TrimPattern.class, registryHolder.lookupOrThrow(Registries.TRIM_PATTERN), CraftTrimPattern::new, FieldRename.NONE);
         }
         if (bukkitClass == DamageType.class) {
-            return new CraftRegistry<>(DamageType.class, registryHolder.lookupOrThrow(Registries.DAMAGE_TYPE), wrap(CraftDamageType::new), FieldRename.NONE);
+            return new CraftRegistry<>(DamageType.class, registryHolder.lookupOrThrow(Registries.DAMAGE_TYPE), CraftDamageType::new, FieldRename.NONE);
         }
         if (bukkitClass == JukeboxSong.class) {
-            return new CraftRegistry<>(JukeboxSong.class, registryHolder.lookupOrThrow(Registries.JUKEBOX_SONG), wrap(CraftJukeboxSong::new), FieldRename.NONE);
+            return new CraftRegistry<>(JukeboxSong.class, registryHolder.lookupOrThrow(Registries.JUKEBOX_SONG), CraftJukeboxSong::new, FieldRename.NONE);
         }
         if (bukkitClass == Wolf.Variant.class) {
-            return new CraftRegistry<>(Wolf.Variant.class, registryHolder.lookupOrThrow(Registries.WOLF_VARIANT), wrap(CraftWolf.CraftVariant::new), FieldRename.NONE);
+            return new CraftRegistry<>(Wolf.Variant.class, registryHolder.lookupOrThrow(Registries.WOLF_VARIANT), CraftWolf.CraftVariant::new, FieldRename.NONE);
         }
         if (bukkitClass == BlockType.class) {
-            return new CraftRegistry<>(BlockType.class, registryHolder.lookupOrThrow(Registries.BLOCK), wrap(CraftBlockType::new), FieldRename.NONE);
+            return new CraftRegistry<>(BlockType.class, registryHolder.lookupOrThrow(Registries.BLOCK), CraftBlockType::new, FieldRename.NONE);
         }
         if (bukkitClass == ItemType.class) {
-            return new CraftRegistry<>(ItemType.class, registryHolder.lookupOrThrow(Registries.ITEM), wrap(CraftItemType::new), FieldRename.NONE);
+            return new CraftRegistry<>(ItemType.class, registryHolder.lookupOrThrow(Registries.ITEM), CraftItemType::new, FieldRename.NONE);
         }
         if (bukkitClass == Frog.Variant.class) {
-            return new CraftRegistry<>(Frog.Variant.class, registryHolder.lookupOrThrow(Registries.FROG_VARIANT), wrap(CraftFrog.CraftVariant::new), FieldRename.NONE);
+            return new CraftRegistry<>(Frog.Variant.class, registryHolder.lookupOrThrow(Registries.FROG_VARIANT), CraftFrog.CraftVariant::new, FieldRename.NONE);
         }
         if (bukkitClass == Cat.Type.class) {
-            return new CraftRegistry<>(Cat.Type.class, registryHolder.lookupOrThrow(Registries.CAT_VARIANT), wrap(CraftCat.CraftType::new), FieldRename.NONE);
+            return new CraftRegistry<>(Cat.Type.class, registryHolder.lookupOrThrow(Registries.CAT_VARIANT), CraftCat.CraftType::new, FieldRename.NONE);
         }
         if (bukkitClass == MapCursor.Type.class) {
-            return new CraftRegistry<>(MapCursor.Type.class, registryHolder.lookupOrThrow(Registries.MAP_DECORATION_TYPE), wrap(CraftMapCursor.CraftType::new), FieldRename.NONE);
+            return new CraftRegistry<>(MapCursor.Type.class, registryHolder.lookupOrThrow(Registries.MAP_DECORATION_TYPE), CraftMapCursor.CraftType::new, FieldRename.NONE);
         }
         if (bukkitClass == PatternType.class) {
-            return new CraftRegistry<>(PatternType.class, registryHolder.lookupOrThrow(Registries.BANNER_PATTERN), wrap(CraftPatternType::new), FieldRename.NONE);
+            return new CraftRegistry<>(PatternType.class, registryHolder.lookupOrThrow(Registries.BANNER_PATTERN), CraftPatternType::new, FieldRename.NONE);
         }
 
         return null;

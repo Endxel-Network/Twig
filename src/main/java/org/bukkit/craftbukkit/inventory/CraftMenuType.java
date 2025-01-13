@@ -9,27 +9,19 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.inventory.util.CraftMenus;
-import org.bukkit.craftbukkit.util.Handleable;
+import org.bukkit.craftbukkit.registry.CraftRegistryItem;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.view.builder.InventoryViewBuilder;
 
-public class CraftMenuType<V extends InventoryView, B extends InventoryViewBuilder<V>> implements MenuType.Typed<V, B>, Handleable<Containers<?>> {
+public class CraftMenuType<V extends InventoryView, B extends InventoryViewBuilder<V>> extends CraftRegistryItem<Containers<?>> implements MenuType.Typed<V, B> {
 
-    private final NamespacedKey key;
-    private final Containers<?> handle;
     private final Supplier<CraftMenus.MenuTypeData<V, B>> typeData;
 
-    public CraftMenuType(NamespacedKey key, Containers<?> handle) {
-        this.key = key;
-        this.handle = handle;
+    public CraftMenuType(NamespacedKey key, Holder<Containers<?>> handle) {
+        super(key, handle);
         this.typeData = Suppliers.memoize(() -> CraftMenus.getMenuTypeData(this));
-    }
-
-    @Override
-    public Containers<?> getHandle() {
-        return this.handle;
     }
 
     @Override
@@ -53,7 +45,7 @@ public class CraftMenuType<V extends InventoryView, B extends InventoryViewBuild
             return (Typed<V, B>) this;
         }
 
-        throw new IllegalArgumentException("Cannot type InventoryView " + this.key.toString() + " to InventoryView type " + clazz.getSimpleName());
+        throw new IllegalArgumentException("Cannot type InventoryView " + (isRegistered() ? getKeyOrThrow() : toString()) + " to InventoryView type " + clazz.getSimpleName());
     }
 
     @Override
@@ -63,7 +55,7 @@ public class CraftMenuType<V extends InventoryView, B extends InventoryViewBuild
 
     @Override
     public NamespacedKey getKey() {
-        return this.key;
+        return getKeyOrThrow();
     }
 
     public static Containers<?> bukkitToMinecraft(MenuType bukkit) {
