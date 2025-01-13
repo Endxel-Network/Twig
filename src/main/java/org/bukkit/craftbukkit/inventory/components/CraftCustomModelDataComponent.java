@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import net.minecraft.world.item.component.CustomModelData;
 import org.bukkit.Color;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -67,7 +68,7 @@ public final class CraftCustomModelDataComponent implements CustomModelDataCompo
 
     @Override
     public void setFlags(List<Boolean> flags) {
-        handle = new CustomModelData(handle.floats(), new ArrayList<>(handle.flags()), handle.strings(), handle.colors());
+        handle = new CustomModelData(handle.floats(), new ArrayList<>(flags), handle.strings(), handle.colors());
     }
 
     @Override
@@ -77,7 +78,7 @@ public final class CraftCustomModelDataComponent implements CustomModelDataCompo
 
     @Override
     public void setStrings(List<String> strings) {
-        handle = new CustomModelData(handle.floats(), handle.flags(), new ArrayList<>(handle.strings()), handle.colors());
+        handle = new CustomModelData(handle.floats(), handle.flags(), new ArrayList<>(strings), handle.colors());
     }
 
     @Override
@@ -87,7 +88,7 @@ public final class CraftCustomModelDataComponent implements CustomModelDataCompo
 
     @Override
     public void setColors(List<Color> colors) {
-        handle = new CustomModelData(handle.floats(), handle.flags(), handle.strings(), new ArrayList<>(handle.colors()));
+        handle = new CustomModelData(handle.floats(), handle.flags(), handle.strings(), colors.stream().map(Color::asRGB).collect(Collectors.toList()));
     }
 
     @Override
