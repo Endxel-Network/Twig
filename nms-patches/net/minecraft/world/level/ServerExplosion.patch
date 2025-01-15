@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/ServerExplosion.java
 +++ b/net/minecraft/world/level/ServerExplosion.java
-@@ -35,6 +35,17 @@
+@@ -35,6 +35,13 @@
  import net.minecraft.world.phys.MovingObjectPosition;
  import net.minecraft.world.phys.Vec3D;
  
@@ -9,16 +9,12 @@
 +import net.minecraft.world.entity.boss.enderdragon.EntityEnderDragon;
 +import net.minecraft.world.level.block.Blocks;
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
-+import org.bukkit.craftbukkit.util.CraftLocation;
-+import org.bukkit.event.entity.EntityExplodeEvent;
-+import org.bukkit.Location;
-+import org.bukkit.event.block.BlockExplodeEvent;
 +// CraftBukkit end
 +
  public class ServerExplosion implements Explosion {
  
      private static final ExplosionDamageCalculator EXPLOSION_DAMAGE_CALCULATOR = new ExplosionDamageCalculator();
-@@ -50,16 +61,21 @@
+@@ -50,16 +57,21 @@
      private final DamageSource damageSource;
      private final ExplosionDamageCalculator damageCalculator;
      private final Map<EntityHuman, Vec3D> hitPlayers = new HashMap();
@@ -41,7 +37,7 @@
      }
  
      private ExplosionDamageCalculator makeDamageCalculator(@Nullable Entity entity) {
-@@ -195,7 +211,35 @@
+@@ -195,7 +207,35 @@
                          float f2 = !flag && f1 == 0.0F ? 0.0F : getSeenPercent(this.center, entity);
  
                          if (flag) {
@@ -78,7 +74,7 @@
                          }
  
                          double d5 = (1.0D - d0) * (double) f2 * (double) f1;
-@@ -214,6 +258,17 @@
+@@ -214,6 +254,17 @@
                          d3 *= d6;
                          Vec3D vec3d = new Vec3D(d1, d2, d3);
  
@@ -96,45 +92,15 @@
                          entity.push(vec3d);
                          if (entity instanceof EntityHuman) {
                              EntityHuman entityhuman = (EntityHuman) entity;
-@@ -235,10 +290,62 @@
+@@ -235,10 +286,31 @@
          List<ServerExplosion.a> list1 = new ArrayList();
  
          SystemUtils.shuffle(list, this.level.random);
 +        // CraftBukkit start
-+        org.bukkit.World bworld = this.level.getWorld();
-+        Location location = CraftLocation.toBukkit(this.center, bworld);
-+
-+        List<org.bukkit.block.Block> blockList = new ObjectArrayList<>();
-+        for (int i1 = list.size() - 1; i1 >= 0; i1--) {
-+            BlockPosition cpos = list.get(i1);
-+            org.bukkit.block.Block bblock = bworld.getBlockAt(cpos.getX(), cpos.getY(), cpos.getZ());
-+            if (!bblock.getType().isAir()) {
-+                blockList.add(bblock);
-+            }
-+        }
-+
-+        List<org.bukkit.block.Block> bukkitBlocks;
-+
-+        if (this.source != null) {
-+            EntityExplodeEvent event = CraftEventFactory.callEntityExplodeEvent(this.source, blockList, this.yield, getBlockInteraction());
-+            this.wasCanceled = event.isCancelled();
-+            bukkitBlocks = event.blockList();
-+            this.yield = event.getYield();
-+        } else {
-+            org.bukkit.block.Block block = location.getBlock();
-+            org.bukkit.block.BlockState blockState = (damageSource.getDirectBlockState() != null) ? damageSource.getDirectBlockState() : block.getState();
-+            BlockExplodeEvent event = CraftEventFactory.callBlockExplodeEvent(block, blockState, blockList, this.yield, getBlockInteraction());
-+            this.wasCanceled = event.isCancelled();
-+            bukkitBlocks = event.blockList();
-+            this.yield = event.getYield();
-+        }
++        List<org.bukkit.block.Block> bukkitBlocks = CraftEventFactory.handleExplodeEvent(this, list);
 +
 +        list.clear();
-+
-+        for (org.bukkit.block.Block bblock : bukkitBlocks) {
-+            BlockPosition coords = new BlockPosition(bblock.getX(), bblock.getY(), bblock.getZ());
-+            list.add(coords);
-+        }
++        list.addAll(bukkitBlocks.stream().map(bblock -> new BlockPosition(bblock.getX(), bblock.getY(), bblock.getZ())).toList());
 +
 +        if (this.wasCanceled) {
 +            return;
@@ -148,9 +114,8 @@
 +            IBlockData iblockdata = this.level.getBlockState(blockposition);
 +            Block block = iblockdata.getBlock();
 +            if (block instanceof net.minecraft.world.level.block.BlockTNT) {
-+                Entity sourceEntity = source == null ? null : source;
-+                BlockPosition sourceBlock = sourceEntity == null ? BlockPosition.containing(this.center) : null;
-+                if (!CraftEventFactory.callTNTPrimeEvent(this.level, blockposition, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.EXPLOSION, sourceEntity, sourceBlock)) {
++                BlockPosition sourceBlock = source == null ? BlockPosition.containing(this.center) : null;
++                if (!CraftEventFactory.callTNTPrimeEvent(this.level, blockposition, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.EXPLOSION, source, sourceBlock)) {
 +                    this.level.sendBlockUpdated(blockposition, Blocks.AIR.defaultBlockState(), iblockdata, 3); // Update the block on the client
 +                    continue;
 +                }
@@ -159,7 +124,7 @@
  
              this.level.getBlockState(blockposition).onExplosionHit(this.level, blockposition, this, (itemstack, blockposition1) -> {
                  addOrAppendStack(list1, itemstack, blockposition1);
-@@ -262,13 +369,22 @@
+@@ -262,13 +334,22 @@
              BlockPosition blockposition = (BlockPosition) iterator.next();
  
              if (this.level.random.nextInt(3) == 0 && this.level.getBlockState(blockposition).isAir() && this.level.getBlockState(blockposition.below()).isSolidRender()) {
@@ -183,7 +148,23 @@
          this.level.gameEvent(this.source, (Holder) GameEvent.EXPLODE, this.center);
          List<BlockPosition> list = this.calculateExplodedPositions();
  
-@@ -288,6 +404,7 @@
+@@ -279,7 +360,15 @@
+             gameprofilerfiller.push("explosion_blocks");
+             this.interactWithBlocks(list);
+             gameprofilerfiller.pop();
++            // CraftBukkit start - handle KEEP effect
++        } else {
++            SystemUtils.shuffle(list, this.level.random); // CraftBukkit - Copy from calculateExplodedPositions
++            List<org.bukkit.block.Block> bukkitBlocks = CraftEventFactory.handleExplodeEvent(this, list);
++
++            list.clear();
++            list.addAll(bukkitBlocks.stream().map(bblock -> new BlockPosition(bblock.getX(), bblock.getY(), bblock.getZ())).toList());
+         }
++        // CraftBukkit end
+ 
+         if (this.fire) {
+             this.createFire(list);
+@@ -288,6 +377,7 @@
      }
  
      private static void addOrAppendStack(List<ServerExplosion.a> list, ItemStack itemstack, BlockPosition blockposition) {
