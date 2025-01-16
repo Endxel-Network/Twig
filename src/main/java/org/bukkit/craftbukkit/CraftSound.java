@@ -19,6 +19,10 @@ public class CraftSound extends CraftOldEnumRegistryItem<Sound, SoundEffect> imp
         return CraftRegistry.minecraftToBukkit(minecraft, Registries.SOUND_EVENT, Registry.SOUNDS);
     }
 
+    public static Sound minecraftHolderToBukkit(Holder<SoundEffect> minecraft) {
+        return minecraftToBukkit(minecraft.value());
+    }
+
     public static SoundEffect bukkitToMinecraft(Sound bukkit) {
         return CraftRegistry.bukkitToMinecraft(bukkit);
     }

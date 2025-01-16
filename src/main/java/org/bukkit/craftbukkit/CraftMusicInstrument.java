@@ -13,6 +13,8 @@ import net.minecraft.world.item.Instrument;
 import org.bukkit.MusicInstrument;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
+import org.bukkit.Sound;
+import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.craftbukkit.util.HolderHandleable;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +90,26 @@ public class CraftMusicInstrument extends MusicInstrument implements HolderHandl
     @Override
     public Holder<Instrument> getHandleHolder() {
         return handle;
+    }
+
+    @Override
+    public String getDescription() {
+        return CraftChatMessage.fromComponent(this.getHandle().description());
+    }
+
+    @Override
+    public float getDuration() {
+        return this.getHandle().useDuration();
+    }
+
+    @Override
+    public float getRange() {
+        return this.getHandle().range();
+    }
+
+    @Override
+    public Sound getSoundEvent() {
+        return CraftSound.minecraftHolderToBukkit(this.getHandle().soundEvent());
     }
 
     @NotNull
