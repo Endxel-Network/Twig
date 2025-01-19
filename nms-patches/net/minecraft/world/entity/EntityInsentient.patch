@@ -252,7 +252,7 @@
  
              if (t0 == null) {
                  return null;
-@@ -1403,14 +1499,24 @@
+@@ -1403,14 +1499,26 @@
                  conversionparams_a.finalizeConversion(t0);
                  World world = this.level();
  
@@ -265,6 +265,8 @@
 +                if (CraftEventFactory.callEntityTransformEvent(this, t0, transformReason).isCancelled()) {
 +                    return null;
 +                }
++
++                conversionparams.type().postConvert(this, t0, conversionparams);
 +                // CraftBukkit end
                  if (world instanceof WorldServer) {
                      WorldServer worldserver = (WorldServer) world;
@@ -279,7 +281,7 @@
                  }
  
                  return t0;
-@@ -1420,7 +1526,14 @@
+@@ -1420,7 +1528,14 @@
  
      @Nullable
      public <T extends EntityInsentient> T convertTo(EntityTypes<T> entitytypes, ConversionParams conversionparams, ConversionParams.a<T> conversionparams_a) {
@@ -295,7 +297,7 @@
      }
  
      @Nullable
-@@ -1458,6 +1571,7 @@
+@@ -1458,6 +1573,7 @@
          boolean flag1 = super.startRiding(entity, flag);
  
          if (flag1 && this.isLeashed()) {
@@ -303,7 +305,7 @@
              this.dropLeash();
          }
  
-@@ -1542,7 +1656,7 @@
+@@ -1542,7 +1658,7 @@
  
              if (f1 > 0.0F && entity instanceof EntityLiving) {
                  entityliving = (EntityLiving) entity;

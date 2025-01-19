@@ -21,6 +21,15 @@
                  }
  
                  entity.startRiding(entityinsentient1);
+@@ -52,7 +57,7 @@
+                     ItemStack itemstack = entityinsentient.getItemBySlot(enumitemslot);
+ 
+                     if (!itemstack.isEmpty()) {
+-                        entityinsentient1.setItemSlot(enumitemslot, itemstack.copyAndClear());
++                        entityinsentient1.setItemSlot(enumitemslot, itemstack.copy()); // CraftBukkit - SPIGOT-7996: don't clear yet
+                         entityinsentient1.setDropChance(enumitemslot, entityinsentient.getEquipmentDropChance(enumitemslot));
+                     }
+                 }
 @@ -64,7 +69,7 @@
              entityinsentient1.hurtTime = entityinsentient.hurtTime;
              entityinsentient1.yBodyRot = entityinsentient.yBodyRot;
@@ -30,7 +39,38 @@
  
              Objects.requireNonNull(entityinsentient1);
              optional.ifPresent(entityinsentient1::setSleepingPos);
-@@ -156,7 +161,7 @@
+@@ -75,6 +80,21 @@
+ 
+             this.convertCommon(entityinsentient, entityinsentient1, conversionparams);
+         }
++
++        // CraftBukkit start
++        @Override
++        void postConvert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {
++            if (conversionparams.keepEquipment()) {
++                for (EnumItemSlot enumitemslot : EnumItemSlot.VALUES) {
++                    ItemStack itemstack = entityinsentient.getItemBySlot(enumitemslot);
++
++                    if (!itemstack.isEmpty()) {
++                        itemstack.setCount(0); // SPIGOT-7996: clear after conversion
++                    }
++                }
++            }
++        }
++        // CraftBukkit end
+     },
+     SPLIT_ON_DEATH(false) {
+         @Override
+@@ -106,6 +126,8 @@
+     }
+ 
+     abstract void convert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams);
++    
++    void postConvert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {} // CraftBukkit
+ 
+     void convertCommon(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {
+         entityinsentient1.setAbsorptionAmount(entityinsentient.getAbsorptionAmount());
+@@ -156,7 +178,7 @@
          entityinsentient1.setNoGravity(entityinsentient.isNoGravity());
          entityinsentient1.setPortalCooldown(entityinsentient.getPortalCooldown());
          entityinsentient1.setSilent(entityinsentient.isSilent());
