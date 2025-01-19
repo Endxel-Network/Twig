@@ -61,15 +61,15 @@
      },
      SPLIT_ON_DEATH(false) {
          @Override
-@@ -106,6 +126,8 @@
-     }
+@@ -107,6 +127,8 @@
  
      abstract void convert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams);
-+    
-+    void postConvert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {} // CraftBukkit
  
++    void postConvert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {} // CraftBukkit
++
      void convertCommon(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {
          entityinsentient1.setAbsorptionAmount(entityinsentient.getAbsorptionAmount());
+         Iterator iterator = entityinsentient.getActiveEffects().iterator();
 @@ -156,7 +178,7 @@
          entityinsentient1.setNoGravity(entityinsentient.isNoGravity());
          entityinsentient1.setPortalCooldown(entityinsentient.getPortalCooldown());
