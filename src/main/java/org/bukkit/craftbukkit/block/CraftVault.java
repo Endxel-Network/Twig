@@ -1,12 +1,17 @@
 package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.trialspawner.PlayerDetector;
 import net.minecraft.world.level.block.entity.vault.VaultBlockEntity;
 import net.minecraft.world.level.block.entity.vault.VaultConfig;
+import net.minecraft.world.level.block.entity.vault.VaultServerData;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -94,6 +99,16 @@ public class CraftVault extends CraftBlockEntityState<VaultBlockEntity> implemen
         super.applyTo(tileEntity);
 
         tileEntity.setConfig(this.config.toMinecraft());
+    }
+
+    @Override
+    public Set<UUID> getRewardedPlayers() {
+        requirePlaced();
+
+        VaultServerData serverData = getTileEntity().getServerData();
+        Objects.requireNonNull(serverData, "serverData should not be null for placed Vault");
+
+        return Collections.unmodifiableSet(serverData.getRewardedPlayers());
     }
 
     static class CraftVaultConfiguration {
