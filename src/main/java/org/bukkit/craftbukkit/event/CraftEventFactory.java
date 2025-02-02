@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +65,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.item.crafting.RecipeCrafting;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeRepair;
 import net.minecraft.world.level.ChunkCoordIntPair;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GeneratorAccess;
@@ -1285,11 +1287,11 @@ public class CraftEventFactory {
         return container;
     }
 
-    public static ItemStack callPreCraftEvent(InventoryCrafting matrix, IInventory resultInventory, ItemStack result, InventoryView lastCraftView, boolean isRepair) {
+    public static ItemStack callPreCraftEvent(InventoryCrafting matrix, IInventory resultInventory, ItemStack result, InventoryView lastCraftView, Optional<RecipeHolder<RecipeCrafting>> recipe) {
         CraftInventoryCrafting inventory = new CraftInventoryCrafting(matrix, resultInventory);
         inventory.setResult(CraftItemStack.asCraftMirror(result));
 
-        PrepareItemCraftEvent event = new PrepareItemCraftEvent(inventory, lastCraftView, isRepair);
+        PrepareItemCraftEvent event = new PrepareItemCraftEvent(inventory, lastCraftView, recipe.map(RecipeHolder::value).orElse(null) instanceof RecipeRepair);
         Bukkit.getPluginManager().callEvent(event);
 
         org.bukkit.inventory.ItemStack bitem = event.getInventory().getResult();

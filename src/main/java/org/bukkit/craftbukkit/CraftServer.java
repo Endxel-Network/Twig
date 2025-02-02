@@ -94,7 +94,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemWorldMap;
 import net.minecraft.world.item.crafting.RecipeCrafting;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeRepair;
 import net.minecraft.world.item.crafting.Recipes;
 import net.minecraft.world.level.EnumGamemode;
 import net.minecraft.world.level.GameRules;
@@ -1475,7 +1474,7 @@ public final class CraftServer implements Server {
         }
 
         // Call Bukkit event to check for matrix/result changes.
-        net.minecraft.world.item.ItemStack result = CraftEventFactory.callPreCraftEvent(inventoryCrafting, craftResult, itemstack, container.getBukkitView(), recipe.map(RecipeHolder::value).orElse(null) instanceof RecipeRepair);
+        net.minecraft.world.item.ItemStack result = CraftEventFactory.callPreCraftEvent(inventoryCrafting, craftResult, itemstack, container.getBukkitView(), recipe);
 
         return createItemCraftResult(recipe, CraftItemStack.asBukkitCopy(result), inventoryCrafting, craftWorld.getHandle());
     }
