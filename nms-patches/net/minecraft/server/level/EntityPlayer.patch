@@ -106,8 +106,8 @@
 +            containerSynchronizer.sendSlotChange(containerMenu, s, getMainHandItem());
 +        });
 +        containerSynchronizer.sendSlotChange(inventoryMenu, ContainerPlayer.SHIELD_SLOT, getOffhandItem());
-     }
- 
++    }
++
 +    // Yes, this doesn't match Vanilla, but it's the best we can do for now.
 +    // If this is an issue, PRs are welcome
 +    public final BlockPosition getSpawnPoint(WorldServer worldserver) {
@@ -144,9 +144,9 @@
 +        }
 +
 +        return blockposition;
-+    }
+     }
 +    // CraftBukkit end
-+
+ 
      @Override
      public BlockPosition adjustSpawnLocation(WorldServer worldserver, BlockPosition blockposition) {
          AxisAlignedBB axisalignedbb = this.getDimensions(EntityPose.STANDING).makeBoundingBox(Vec3D.ZERO);
@@ -544,11 +544,11 @@
          } else {
 -            return new TeleportTransition(this.server.overworld(), this, teleporttransition_a);
 +            teleportTransition = new TeleportTransition(this.server.overworld(), this, teleporttransition_a); // CraftBukkit
-         }
++        }
 +        // CraftBukkit start
 +        if (reason == null) {
 +            return teleportTransition;
-+        }
+         }
 +
 +        Player respawnPlayer = this.getBukkitEntity();
 +        Location location = CraftLocation.toBukkit(teleportTransition.position(), teleportTransition.newLevel().getWorld(), teleportTransition.yRot(), teleportTransition.xRot());
@@ -1078,16 +1078,22 @@
          this.language = clientinformation.language();
          this.requestedViewDistance = clientinformation.viewDistance();
          this.chatVisibility = clientinformation.chatVisibility();
-@@ -1962,7 +2377,7 @@
+@@ -1962,7 +2377,13 @@
              if (world instanceof WorldServer) {
                  WorldServer worldserver = (WorldServer) world;
  
 -                this.teleportTo(worldserver, this.camera.getX(), this.camera.getY(), this.camera.getZ(), Set.of(), this.getYRot(), this.getXRot(), false);
-+                this.teleportTo(worldserver, this.camera.getX(), this.camera.getY(), this.camera.getZ(), Set.of(), this.getYRot(), this.getXRot(), false, TeleportCause.SPECTATE); // CraftBukkit
++                // CraftBukkit start
++                boolean result = this.teleportTo(worldserver, this.camera.getX(), this.camera.getY(), this.camera.getZ(), Set.of(), this.getYRot(), this.getXRot(), false, TeleportCause.SPECTATE);
++                if (!result) {
++                    this.camera = entity1;
++                    return;
++                }
++                // CraftBukkit end
              }
  
              if (entity != null) {
-@@ -1999,11 +2414,11 @@
+@@ -1999,11 +2420,11 @@
  
      @Nullable
      public IChatBaseComponent getTabListDisplayName() {
@@ -1101,7 +1107,7 @@
      }
  
      @Override
-@@ -2046,6 +2461,32 @@
+@@ -2046,6 +2467,32 @@
      }
  
      public void setRespawnPosition(ResourceKey<World> resourcekey, @Nullable BlockPosition blockposition, float f, boolean flag, boolean flag1) {
@@ -1134,7 +1140,7 @@
          if (blockposition != null) {
              boolean flag2 = blockposition.equals(this.respawnPosition) && resourcekey.equals(this.respawnDimension);
  
-@@ -2088,12 +2529,38 @@
+@@ -2088,12 +2535,38 @@
      }
  
      @Override
@@ -1174,7 +1180,7 @@
              this.level().addFreshEntity(entityitem);
              ItemStack itemstack1 = entityitem.getItem();
  
-@@ -2375,10 +2842,12 @@
+@@ -2375,10 +2848,12 @@
          return TicketType.ENDER_PEARL.timeout();
      }
  
@@ -1190,7 +1196,7 @@
          }
  
          private static float calculateLookAtYaw(Vec3D vec3d, BlockPosition blockposition) {
-@@ -2387,4 +2856,146 @@
+@@ -2387,4 +2862,146 @@
              return (float) MathHelper.wrapDegrees(MathHelper.atan2(vec3d1.z, vec3d1.x) * 57.2957763671875D - 90.0D);
          }
      }
