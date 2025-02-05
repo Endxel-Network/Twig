@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/CrafterMenu.java
 +++ b/net/minecraft/world/inventory/CrafterMenu.java
-@@ -10,8 +10,29 @@
+@@ -10,8 +10,35 @@
  import net.minecraft.world.item.crafting.RecipeCrafting;
  import net.minecraft.world.level.block.CrafterBlock;
  
@@ -26,11 +26,17 @@
 +        bukkitEntity = new CraftCrafterView(this.player.getBukkitEntity(), inventory, this);
 +        return bukkitEntity;
 +    }
++
++    @Override
++    public void startOpen() {
++        super.startOpen();
++        this.refreshRecipeResult();
++    }
 +    // CraftBukkit end
      protected static final int SLOT_COUNT = 9;
      private static final int INV_SLOT_START = 9;
      private static final int INV_SLOT_END = 36;
-@@ -106,6 +127,7 @@
+@@ -106,18 +133,24 @@
  
      @Override
      public boolean stillValid(EntityHuman entityhuman) {
@@ -38,7 +44,10 @@
          return this.container.stillValid(entityhuman);
      }
  
-@@ -115,9 +137,13 @@
+     private void refreshRecipeResult() {
++        if (!this.opened) return; // CraftBukkit - SPIGOT-8005: don't refresh until opened
+         EntityHuman entityhuman = this.player;
+ 
          if (entityhuman instanceof EntityPlayer entityplayer) {
              WorldServer worldserver = entityplayer.serverLevel();
              CraftingInput craftinginput = this.container.asCraftInput();
