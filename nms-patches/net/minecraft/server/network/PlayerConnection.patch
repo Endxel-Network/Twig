@@ -1608,7 +1608,7 @@
          this.player.resetLastActionTime();
          if (this.player.containerMenu.containerId == packetplayinenchantitem.containerId() && !this.player.isSpectator()) {
              if (!this.player.containerMenu.stillValid(this.player)) {
-@@ -1945,6 +2983,43 @@
+@@ -1945,6 +2983,42 @@
  
              boolean flag1 = packetplayinsetcreativeslot.slotNum() >= 1 && packetplayinsetcreativeslot.slotNum() <= 45;
              boolean flag2 = itemstack.isEmpty() || itemstack.getCount() <= itemstack.getMaxStackSize();
@@ -1642,8 +1642,7 @@
 +                case DENY:
 +                    // Reset the slot
 +                    if (packetplayinsetcreativeslot.slotNum() >= 0) {
-+                        this.player.connection.send(new PacketPlayOutSetSlot(this.player.inventoryMenu.containerId, this.player.inventoryMenu.incrementStateId(), packetplayinsetcreativeslot.slotNum(), this.player.inventoryMenu.getSlot(packetplayinsetcreativeslot.slotNum()).getItem()));
-+                        this.player.connection.send(new PacketPlayOutSetSlot(-1, this.player.inventoryMenu.incrementStateId(), -1, ItemStack.EMPTY));
++                        this.player.inventoryMenu.sendAllDataToRemote();
 +                    }
 +                    return;
 +                }
@@ -1652,7 +1651,7 @@
  
              if (flag1 && flag2) {
                  this.player.inventoryMenu.getSlot(packetplayinsetcreativeslot.slotNum()).setByPlayer(itemstack);
-@@ -1972,6 +3047,7 @@
+@@ -1972,6 +3046,7 @@
      }
  
      private void updateSignText(PacketPlayInUpdateSign packetplayinupdatesign, List<FilteredText> list) {
@@ -1660,7 +1659,7 @@
          this.player.resetLastActionTime();
          WorldServer worldserver = this.player.serverLevel();
          BlockPosition blockposition = packetplayinupdatesign.getPos();
-@@ -1993,7 +3069,17 @@
+@@ -1993,7 +3068,17 @@
      @Override
      public void handlePlayerAbilities(PacketPlayInAbilities packetplayinabilities) {
          PlayerConnectionUtils.ensureRunningOnSameThread(packetplayinabilities, this, this.player.serverLevel());
@@ -1679,7 +1678,7 @@
      }
  
      @Override
-@@ -2058,7 +3144,7 @@
+@@ -2058,7 +3143,7 @@
          if (!this.waitingForSwitchToConfig) {
              throw new IllegalStateException("Client acknowledged config, but none was requested");
          } else {
@@ -1688,7 +1687,7 @@
          }
      }
  
-@@ -2083,8 +3169,10 @@
+@@ -2083,8 +3168,10 @@
          });
      }
  
