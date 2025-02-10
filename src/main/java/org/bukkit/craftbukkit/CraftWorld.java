@@ -1908,7 +1908,8 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         getHandle().sendParticlesSource(
                 null, // Sender
                 CraftParticle.createParticleParam(particle, data), // Particle
-                false, force,
+                force, // force
+                false, // override limiter for render - TODO: Expose this?
                 x, y, z, // Position
                 count,  // Count
                 offsetX, offsetY, offsetZ, // Random offset
