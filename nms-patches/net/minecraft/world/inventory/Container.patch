@@ -167,7 +167,20 @@
                  }
              } else {
                  int j2;
-@@ -662,8 +759,9 @@
+@@ -598,7 +695,11 @@
+                                 }
+ 
+                                 itemstack = slot2.safeTake(k, Integer.MAX_VALUE, entityhuman);
+-                                entityhuman.drop(itemstack, true);
++                                // CraftBukkit start - SPIGOT-8010: break loop
++                                if (entityhuman.drop(itemstack, true) == null) {
++                                    break;
++                                }
++                                // CraftBukkit end
+                                 entityhuman.handleCreativeModeItemDrop(itemstack);
+                             }
+                         }
+@@ -662,8 +763,9 @@
              ItemStack itemstack = this.getCarried();
  
              if (!itemstack.isEmpty()) {
@@ -178,7 +191,7 @@
              }
  
          }
-@@ -893,6 +991,11 @@
+@@ -893,6 +995,11 @@
      }
  
      public ItemStack getCarried() {
