@@ -1,24 +1,37 @@
 --- a/net/minecraft/world/item/crafting/RecipeMap.java
 +++ b/net/minecraft/world/item/crafting/RecipeMap.java
-@@ -12,6 +12,11 @@
+@@ -12,13 +12,21 @@
  import net.minecraft.resources.ResourceKey;
  import net.minecraft.world.level.World;
  
 +// CraftBukkit start
 +import com.google.common.collect.LinkedHashMultimap;
 +import com.google.common.collect.Maps;
++import java.util.LinkedHashMap;
 +// CraftBukkit end
 +
  public class RecipeMap {
  
-     public static final RecipeMap EMPTY = new RecipeMap(ImmutableMultimap.of(), Map.of());
-@@ -35,11 +40,39 @@
+-    public static final RecipeMap EMPTY = new RecipeMap(ImmutableMultimap.of(), Map.of());
++    // CraftBukkit start - ordered
++    public static final RecipeMap EMPTY = new RecipeMap(ImmutableMultimap.of(), Maps.newLinkedHashMap());
+     public final Multimap<Recipes<?>, RecipeHolder<?>> byType;
+-    private final Map<ResourceKey<IRecipe<?>>, RecipeHolder<?>> byKey;
++    private final LinkedHashMap<ResourceKey<IRecipe<?>>, RecipeHolder<?>> byKey;
+ 
+-    private RecipeMap(Multimap<Recipes<?>, RecipeHolder<?>> multimap, Map<ResourceKey<IRecipe<?>>, RecipeHolder<?>> map) {
++    private RecipeMap(Multimap<Recipes<?>, RecipeHolder<?>> multimap, LinkedHashMap<ResourceKey<IRecipe<?>>, RecipeHolder<?>> map) {
++        // CraftBukkit end
+         this.byType = multimap;
+         this.byKey = map;
+     }
+@@ -35,11 +43,39 @@
              com_google_common_collect_immutablemap_builder.put(recipeholder.id(), recipeholder);
          }
  
 -        return new RecipeMap(builder.build(), com_google_common_collect_immutablemap_builder.build());
-+        // CraftBukkit start - mutable
-+        return new RecipeMap(LinkedHashMultimap.create(builder.build()), Maps.newHashMap(com_google_common_collect_immutablemap_builder.build()));
++        // CraftBukkit start - mutable, ordered
++        return new RecipeMap(LinkedHashMultimap.create(builder.build()), Maps.newLinkedHashMap(com_google_common_collect_immutablemap_builder.build()));
 +    }
 +
 +    public void addRecipe(RecipeHolder<?> irecipe) {
@@ -28,7 +41,7 @@
 +            throw new IllegalStateException("Duplicate recipe ignored with ID " + irecipe.id());
 +        } else {
 +            map.add(irecipe);
-+            byKey.put(irecipe.id(), irecipe);
++            byKey.putFirst(irecipe.id(), irecipe); // CraftBukkit - ordered
 +        }
      }
  
