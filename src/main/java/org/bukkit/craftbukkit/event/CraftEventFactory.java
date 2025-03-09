@@ -149,6 +149,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellResonateEvent;
 import org.bukkit.event.block.BellRingEvent;
+import org.bukkit.event.block.BlockBrushEvent;
 import org.bukkit.event.block.BlockDamageAbortEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockDispenseLootEvent;
@@ -1192,6 +1193,19 @@ public class CraftEventFactory {
         }
 
         return !event.isCancelled();
+    }
+
+    public static BlockBrushEvent callBlockBrushEvent(World world, BlockPosition pos, IBlockData newData, int flag, EntityHuman entity) {
+        Player player = (Player) entity.getBukkitEntity();
+
+        Block block = CraftBlock.at(world, pos);
+        CraftBlockState state = (CraftBlockState) block.getState();
+        state.setData(newData);
+
+        BlockBrushEvent event = new BlockBrushEvent(block, state, player);
+        Bukkit.getPluginManager().callEvent(event);
+
+        return event;
     }
 
     public static FluidLevelChangeEvent callFluidLevelChangeEvent(World world, BlockPosition block, IBlockData newData) {
