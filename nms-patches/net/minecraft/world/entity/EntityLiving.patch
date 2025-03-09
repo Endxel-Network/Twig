@@ -516,7 +516,7 @@
                      if (!flag) {
                          this.indicateDamage(d0, d1);
                      }
-@@ -1282,7 +1526,7 @@
+@@ -1282,12 +1526,12 @@
                  this.playHurtSound(damagesource);
              }
  
@@ -525,6 +525,12 @@
  
              if (flag2) {
                  this.lastDamageSource = damagesource;
+                 this.lastDamageStamp = this.level().getGameTime();
+-                Iterator iterator = this.getActiveEffects().iterator();
++                Iterator iterator = new LinkedList<>(this.getActiveEffects()).iterator(); // CraftBukkit - SPIGOT-7999: copy to prevent CME in unrelated events
+ 
+                 while (iterator.hasNext()) {
+                     MobEffect mobeffect = (MobEffect) iterator.next();
 @@ -1363,7 +1607,7 @@
      }
  
