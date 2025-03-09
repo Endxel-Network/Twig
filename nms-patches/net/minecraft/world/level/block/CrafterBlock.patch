@@ -21,7 +21,7 @@
                  ItemStack itemstack = ((RecipeCrafting) recipeholder.value()).assemble(craftinginput, worldserver.registryAccess());
  
 +                // CraftBukkit start
-+                CrafterCraftEvent event = CraftEventFactory.callCrafterCraftEvent(blockposition, worldserver, crafterblockentity, itemstack, recipeholder);
++                CrafterCraftEvent event = CraftEventFactory.callCrafterCraftEvent(blockposition, worldserver, crafterblockentity, itemstack, recipeholder.value().getRemainingItems(craftinginput), recipeholder);
 +                if (event.isCancelled()) {
 +                    return;
 +                }
@@ -30,6 +30,15 @@
                  if (itemstack.isEmpty()) {
                      worldserver.levelEvent(1050, blockposition, 0);
                  } else {
+@@ -196,7 +212,7 @@
+                     worldserver.setBlock(blockposition, (IBlockData) iblockdata.setValue(CrafterBlock.CRAFTING, true), 2);
+                     itemstack.onCraftedBySystem(worldserver);
+                     this.dispenseItem(worldserver, blockposition, crafterblockentity, itemstack, iblockdata, recipeholder);
+-                    Iterator iterator = ((RecipeCrafting) recipeholder.value()).getRemainingItems(craftinginput).iterator();
++                    Iterator<ItemStack> iterator = event.getRemainingItems().stream().map(CraftItemStack::asNMSCopy).iterator(); // CraftBukkit
+ 
+                     while (iterator.hasNext()) {
+                         ItemStack itemstack1 = (ItemStack) iterator.next();
 @@ -227,7 +243,25 @@
          ItemStack itemstack1 = itemstack.copy();
  

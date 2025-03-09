@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.core.EnumDirection;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.PacketPlayInCloseWindow;
 import net.minecraft.resources.MinecraftKey;
 import net.minecraft.server.level.EntityPlayer;
@@ -1299,12 +1300,13 @@ public class CraftEventFactory {
         return CraftItemStack.asNMSCopy(bitem);
     }
 
-    public static CrafterCraftEvent callCrafterCraftEvent(BlockPosition pos, World world, InventoryCrafting inventoryCrafting, ItemStack result, RecipeHolder<RecipeCrafting> holder) {
+    public static CrafterCraftEvent callCrafterCraftEvent(BlockPosition pos, World world, InventoryCrafting inventoryCrafting, ItemStack result, NonNullList<ItemStack> remaining, RecipeHolder<RecipeCrafting> holder) {
         CraftBlock block = CraftBlock.at(world, pos);
         CraftItemStack itemStack = CraftItemStack.asCraftMirror(result);
         CraftingRecipe craftingRecipe = (CraftingRecipe) holder.toBukkitRecipe();
+        List<org.bukkit.inventory.ItemStack> bukkitRemaining = remaining.stream().map(CraftItemStack::asCraftMirror).collect(Collectors.toCollection(ArrayList::new));
 
-        CrafterCraftEvent crafterCraftEvent = new CrafterCraftEvent(block, craftingRecipe, itemStack);
+        CrafterCraftEvent crafterCraftEvent = new CrafterCraftEvent(block, craftingRecipe, itemStack, bukkitRemaining);
         Bukkit.getPluginManager().callEvent(crafterCraftEvent);
         return crafterCraftEvent;
     }
