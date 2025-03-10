@@ -12,11 +12,13 @@
 
     <files>
         <file>
+            <fileMode>0644</fileMode>
             <destName>libraries.list</destName>
             <outputDirectory>META-INF</outputDirectory>
             <source>${project.build.directory}/dependencies-checksums.sha</source>
         </file>
         <file>
+            <fileMode>0644</fileMode>
             <destName>versions.list</destName>
             <outputDirectory>META-INF</outputDirectory>
             <source>${project.build.directory}/artifacts-checksums.sha</source>
