@@ -554,6 +554,8 @@
                             <descriptors>
                                 <descriptor>${project.basedir}/src/assembly/bootstrap.xml</descriptor>
                             </descriptors>
+                            <!-- make build reproducible with different umasks -->
+                            <ignorePermissions>true</ignorePermissions>
                         </configuration>
                     </execution>
                 </executions>
