@@ -1959,9 +1959,9 @@ public class CraftEventFactory {
 
         EntityKnockbackEvent event;
         if (attacker != null) {
-            event = new EntityKnockbackByEntityEvent(entity, attacker.getBukkitEntity(), cause, force, new Vector(-raw.x, raw.y, -raw.z), new Vector(x, y, z));
+            event = new EntityKnockbackByEntityEvent(entity, attacker.getBukkitEntity(), cause, force, bukkitRaw, new Vector(x, y, z));
         } else {
-            event = new EntityKnockbackEvent(entity, cause, force, new Vector(-raw.x, raw.y, -raw.z), new Vector(x, y, z));
+            event = new EntityKnockbackEvent(entity, cause, force, bukkitRaw, new Vector(x, y, z));
         }
 
         Bukkit.getPluginManager().callEvent(event);
