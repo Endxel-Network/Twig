@@ -20,7 +20,7 @@
 +                // CraftBukkit start - EntityKnockbackEvent
 +                Vec3D vec3dPush = new Vec3D(vec3d1.x, 0.699999988079071D, vec3d1.z);
 +                Vec3D result = entity.getDeltaMovement().add(vec3dPush);
-+                org.bukkit.event.entity.EntityKnockbackEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callEntityKnockbackEvent((org.bukkit.craftbukkit.entity.CraftLivingEntity) entityliving.getBukkitEntity(), entity1, org.bukkit.event.entity.EntityKnockbackEvent.KnockbackCause.ENTITY_ATTACK, d0, result, vec3dPush.x, vec3dPush.y, vec3dPush.z);
++                org.bukkit.event.entity.EntityKnockbackEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callEntityKnockbackEvent((org.bukkit.craftbukkit.entity.CraftLivingEntity) entityliving.getBukkitEntity(), entity, org.bukkit.event.entity.EntityKnockbackEvent.KnockbackCause.ENTITY_ATTACK, d0, result, vec3dPush.x, vec3dPush.y, vec3dPush.z);
 +                if (!event.isCancelled()) {
 +                    entityliving.push(CraftVector.toNMS(event.getFinalKnockback()));
 +                }
