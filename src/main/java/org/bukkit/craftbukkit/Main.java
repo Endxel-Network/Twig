@@ -162,8 +162,8 @@ public class Main {
             }
 
             float javaVersion = Float.parseFloat(System.getProperty("java.class.version"));
-            if (javaVersion > 67.0) {
-                System.err.println("Unsupported Java detected (" + javaVersion + "). Only up to Java 23 is supported.");
+            if (javaVersion > 68.0) {
+                System.err.println("Unsupported Java detected (" + javaVersion + "). Only up to Java 24 is supported.");
                 return;
             }
 
