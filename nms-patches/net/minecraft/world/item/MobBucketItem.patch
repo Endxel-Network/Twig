@@ -16,7 +16,7 @@
  
          if (entityinsentient != null) {
 -            worldserver.addFreshEntityWithPassengers(entityinsentient);
-+            worldserver.addFreshEntityWithPassengers(entityinsentient, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG); // CraftBukkit
++            worldserver.addFreshEntityWithPassengers(entityinsentient, CreatureSpawnEvent.SpawnReason.BUCKET); // CraftBukkit
              entityinsentient.playAmbientSound();
          }
  
