@@ -10,6 +10,7 @@ import net.minecraft.world.entity.npc.EntityVillager;
 import net.minecraft.world.flag.FeatureFlags;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.entity.CraftEntityTypes;
 import org.bukkit.support.environment.AllFeatures;
 import org.junit.jupiter.api.Test;
@@ -99,6 +100,7 @@ public class VillagerTest {
         WorldServer worldServer = mock(withSettings().stubOnly());
         when(worldServer.getMinecraftWorld()).thenReturn(worldServer);
         when(worldServer.enabledFeatures()).thenReturn(FeatureFlags.VANILLA_SET);
+        when(worldServer.registryAccess()).thenReturn(CraftRegistry.getMinecraftRegistry());
         Location location = new Location(world, 0, 0, 0, 0, 0);
         CraftEntityTypes.SpawnData spawnData = new CraftEntityTypes.SpawnData(worldServer, location, false, false);
         EntityVillager entityVillager = (EntityVillager) CraftEntityTypes.getEntityTypeData(EntityType.VILLAGER).spawnFunction().apply(spawnData);

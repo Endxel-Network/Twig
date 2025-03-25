@@ -11,7 +11,7 @@
  public class EntityShulkerBullet extends IProjectile {
  
      private static final double SPEED = 0.15D;
-@@ -60,8 +64,21 @@
+@@ -60,7 +64,20 @@
          this.finalTarget = entity;
          this.currentMoveDirection = EnumDirection.UP;
          this.selectNextMoveDirection(enumdirection_enumaxis);
@@ -21,19 +21,29 @@
 +    // CraftBukkit start
 +    public Entity getTarget() {
 +        return this.finalTarget;
-     }
- 
++    }
++
 +    public void setTarget(Entity e) {
 +        this.finalTarget = e;
 +        this.currentMoveDirection = EnumDirection.UP;
 +        this.selectNextMoveDirection(EnumDirection.EnumAxis.X);
-+    }
+     }
 +    // CraftBukkit end
-+
+ 
      @Override
      public SoundCategory getSoundSource() {
-         return SoundCategory.HOSTILE;
-@@ -194,7 +211,7 @@
+@@ -88,8 +105,8 @@
+         this.targetDeltaX = nbttagcompound.getDoubleOr("TXD", 0.0D);
+         this.targetDeltaY = nbttagcompound.getDoubleOr("TYD", 0.0D);
+         this.targetDeltaZ = nbttagcompound.getDoubleOr("TZD", 0.0D);
+-        this.currentMoveDirection = (EnumDirection) nbttagcompound.read("Dir", EnumDirection.LEGACY_ID_CODEC).orElse((Object) null);
+-        this.targetId = (UUID) nbttagcompound.read("Target", UUIDUtil.CODEC).orElse((Object) null);
++        this.currentMoveDirection = (EnumDirection) nbttagcompound.read("Dir", EnumDirection.LEGACY_ID_CODEC).orElse(null); // CraftBukkit - decompile error
++        this.targetId = (UUID) nbttagcompound.read("Target", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
+     }
+ 
+     @Override
+@@ -185,7 +202,7 @@
      @Override
      public void checkDespawn() {
          if (this.level().getDifficulty() == EnumDifficulty.PEACEFUL) {
@@ -42,7 +52,7 @@
          }
  
      }
-@@ -239,7 +256,7 @@
+@@ -231,7 +248,7 @@
          }
  
          if (movingobjectposition != null && this.isAlive() && movingobjectposition.getType() != MovingObjectPosition.EnumMovingObjectType.MISS) {
@@ -51,7 +61,7 @@
          }
  
          ProjectileHelper.rotateTowardsMovement(this, 0.5F);
-@@ -312,7 +329,7 @@
+@@ -309,7 +326,7 @@
              if (entity instanceof EntityLiving) {
                  EntityLiving entityliving1 = (EntityLiving) entity;
  
@@ -60,7 +70,7 @@
              }
          }
  
-@@ -326,14 +343,20 @@
+@@ -323,14 +340,20 @@
      }
  
      private void destroy() {
@@ -72,7 +82,7 @@
 +    private void destroy(EntityRemoveEvent.Cause cause) {
 +        this.discard(cause);
 +        // CraftBukkit end
-         this.level().gameEvent((Holder) GameEvent.ENTITY_DAMAGE, this.position(), GameEvent.a.of((Entity) this));
+         this.level().gameEvent(GameEvent.ENTITY_DAMAGE, this.position(), GameEvent.a.of((Entity) this));
      }
  
      @Override
@@ -83,7 +93,7 @@
      }
  
      @Override
-@@ -348,9 +371,14 @@
+@@ -345,9 +368,14 @@
  
      @Override
      public boolean hurtServer(WorldServer worldserver, DamageSource damagesource, float f) {

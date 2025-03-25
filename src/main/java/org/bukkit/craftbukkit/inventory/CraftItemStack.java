@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.Optional;
 import net.minecraft.advancements.critereon.CriterionConditionItem;
 import net.minecraft.advancements.critereon.CriterionConditionValue;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.world.item.Item;
@@ -95,9 +96,9 @@ public final class CraftItemStack extends ItemStack {
 
     public static CriterionConditionItem asCriterionConditionItem(ItemStack original) {
         net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(original);
-        DataComponentPredicate predicate = DataComponentPredicate.allOf(PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, nms.getComponentsPatch()));
+        DataComponentExactPredicate predicate = DataComponentExactPredicate.allOf(PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, nms.getComponentsPatch()));
 
-        return new CriterionConditionItem(Optional.of(HolderSet.direct(nms.getItemHolder())), CriterionConditionValue.IntegerRange.ANY, predicate, Collections.emptyMap());
+        return new CriterionConditionItem(Optional.of(HolderSet.direct(nms.getItemHolder())), CriterionConditionValue.IntegerRange.ANY, new DataComponentMatchers(predicate, Collections.emptyMap()));
     }
 
     net.minecraft.world.item.ItemStack handle;

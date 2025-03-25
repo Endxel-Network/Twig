@@ -28,7 +28,7 @@
 +            }
 +            // CraftBukkit end
 +
-             EntityExperienceOrb.award((WorldServer) this.level(), this.position(), i);
+             EntityExperienceOrb.award((WorldServer) this.level(), movingobjectposition.getLocation(), i);
 -            this.discard();
 +            this.discard(EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause
          }

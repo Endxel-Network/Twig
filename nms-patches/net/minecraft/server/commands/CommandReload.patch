@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/commands/CommandReload.java
 +++ b/net/minecraft/server/commands/CommandReload.java
-@@ -44,6 +44,16 @@
+@@ -40,6 +40,16 @@
          return collection1;
      }
  

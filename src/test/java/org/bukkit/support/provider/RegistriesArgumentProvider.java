@@ -9,8 +9,11 @@ import net.minecraft.sounds.SoundEffect;
 import net.minecraft.world.effect.MobEffectList;
 import net.minecraft.world.entity.ai.attributes.AttributeBase;
 import net.minecraft.world.entity.animal.CatVariant;
-import net.minecraft.world.entity.animal.FrogVariant;
-import net.minecraft.world.entity.animal.WolfVariant;
+import net.minecraft.world.entity.animal.ChickenVariant;
+import net.minecraft.world.entity.animal.CowVariant;
+import net.minecraft.world.entity.animal.PigVariant;
+import net.minecraft.world.entity.animal.frog.FrogVariant;
+import net.minecraft.world.entity.animal.wolf.WolfVariant;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
@@ -43,7 +46,10 @@ import org.bukkit.craftbukkit.block.banner.CraftPatternType;
 import org.bukkit.craftbukkit.damage.CraftDamageType;
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.entity.CraftCat;
+import org.bukkit.craftbukkit.entity.CraftChicken;
+import org.bukkit.craftbukkit.entity.CraftCow;
 import org.bukkit.craftbukkit.entity.CraftFrog;
+import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.craftbukkit.entity.CraftVillager;
 import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.craftbukkit.generator.structure.CraftStructure;
@@ -57,7 +63,10 @@ import org.bukkit.craftbukkit.potion.CraftPotionEffectType;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Cat;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.Frog;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.generator.structure.Structure;
@@ -103,7 +112,9 @@ public class RegistriesArgumentProvider implements ArgumentsProvider {
         register(Cat.Type.class, Registries.CAT_VARIANT, CraftCat.CraftType.class, CatVariant.class);
         register(MapCursor.Type.class, Registries.MAP_DECORATION_TYPE, CraftMapCursor.CraftType.class, MapDecorationType.class);
         register(PatternType.class, Registries.BANNER_PATTERN, CraftPatternType.class, EnumBannerPatternType.class);
-
+        register(Pig.Variant.class, Registries.PIG_VARIANT, CraftPig.CraftVariant.class, PigVariant.class);
+        register(Cow.Variant.class, Registries.COW_VARIANT, CraftCow.CraftVariant.class, CowVariant.class);
+        register(Chicken.Variant.class, Registries.CHICKEN_VARIANT, CraftChicken.CraftVariant.class, ChickenVariant.class);
     }
 
     private static void register(Class bukkit, ResourceKey registry, Class craft, Class minecraft) {

@@ -14,11 +14,16 @@
  
  public interface NeighborUpdater {
  
-@@ -50,6 +57,17 @@
+@@ -45,6 +52,22 @@
  
      static void executeUpdate(World world, IBlockData iblockdata, BlockPosition blockposition, Block block, @Nullable Orientation orientation, boolean flag) {
          try {
 +            // CraftBukkit start
++            // BUKKIT-4923: Ignore Block Physics in Chunk population.
++            if (world.populating) {
++                return;
++            }
++
 +            CraftWorld cworld = ((WorldServer) world).getWorld();
 +            if (cworld != null) {
 +                BlockPhysicsEvent event = new BlockPhysicsEvent(CraftBlock.at(world, blockposition), CraftBlockData.fromData(iblockdata));

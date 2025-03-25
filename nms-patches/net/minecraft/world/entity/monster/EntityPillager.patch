@@ -10,7 +10,7 @@
 +
  public class EntityPillager extends EntityIllagerAbstract implements ICrossbow, InventoryCarrier {
  
-     private static final DataWatcherObject<Boolean> IS_CHARGING_CROSSBOW = DataWatcher.defineId(EntityPillager.class, DataWatcherRegistry.BOOLEAN);
+     private static final DataWatcherObject<Boolean> IS_CHARGING_CROSSBOW = DataWatcher.<Boolean>defineId(EntityPillager.class, DataWatcherRegistry.BOOLEAN);
 @@ -206,7 +210,7 @@
              ItemStack itemstack1 = this.inventory.addItem(itemstack);
  

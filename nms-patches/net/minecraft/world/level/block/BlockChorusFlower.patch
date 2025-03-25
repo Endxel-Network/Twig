@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockChorusFlower.java
 +++ b/net/minecraft/world/level/block/BlockChorusFlower.java
-@@ -23,6 +23,8 @@
+@@ -22,6 +22,8 @@
  import net.minecraft.world.phys.MovingObjectPositionBlock;
  import net.minecraft.world.phys.shapes.VoxelShape;
  
@@ -9,7 +9,7 @@
  public class BlockChorusFlower extends Block {
  
      public static final MapCodec<BlockChorusFlower> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -103,8 +105,12 @@
+@@ -101,8 +103,12 @@
                  }
  
                  if (flag && allNeighborsEmpty(worldserver, blockposition1, (EnumDirection) null) && worldserver.isEmptyBlock(blockposition.above(2))) {
@@ -22,9 +22,9 @@
 +                    }
 +                    // CraftBukkit end
                  } else if (i < 4) {
-                     j = randomsource.nextInt(4);
-                     if (flag1) {
-@@ -118,18 +124,30 @@
+                     int l = randomsource.nextInt(4);
+ 
+@@ -117,18 +123,30 @@
                          BlockPosition blockposition2 = blockposition.relative(enumdirection);
  
                          if (worldserver.isEmptyBlock(blockposition2) && worldserver.isEmptyBlock(blockposition2.below()) && allNeighborsEmpty(worldserver, blockposition2, enumdirection.getOpposite())) {
@@ -59,7 +59,7 @@
                  }
  
              }
-@@ -267,6 +285,11 @@
+@@ -258,6 +276,11 @@
  
          if (world instanceof WorldServer worldserver) {
              if (iprojectile.mayInteract(worldserver, blockposition) && iprojectile.mayBreak(worldserver)) {

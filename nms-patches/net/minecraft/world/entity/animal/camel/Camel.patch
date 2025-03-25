@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/camel/Camel.java
 +++ b/net/minecraft/world/entity/animal/camel/Camel.java
-@@ -50,6 +50,10 @@
+@@ -55,6 +55,10 @@
  import net.minecraft.world.phys.Vec2F;
  import net.minecraft.world.phys.Vec3D;
  
@@ -11,7 +11,7 @@
  public class Camel extends EntityHorseAbstract {
  
      public static final float BABY_SCALE = 0.45F;
-@@ -143,7 +147,7 @@
+@@ -153,7 +157,7 @@
          GameProfilerFiller gameprofilerfiller = Profiler.get();
  
          gameprofilerfiller.push("camelBrain");
@@ -20,7 +20,7 @@
  
          behaviorcontroller.tick(worldserver, this);
          gameprofilerfiller.pop();
-@@ -454,9 +458,15 @@
+@@ -464,9 +468,15 @@
      }
  
      @Override

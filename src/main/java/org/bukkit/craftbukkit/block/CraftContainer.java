@@ -4,7 +4,8 @@ import java.util.Collections;
 import java.util.Optional;
 import net.minecraft.advancements.critereon.CriterionConditionItem;
 import net.minecraft.advancements.critereon.CriterionConditionValue;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.world.ChestLock;
@@ -33,7 +34,7 @@ public abstract class CraftContainer<T extends TileEntityContainer> extends Craf
 
     @Override
     public String getLock() {
-        Optional<? extends IChatBaseComponent> customName = this.getSnapshot().lockKey.predicate().components().asPatch().get(DataComponents.CUSTOM_NAME);
+        Optional<? extends IChatBaseComponent> customName = this.getSnapshot().lockKey.predicate().components().exact().asPatch().get(DataComponents.CUSTOM_NAME);
 
         return (customName != null) ? customName.map(CraftChatMessage::fromComponent).orElse("") : "";
     }
@@ -43,8 +44,8 @@ public abstract class CraftContainer<T extends TileEntityContainer> extends Craf
         if (key == null) {
             this.getSnapshot().lockKey = ChestLock.NO_LOCK;
         } else {
-            DataComponentPredicate predicate = DataComponentPredicate.builder().expect(DataComponents.CUSTOM_NAME, CraftChatMessage.fromStringOrNull(key)).build();
-            this.getSnapshot().lockKey = new ChestLock(new CriterionConditionItem(Optional.empty(), CriterionConditionValue.IntegerRange.ANY, predicate, Collections.emptyMap()));
+            DataComponentExactPredicate predicate = DataComponentExactPredicate.builder().expect(DataComponents.CUSTOM_NAME, CraftChatMessage.fromStringOrNull(key)).build();
+            this.getSnapshot().lockKey = new ChestLock(new CriterionConditionItem(Optional.empty(), CriterionConditionValue.IntegerRange.ANY, new DataComponentMatchers(predicate, Collections.emptyMap())));
         }
     }
 

@@ -1,6 +1,6 @@
 --- a/net/minecraft/commands/CommandDispatcher.java
 +++ b/net/minecraft/commands/CommandDispatcher.java
-@@ -139,6 +139,14 @@
+@@ -138,6 +138,14 @@
  import net.minecraft.world.level.GameRules;
  import org.slf4j.Logger;
  
@@ -15,7 +15,7 @@
  public class CommandDispatcher {
  
      private static final ThreadLocal<ExecutionContext<CommandListenerWrapper>> CURRENT_EXECUTION_CONTEXT = new ThreadLocal();
-@@ -151,6 +159,7 @@
+@@ -150,6 +158,7 @@
      private final com.mojang.brigadier.CommandDispatcher<CommandListenerWrapper> dispatcher = new com.mojang.brigadier.CommandDispatcher();
  
      public CommandDispatcher(CommandDispatcher.ServerType commanddispatcher_servertype, CommandBuildContext commandbuildcontext) {
@@ -23,7 +23,7 @@
          CommandAdvancement.register(this.dispatcher);
          CommandAttribute.register(this.dispatcher, commandbuildcontext);
          CommandExecute.register(this.dispatcher, commandbuildcontext);
-@@ -252,6 +261,11 @@
+@@ -251,6 +260,11 @@
              CommandPublish.register(this.dispatcher);
          }
  
@@ -35,7 +35,7 @@
          this.dispatcher.setConsumer(ExecutionCommandSource.resultConsumer());
      }
  
-@@ -262,18 +276,65 @@
+@@ -261,18 +275,65 @@
          return new ParseResults(commandcontextbuilder1, parseresults.getReader(), parseresults.getExceptions());
      }
  
@@ -103,7 +103,7 @@
  
          try {
              if (contextchain != null) {
-@@ -307,7 +368,7 @@
+@@ -306,7 +367,7 @@
      }
  
      @Nullable
@@ -112,16 +112,16 @@
          try {
              validateParseResults(parseresults);
              return (ContextChain) ContextChain.tryFlatten(parseresults.getContext().build(s)).orElseThrow(() -> {
-@@ -318,7 +379,7 @@
+@@ -317,7 +378,7 @@
              if (commandsyntaxexception.getInput() != null && commandsyntaxexception.getCursor() >= 0) {
                  int i = Math.min(commandsyntaxexception.getInput().length(), commandsyntaxexception.getCursor());
                  IChatMutableComponent ichatmutablecomponent = IChatBaseComponent.empty().withStyle(EnumChatFormat.GRAY).withStyle((chatmodifier) -> {
--                    return chatmodifier.withClickEvent(new ChatClickable(ChatClickable.EnumClickAction.SUGGEST_COMMAND, "/" + s));
-+                    return chatmodifier.withClickEvent(new ChatClickable(ChatClickable.EnumClickAction.SUGGEST_COMMAND, label)); // CraftBukkit
+-                    return chatmodifier.withClickEvent(new ChatClickable.SuggestCommand("/" + s));
++                    return chatmodifier.withClickEvent(new ChatClickable.SuggestCommand("/" + label)); // CraftBukkit
                  });
  
                  if (i > 10) {
-@@ -368,7 +429,7 @@
+@@ -367,7 +428,7 @@
  
                  executioncontext1.close();
              } finally {
@@ -130,7 +130,7 @@
              }
          } else {
              consumer.accept(executioncontext);
-@@ -377,11 +438,36 @@
+@@ -376,18 +437,43 @@
      }
  
      public void sendCommands(EntityPlayer entityplayer) {
@@ -168,16 +168,15 @@
          entityplayer.connection.send(new PacketPlayOutCommands(rootcommandnode));
      }
  
-@@ -392,7 +478,7 @@
-             CommandNode<CommandListenerWrapper> commandnode2 = (CommandNode) iterator.next();
- 
+     private void fillUsableCommands(CommandNode<CommandListenerWrapper> commandnode, CommandNode<ICompletionProvider> commandnode1, CommandListenerWrapper commandlistenerwrapper, Map<CommandNode<CommandListenerWrapper>, CommandNode<ICompletionProvider>> map) {
+         for (CommandNode<CommandListenerWrapper> commandnode2 : commandnode.getChildren()) {
              if (commandnode2.canUse(commandlistenerwrapper)) {
 -                ArgumentBuilder<ICompletionProvider, ?> argumentbuilder = commandnode2.createBuilder();
 +                ArgumentBuilder argumentbuilder = commandnode2.createBuilder(); // CraftBukkit - decompile error
  
                  argumentbuilder.requires((icompletionprovider) -> {
                      return true;
-@@ -415,7 +501,7 @@
+@@ -410,7 +496,7 @@
                      argumentbuilder.redirect((CommandNode) map.get(argumentbuilder.getRedirect()));
                  }
  
@@ -186,12 +185,3 @@
  
                  map.put(commandnode2, commandnode3);
                  commandnode1.addChild(commandnode3);
-@@ -481,7 +567,7 @@
-             }
- 
-             private <T> HolderLookup.b.a<T> createLookup(final HolderLookup.b<T> holderlookup_b) {
--                return new HolderLookup.b.a<T>(this) {
-+                return new HolderLookup.b.a<T>() { // CraftBukkit - decompile error
-                     @Override
-                     public HolderLookup.b<T> parent() {
-                         return holderlookup_b;

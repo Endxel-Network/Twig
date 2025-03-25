@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/crafting/IRecipe.java
 +++ b/net/minecraft/world/item/crafting/IRecipe.java
-@@ -44,4 +44,6 @@
+@@ -46,4 +46,6 @@
      }
  
      RecipeBookCategory recipeBookCategory();

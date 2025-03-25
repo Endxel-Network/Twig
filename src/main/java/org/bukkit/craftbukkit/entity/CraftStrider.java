@@ -1,7 +1,10 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.EnumItemSlot;
 import net.minecraft.world.entity.monster.EntityStrider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Strider;
@@ -29,7 +32,7 @@ public class CraftStrider extends CraftAnimals implements Strider {
 
     @Override
     public void setSaddle(boolean saddled) {
-        getHandle().steering.setSaddle(saddled);
+        getHandle().setItemSlot(EnumItemSlot.SADDLE, new ItemStack(Items.SADDLE));
     }
 
     @Override

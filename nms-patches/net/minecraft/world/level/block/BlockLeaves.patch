@@ -6,10 +6,10 @@
  
 +import org.bukkit.event.block.LeavesDecayEvent; // CraftBukkit
 +
- public class BlockLeaves extends Block implements IBlockWaterlogged {
+ public abstract class BlockLeaves extends Block implements IBlockWaterlogged {
  
-     public static final MapCodec<BlockLeaves> CODEC = simpleCodec(BlockLeaves::new);
-@@ -59,6 +61,14 @@
+     public static final int DECAY_DISTANCE = 7;
+@@ -58,6 +60,14 @@
      @Override
      protected void randomTick(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, RandomSource randomsource) {
          if (this.decaying(iblockdata)) {

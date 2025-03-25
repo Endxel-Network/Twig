@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntitySnowman.java
 +++ b/net/minecraft/world/entity/animal/EntitySnowman.java
-@@ -43,6 +43,10 @@
+@@ -42,6 +42,10 @@
  import net.minecraft.world.level.storage.loot.LootTables;
  import net.minecraft.world.phys.Vec3D;
  
@@ -10,8 +10,8 @@
 +
  public class EntitySnowman extends EntityGolem implements IShearable, IRangedEntity {
  
-     private static final DataWatcherObject<Byte> DATA_PUMPKIN_ID = DataWatcher.defineId(EntitySnowman.class, DataWatcherRegistry.BYTE);
-@@ -100,7 +104,7 @@
+     private static final DataWatcherObject<Byte> DATA_PUMPKIN_ID = DataWatcher.<Byte>defineId(EntitySnowman.class, DataWatcherRegistry.BYTE);
+@@ -97,7 +101,7 @@
  
          if (world instanceof WorldServer worldserver) {
              if (this.level().getBiome(this.blockPosition()).is(BiomeTags.SNOW_GOLEM_MELTS)) {
@@ -20,7 +20,7 @@
              }
  
              if (!worldserver.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-@@ -116,7 +120,11 @@
+@@ -113,7 +117,11 @@
                  BlockPosition blockposition = new BlockPosition(j, k, l);
  
                  if (this.level().getBlockState(blockposition).isAir() && iblockdata.canSurvive(this.level(), blockposition)) {
@@ -30,10 +30,10 @@
 +                        continue;
 +                    }
 +                    // CraftBukkit end
-                     this.level().gameEvent((Holder) GameEvent.BLOCK_PLACE, blockposition, GameEvent.a.of(this, iblockdata));
+                     this.level().gameEvent(GameEvent.BLOCK_PLACE, blockposition, GameEvent.a.of(this, iblockdata));
                  }
              }
-@@ -153,6 +161,11 @@
+@@ -150,6 +158,11 @@
              if (world instanceof WorldServer) {
                  WorldServer worldserver = (WorldServer) world;
  
@@ -45,8 +45,8 @@
                  this.shear(worldserver, SoundCategory.PLAYERS, itemstack);
                  this.gameEvent(GameEvent.SHEAR, entityhuman);
                  itemstack.hurtAndBreak(1, entityhuman, getSlotForHand(enumhand));
-@@ -169,7 +182,9 @@
-         worldserver.playSound((EntityHuman) null, (Entity) this, SoundEffects.SNOW_GOLEM_SHEAR, soundcategory, 1.0F, 1.0F);
+@@ -166,7 +179,9 @@
+         worldserver.playSound((Entity) null, (Entity) this, SoundEffects.SNOW_GOLEM_SHEAR, soundcategory, 1.0F, 1.0F);
          this.setPumpkin(false);
          this.dropFromShearingLootTable(worldserver, LootTables.SHEAR_SNOW_GOLEM, itemstack, (worldserver1, itemstack1) -> {
 +            this.forceDrops = true; // CraftBukkit

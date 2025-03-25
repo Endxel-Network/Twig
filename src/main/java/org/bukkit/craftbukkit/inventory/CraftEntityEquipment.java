@@ -249,11 +249,7 @@ public class CraftEntityEquipment implements EntityEquipment {
     private void setDropChance(EnumItemSlot slot, float chance) {
         Preconditions.checkArgument(entity.getHandle() instanceof EntityInsentient, "Cannot set drop chance for non-Mob entity");
 
-        if (slot == EnumItemSlot.MAINHAND || slot == EnumItemSlot.OFFHAND) {
-            ((EntityInsentient) entity.getHandle()).handDropChances[slot.getIndex()] = chance;
-        } else {
-            ((EntityInsentient) entity.getHandle()).armorDropChances[slot.getIndex()] = chance;
-        }
+        ((EntityInsentient) entity.getHandle()).setDropChance(slot, chance);
     }
 
     private float getDropChance(EnumItemSlot slot) {
@@ -261,10 +257,6 @@ public class CraftEntityEquipment implements EntityEquipment {
             return 1;
         }
 
-        if (slot == EnumItemSlot.MAINHAND || slot == EnumItemSlot.OFFHAND) {
-            return ((EntityInsentient) entity.getHandle()).handDropChances[slot.getIndex()];
-        } else {
-            return ((EntityInsentient) entity.getHandle()).armorDropChances[slot.getIndex()];
-        }
+        return ((EntityInsentient) entity.getHandle()).getDropChances().byEquipment(slot);
     }
 }

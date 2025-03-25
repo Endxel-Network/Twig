@@ -24,6 +24,6 @@ public class CraftSmithingTransformRecipe extends SmithingTransformRecipe implem
     public void addToCraftingManager() {
         ItemStack result = this.getResult();
 
-        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmithingTransformRecipe(toNMSOptional(this.getTemplate(), false), toNMSOptional(this.getBase(), false), toNMSOptional(this.getAddition(), false), CraftItemStack.asNMSCopy(result))));
+        MinecraftServer.getServer().getRecipeManager().addRecipe(new RecipeHolder<>(CraftRecipe.toMinecraft(this.getKey()), new net.minecraft.world.item.crafting.SmithingTransformRecipe(toNMSOptional(this.getTemplate(), false), toNMS(this.getBase(), false), toNMSOptional(this.getAddition(), false), toNMS(result))));
     }
 }

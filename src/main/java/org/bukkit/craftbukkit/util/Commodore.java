@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -207,6 +208,11 @@ public class Commodore {
         ClassVisitor visitor = cw;
         if (enumCompatibility) {
             visitor = new LimitedClassRemapper(cw, new SimpleRemapper(ENUM_RENAMES));
+        }
+
+        Map<String, String> renames = new HashMap<>(RENAMES);
+        if (pluginVersion.isOlderThan(ApiVersion.ABSTRACT_COW)) {
+            renames.put("org/bukkit/entity/Cow", "org/bukkit/entity/AbstractCow");
         }
 
         cr.accept(new ClassRemapper(new ClassVisitor(Opcodes.ASM9, visitor) {
@@ -598,7 +604,7 @@ public class Commodore {
                     }
                 };
             }
-        }, new SimpleRemapper(RENAMES)), 0);
+        }, new SimpleRemapper(renames)), 0);
 
         return cw.toByteArray();
     }

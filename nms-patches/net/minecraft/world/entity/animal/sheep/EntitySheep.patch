@@ -1,11 +1,10 @@
---- a/net/minecraft/world/entity/animal/EntitySheep.java
-+++ b/net/minecraft/world/entity/animal/EntitySheep.java
-@@ -50,6 +50,12 @@
+--- a/net/minecraft/world/entity/animal/sheep/EntitySheep.java
++++ b/net/minecraft/world/entity/animal/sheep/EntitySheep.java
+@@ -53,6 +53,11 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.storage.loot.LootTables;
  
 +// CraftBukkit start
-+import net.minecraft.world.item.Item;
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +import org.bukkit.event.entity.SheepRegrowWoolEvent;
 +// CraftBukkit end
@@ -13,7 +12,7 @@
  public class EntitySheep extends EntityAnimal implements IShearable {
  
      private static final int EAT_ANIMATION_TICKS = 40;
-@@ -160,6 +166,11 @@
+@@ -163,6 +168,11 @@
                  WorldServer worldserver = (WorldServer) world;
  
                  if (this.readyForShearing()) {
@@ -25,8 +24,8 @@
                      this.shear(worldserver, SoundCategory.PLAYERS, itemstack);
                      this.gameEvent(GameEvent.SHEAR, entityhuman);
                      itemstack.hurtAndBreak(1, entityhuman, getSlotForHand(enumhand));
-@@ -178,7 +189,9 @@
-         worldserver.playSound((EntityHuman) null, (Entity) this, SoundEffects.SHEEP_SHEAR, soundcategory, 1.0F, 1.0F);
+@@ -181,7 +191,9 @@
+         worldserver.playSound((Entity) null, (Entity) this, SoundEffects.SHEEP_SHEAR, soundcategory, 1.0F, 1.0F);
          this.dropFromShearingLootTable(worldserver, LootTables.SHEAR_SHEEP, itemstack, (worldserver1, itemstack1) -> {
              for (int i = 0; i < itemstack1.getCount(); ++i) {
 +                this.forceDrops = true; // CraftBukkit
@@ -35,7 +34,7 @@
  
                  if (entityitem != null) {
                      entityitem.setDeltaMovement(entityitem.getDeltaMovement().add((double) ((this.random.nextFloat() - this.random.nextFloat()) * 0.1F), (double) (this.random.nextFloat() * 0.05F), (double) ((this.random.nextFloat() - this.random.nextFloat()) * 0.1F)));
-@@ -276,6 +289,12 @@
+@@ -301,6 +313,12 @@
  
      @Override
      public void ate() {

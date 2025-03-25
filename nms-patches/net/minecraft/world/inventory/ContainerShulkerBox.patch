@@ -43,8 +43,8 @@
 -        iinventory.startOpen(playerinventory.player);
 +        this.player = playerinventory; // CraftBukkit - save player
 +        // iinventory.startOpen(playerinventory.player); // CraftBukkit - don't startOpen until menu actually opens
-         boolean flag = true;
-         boolean flag1 = true;
+         int j = 3;
+         int k = 9;
  
 @@ -34,6 +60,7 @@
  

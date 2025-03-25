@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/grower/WorldGenTreeProvider.java
 +++ b/net/minecraft/world/level/block/grower/WorldGenTreeProvider.java
-@@ -24,6 +24,12 @@
+@@ -23,6 +23,12 @@
  import net.minecraft.world.level.chunk.ChunkGenerator;
  import net.minecraft.world.level.levelgen.feature.WorldGenFeatureConfigured;
  
@@ -13,7 +13,7 @@
  public final class WorldGenTreeProvider {
  
      private static final Map<String, WorldGenTreeProvider> GROWERS = new Object2ObjectArrayMap();
-@@ -75,21 +81,22 @@
+@@ -74,21 +80,22 @@
              }
          }
  
@@ -39,7 +39,7 @@
                  for (int i = 0; i >= -1; --i) {
                      for (int j = 0; j >= -1; --j) {
                          if (isTwoByTwoSapling(iblockdata, worldserver, blockposition, i, j)) {
-@@ -120,11 +127,12 @@
+@@ -119,11 +126,12 @@
          if (resourcekey1 == null) {
              return false;
          } else {
@@ -50,11 +50,11 @@
                  return false;
              } else {
 +                setTreeType(holder1); // CraftBukkit
-                 WorldGenFeatureConfigured<?, ?> worldgenfeatureconfigured1 = (WorldGenFeatureConfigured) holder1.value();
+                 WorldGenFeatureConfigured<?, ?> worldgenfeatureconfigured1 = holder1.value();
                  IBlockData iblockdata2 = worldserver.getFluidState(blockposition).createLegacyBlock();
  
-@@ -165,11 +173,66 @@
-         return true;
+@@ -158,11 +166,66 @@
+         return false;
      }
  
 +    // CraftBukkit start

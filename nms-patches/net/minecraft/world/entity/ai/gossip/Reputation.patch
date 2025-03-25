@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/entity/ai/gossip/Reputation.java
 +++ b/net/minecraft/world/entity/ai/gossip/Reputation.java
-@@ -30,13 +30,27 @@
+@@ -25,6 +25,14 @@
+ import net.minecraft.util.RandomSource;
  import net.minecraft.util.VisibleForDebug;
- import org.slf4j.Logger;
  
 +// CraftBukkit start
 +import net.minecraft.world.entity.npc.EntityVillager;
@@ -14,22 +14,23 @@
 +
  public class Reputation {
  
-     private static final Logger LOGGER = LogUtils.getLogger();
+     public static final Codec<Reputation> CODEC = Reputation.b.CODEC.listOf().xmap(Reputation::new, (reputation) -> {
+@@ -33,6 +41,14 @@
      public static final int DISCARD_THRESHOLD = 2;
-     private final Map<UUID, Reputation.a> gossips = Maps.newHashMap();
+     private final Map<UUID, Reputation.a> gossips = new HashMap();
  
--    public Reputation() {}
 +    // CraftBukkit start - store reference to villager entity
-+    private final EntityVillager villager;
++    public EntityVillager villager;
 +
 +    public Reputation(EntityVillager villager) {
 +        this.villager = villager;
 +    }
 +    // CraftBukkit end
++
+     public Reputation() {}
  
-     @VisibleForDebug
-     public Map<UUID, Object2IntMap<ReputationType>> getGossipEntries() {
-@@ -51,15 +65,17 @@
+     private Reputation(List<Reputation.b> list) {
+@@ -54,15 +70,17 @@
      }
  
      public void decay() {
@@ -51,7 +52,7 @@
          }
  
      }
-@@ -112,16 +128,27 @@
+@@ -115,16 +133,27 @@
              int j = reputation_b.value - reputation_b.type.decayPerTransfer;
  
              if (j >= 2) {
@@ -81,7 +82,7 @@
      }
  
      public long getCountForType(ReputationType reputationtype, DoublePredicate doublepredicate) {
-@@ -131,27 +158,58 @@
+@@ -134,27 +163,58 @@
      }
  
      public void add(UUID uuid, ReputationType reputationtype, int i) {
@@ -145,7 +146,7 @@
              if (reputation_a.isEmpty()) {
                  this.gossips.remove(uuid);
              }
-@@ -159,7 +217,16 @@
+@@ -162,7 +222,16 @@
  
      }
  
@@ -163,25 +164,16 @@
          Iterator<Reputation.a> iterator = this.gossips.values().iterator();
  
          while (iterator.hasNext()) {
-@@ -174,7 +241,7 @@
+@@ -197,7 +266,7 @@
      }
  
-     public <T> T store(DynamicOps<T> dynamicops) {
--        Optional optional = Reputation.b.LIST_CODEC.encodeStart(dynamicops, this.unpack().toList()).resultOrPartial((s) -> {
-+        Optional<T> optional = Reputation.b.LIST_CODEC.encodeStart(dynamicops, this.unpack().toList()).resultOrPartial((s) -> { // CraftBukkit - missing generic parameter after decompile
-             Reputation.LOGGER.warn("Failed to serialize gossips: {}", s);
-         });
+     public Reputation copy() {
+-        Reputation reputation = new Reputation();
++        Reputation reputation = new Reputation(this.villager); // CraftBukkit
  
-@@ -186,7 +253,7 @@
-         Reputation.b.LIST_CODEC.decode(dynamic).resultOrPartial((s) -> {
-             Reputation.LOGGER.warn("Failed to deserialize gossips: {}", s);
-         }).stream().flatMap((pair) -> {
--            return ((List) pair.getFirst()).stream();
-+            return ((List<Reputation.b>) pair.getFirst()).stream(); // CraftBukkit - missing generic parameter after decompile
-         }).forEach((reputation_b) -> {
-             this.getOrCreate(reputation_b.target).entries.put(reputation_b.type, reputation_b.value);
-         });
-@@ -216,18 +283,36 @@
+         reputation.putAll(this);
+         return reputation;
+@@ -228,18 +297,36 @@
              }).sum();
          }
  
@@ -203,13 +195,13 @@
  
 -        public void decay() {
 +        public void decay(EntityVillager villager, UUID uuid) { // CraftBukkit - add villager and entity uuid parameters
-             ObjectIterator<Entry<ReputationType>> objectiterator = this.entries.object2IntEntrySet().iterator();
+             ObjectIterator<Object2IntMap.Entry<ReputationType>> objectiterator = this.entries.object2IntEntrySet().iterator();
  
              while (objectiterator.hasNext()) {
-                 Entry<ReputationType> entry = (Entry) objectiterator.next();
-                 int i = entry.getIntValue() - ((ReputationType) entry.getKey()).decayPerDay;
+                 Object2IntMap.Entry<ReputationType> object2intmap_entry = (Entry) objectiterator.next();
+                 int i = object2intmap_entry.getIntValue() - ((ReputationType) object2intmap_entry.getKey()).decayPerDay;
 +                // CraftBukkit start - fire event
-+                VillagerReputationChangeEvent event = CraftEventFactory.callVillagerReputationChangeEvent((Villager) villager.getBukkitEntity(), uuid, Villager.ReputationEvent.DECAY, CraftReputationType.minecraftToBukkit(entry.getKey()), entry.getIntValue(), i, entry.getKey().max);
++                VillagerReputationChangeEvent event = CraftEventFactory.callVillagerReputationChangeEvent((Villager) villager.getBukkitEntity(), uuid, Villager.ReputationEvent.DECAY, CraftReputationType.minecraftToBukkit(object2intmap_entry.getKey()), object2intmap_entry.getIntValue(), i, object2intmap_entry.getKey().max);
 +                if (event.isCancelled()) {
 +                    continue;
 +                } else {

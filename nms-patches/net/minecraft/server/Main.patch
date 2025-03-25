@@ -96,7 +96,7 @@
 -            Convertable.ConversionSession convertable_conversionsession = convertable.validateAndCreateAccess(s);
 +            Convertable.ConversionSession convertable_conversionsession = convertable.validateAndCreateAccess(s, WorldDimension.OVERWORLD);
 +            // CraftBukkit end
-             Dynamic dynamic;
+             Dynamic<?> dynamic;
  
              if (convertable_conversionsession.hasWorldData()) {
 @@ -174,13 +204,31 @@
@@ -164,10 +164,10 @@
  
 +            /*
              IRegistryCustom.Dimension iregistrycustom_dimension = worldstem.registries().compositeAccess();
-             boolean flag1 = optionset.has(optionspec6);
- 
-@@ -237,20 +287,31 @@
              SaveData savedata = worldstem.worldData();
+             boolean flag1 = optionset.has(optionspec6);
+@@ -236,20 +286,31 @@
+             }
  
              convertable_conversionsession.saveDataTag(iregistrycustom_dimension, savedata);
 +            */
@@ -200,7 +200,7 @@
              Thread thread = new Thread("Server Shutdown Thread") {
                  public void run() {
                      dedicatedserver.halt(true);
-@@ -259,6 +320,7 @@
+@@ -258,6 +319,7 @@
  
              thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(Main.LOGGER));
              Runtime.getRuntime().addShutdownHook(thread);
@@ -208,12 +208,12 @@
          } catch (Exception exception1) {
              Main.LOGGER.error(LogUtils.FATAL_MARKER, "Failed to start the minecraft server", exception1);
          }
-@@ -295,7 +357,7 @@
+@@ -294,7 +356,7 @@
      }
  
-     public static void forceUpgrade(Convertable.ConversionSession convertable_conversionsession, DataFixer datafixer, boolean flag, BooleanSupplier booleansupplier, IRegistryCustom iregistrycustom, boolean flag1) {
+     public static void forceUpgrade(Convertable.ConversionSession convertable_conversionsession, SaveData savedata, DataFixer datafixer, boolean flag, BooleanSupplier booleansupplier, IRegistryCustom iregistrycustom, boolean flag1) {
 -        Main.LOGGER.info("Forcing world upgrade!");
 +        Main.LOGGER.info("Forcing world upgrade! {}", convertable_conversionsession.getLevelId()); // CraftBukkit
-         WorldUpgrader worldupgrader = new WorldUpgrader(convertable_conversionsession, datafixer, iregistrycustom, flag, flag1);
  
-         try {
+         try (WorldUpgrader worldupgrader = new WorldUpgrader(convertable_conversionsession, datafixer, savedata, iregistrycustom, flag, flag1)) {
+             IChatBaseComponent ichatbasecomponent = null;

@@ -1,9 +1,9 @@
 package org.bukkit.craftbukkit.block.data.type;
 
-import org.bukkit.block.data.type.PinkPetals;
+import org.bukkit.block.data.type.FlowerBed;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
-public abstract class CraftPinkPetals extends CraftBlockData implements PinkPetals {
+public abstract class CraftFlowerBed extends CraftBlockData implements FlowerBed {
 
     private static final net.minecraft.world.level.block.state.properties.BlockStateInteger FLOWER_AMOUNT = getInteger("flower_amount");
 

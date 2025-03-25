@@ -31,6 +31,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
 
     @ItemMetaKey.Specific(ItemMetaKey.Specific.To.NBT)
     static final ItemMetaKeyType<PotionContents> POTION_CONTENTS = new ItemMetaKeyType<>(DataComponents.POTION_CONTENTS);
+    static final ItemMetaKeyType<Float> POTION_DURATION_SCALE = new ItemMetaKeyType<>(DataComponents.POTION_DURATION_SCALE, "potion-duration-scale");
     static final ItemMetaKey POTION_EFFECTS = new ItemMetaKey("custom-effects");
     static final ItemMetaKey POTION_COLOR = new ItemMetaKey("custom-color");
     static final ItemMetaKey CUSTOM_NAME = new ItemMetaKey("custom-name");
@@ -40,6 +41,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
     private List<PotionEffect> customEffects;
     private Color color;
     private String customName;
+    private Float potionDurationScale;
 
     CraftMetaPotion(CraftMetaItem meta) {
         super(meta);
@@ -52,6 +54,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
         if (potionMeta.hasCustomEffects()) {
             this.customEffects = new ArrayList<>(potionMeta.customEffects);
         }
+        this.potionDurationScale = potionMeta.potionDurationScale;
     }
 
     CraftMetaPotion(DataComponentPatch tag) {
@@ -93,6 +96,10 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
                 customEffects.add(new PotionEffect(type, duration, amp, ambient, particles, icon));
             }
         });
+
+        getOrEmpty(tag, POTION_DURATION_SCALE).ifPresent((potionDurationScale) -> {
+            this.potionDurationScale = potionDurationScale;
+        });
     }
 
     CraftMetaPotion(Map<String, Object> map) {
@@ -121,6 +128,11 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
             Preconditions.checkArgument(obj instanceof PotionEffect, "Object (%s) in effect list is not valid", obj.getClass());
             addCustomEffect((PotionEffect) obj, true);
         }
+
+        Float scale = SerializableMeta.getObject(Float.class, map, POTION_DURATION_SCALE.BUKKIT, true);
+        if (scale != null) {
+            setDurationScale(scale);
+        }
     }
 
     @Override
@@ -143,6 +155,10 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
         }
 
         tag.put(POTION_CONTENTS, new PotionContents(defaultPotion, potionColor, effectList, customName));
+
+        if (hasDurationScale()) {
+            tag.put(POTION_DURATION_SCALE, getDurationScale());
+        }
     }
 
     @Override
@@ -151,7 +167,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
     }
 
     boolean isPotionEmpty() {
-        return (type == null) && !(hasCustomEffects() || hasColor() || hasCustomName());
+        return (type == null) && !(hasCustomEffects() || hasColor() || hasCustomName() || hasDurationScale());
     }
 
     @Override
@@ -321,6 +337,23 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
     }
 
     @Override
+    public boolean hasDurationScale() {
+        return this.potionDurationScale != null;
+    }
+
+    @Override
+    public float getDurationScale() {
+        Preconditions.checkState(hasDurationScale(), "hasDurationScale is false");
+
+        return this.potionDurationScale;
+    }
+
+    @Override
+    public void setDurationScale(Float scale) {
+        this.potionDurationScale = scale;
+    }
+
+    @Override
     int applyHash() {
         final int original;
         int hash = original = super.applyHash();
@@ -336,6 +369,9 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
         if (hasCustomEffects()) {
             hash = 73 * hash + customEffects.hashCode();
         }
+        if (hasDurationScale()) {
+            hash = 73 * hash + potionDurationScale.hashCode();
+        }
         return original != hash ? CraftMetaPotion.class.hashCode() ^ hash : hash;
     }
 
@@ -350,7 +386,8 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
             return Objects.equals(type, that.type)
                     && (this.hasCustomEffects() ? that.hasCustomEffects() && this.customEffects.equals(that.customEffects) : !that.hasCustomEffects())
                     && (this.hasColor() ? that.hasColor() && this.color.equals(that.color) : !that.hasColor())
-                    && (this.hasCustomName() ? that.hasCustomName() && this.customName.equals(that.customName) : !that.hasCustomName());
+                    && (this.hasCustomName() ? that.hasCustomName() && this.customName.equals(that.customName) : !that.hasCustomName())
+                    && (this.hasDurationScale() ? that.hasDurationScale() && this.potionDurationScale.equals(that.potionDurationScale) : !that.hasDurationScale());
         }
         return true;
     }
@@ -377,6 +414,10 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
 
         if (hasCustomEffects()) {
             builder.put(POTION_EFFECTS.BUKKIT, ImmutableList.copyOf(this.customEffects));
+        }
+
+        if (hasDurationScale()) {
+            builder.put(POTION_DURATION_SCALE.BUKKIT, getDurationScale());
         }
 
         return builder;

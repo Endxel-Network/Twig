@@ -381,7 +381,7 @@ public final class CraftServer implements Server {
         overrideSpawnLimits();
         console.autosavePeriod = configuration.getInt("ticks-per.autosave");
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
-        TicketType.PLUGIN.timeout = configuration.getInt("chunk-gc.period-in-ticks");
+        TicketType.pluginTimeout = configuration.getInt("chunk-gc.period-in-ticks");
         minimumAPI = ApiVersion.getOrCreateVersion(configuration.getString("settings.minimum-api"));
         loadIcon();
         loadCompatibilities();
@@ -927,7 +927,7 @@ public final class CraftServer implements Server {
         console.setMotd(config.motd);
         overrideSpawnLimits();
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
-        TicketType.PLUGIN.timeout = configuration.getInt("chunk-gc.period-in-ticks");
+        TicketType.pluginTimeout = configuration.getInt("chunk-gc.period-in-ticks");
         minimumAPI = ApiVersion.getOrCreateVersion(configuration.getString("settings.minimum-api"));
         printSaveWarning = false;
         console.autosavePeriod = configuration.getInt("ticks-per.autosave");
@@ -1199,7 +1199,7 @@ public final class CraftServer implements Server {
         worlddata.setModdedInfo(console.getServerModName(), console.getModdedStatus().shouldReportAsModified());
 
         if (console.options.has("forceUpgrade")) {
-            net.minecraft.server.Main.forceUpgrade(worldSession, DataConverterRegistry.getDataFixer(), console.options.has("eraseCache"), () -> true, iregistrycustom_dimension, console.options.has("recreateRegionFiles"));
+            net.minecraft.server.Main.forceUpgrade(worldSession, worlddata, DataConverterRegistry.getDataFixer(), console.options.has("eraseCache"), () -> true, iregistrycustom_dimension, console.options.has("recreateRegionFiles"));
         }
 
         long j = BiomeManager.obfuscateSeed(creator.seed());
@@ -1740,7 +1740,7 @@ public final class CraftServer implements Server {
     public CraftMapView createMap(World world) {
         Preconditions.checkArgument(world != null, "World cannot be null");
 
-        net.minecraft.world.level.World minecraftWorld = ((CraftWorld) world).getHandle();
+        WorldServer minecraftWorld = ((CraftWorld) world).getHandle();
         // creates a new map at world spawn with the scale of 3, with out tracking position and unlimited tracking
         BlockPosition spawn = minecraftWorld.getLevelData().getSpawnPos();
         MapId newId = ItemWorldMap.createNewSavedData(minecraftWorld, spawn.getX(), spawn.getZ(), 3, false, false, minecraftWorld.dimension());

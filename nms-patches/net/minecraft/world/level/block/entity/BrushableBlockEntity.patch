@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/BrushableBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BrushableBlockEntity.java
-@@ -31,6 +31,13 @@
+@@ -32,6 +32,13 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
@@ -14,13 +14,13 @@
  public class BrushableBlockEntity extends TileEntity {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -80,7 +87,12 @@
+@@ -81,7 +88,12 @@
                      IBlockData iblockdata = this.getBlockState();
                      IBlockData iblockdata1 = (IBlockData) iblockdata.setValue(BlockProperties.DUSTED, k);
  
 -                    worldserver.setBlock(this.getBlockPos(), iblockdata1, 3);
 +                    // CraftBukkit start
-+                    BlockBrushEvent event = CraftEventFactory.callBlockBrushEvent(worldserver, this.getBlockPos(), iblockdata1, 3, entityhuman);
++                    BlockBrushEvent event = CraftEventFactory.callBlockBrushEvent(worldserver, this.getBlockPos(), iblockdata1, 3, (EntityPlayer) entityliving);
 +                    if (!event.isCancelled()) {
 +                        event.getNewState().update(true);
 +                    }
@@ -28,12 +28,12 @@
                  }
  
                  return false;
-@@ -121,10 +133,10 @@
+@@ -122,10 +134,10 @@
      }
  
-     private void brushingCompleted(WorldServer worldserver, EntityHuman entityhuman, ItemStack itemstack) {
--        this.dropContent(worldserver, entityhuman, itemstack);
-+        // this.dropContent(worldserver, entityhuman, itemstack); // CraftBukkit - moved down
+     private void brushingCompleted(WorldServer worldserver, EntityLiving entityliving, ItemStack itemstack) {
+-        this.dropContent(worldserver, entityliving, itemstack);
++        // this.dropContent(worldserver, entityliving, itemstack); // CraftBukkit - moved down
          IBlockData iblockdata = this.getBlockState();
  
 -        worldserver.levelEvent(3008, this.getBlockPos(), Block.getId(iblockdata));
@@ -41,15 +41,15 @@
          Block block = this.getBlockState().getBlock();
          Block block1;
  
-@@ -134,7 +146,15 @@
+@@ -135,7 +147,15 @@
              block1 = Blocks.AIR;
          }
  
 -        worldserver.setBlock(this.worldPosition, block1.defaultBlockState(), 3);
 +        // CraftBukkit start
-+        BlockBrushEvent event = CraftEventFactory.callBlockBrushEvent(worldserver, this.worldPosition, block1.defaultBlockState(), 3, entityhuman);
++        BlockBrushEvent event = CraftEventFactory.callBlockBrushEvent(worldserver, this.worldPosition, block1.defaultBlockState(), 3, (EntityPlayer) entityliving);
 +        if (!event.isCancelled()) {
-+            this.dropContent(worldserver, entityhuman, itemstack); // CraftBukkit - from above
++            this.dropContent(worldserver, entityliving, itemstack); // CraftBukkit - from above
 +            worldserver.levelEvent(3008, this.getBlockPos(), Block.getId(iblockdata)); // CraftBukkit - from above
 +
 +            event.getNewState().update(true);
@@ -57,16 +57,36 @@
 +        // CraftBukkit end
      }
  
-     private void dropContent(WorldServer worldserver, EntityHuman entityhuman, ItemStack itemstack) {
-@@ -151,7 +171,10 @@
+     private void dropContent(WorldServer worldserver, EntityLiving entityliving, ItemStack itemstack) {
+@@ -152,7 +172,12 @@
              EntityItem entityitem = new EntityItem(worldserver, d3, d4, d5, this.item.split(worldserver.random.nextInt(21) + 10));
  
              entityitem.setDeltaMovement(Vec3D.ZERO);
 -            worldserver.addFreshEntity(entityitem);
 +            // CraftBukkit start
-+            org.bukkit.block.Block bblock = CraftBlock.at(this.level, this.worldPosition);
-+            CraftEventFactory.handleBlockDropItemEvent(bblock, bblock.getState(), (EntityPlayer) entityhuman, Arrays.asList(entityitem));
++            if (entityliving instanceof EntityPlayer entityplayer) {
++                org.bukkit.block.Block bblock = CraftBlock.at(this.level, this.worldPosition);
++                CraftEventFactory.handleBlockDropItemEvent(bblock, bblock.getState(), entityplayer, Arrays.asList(entityitem));
++            }
 +            // CraftBukkit end
              this.item = ItemStack.EMPTY;
          }
  
+@@ -185,7 +210,7 @@
+     }
+ 
+     private boolean tryLoadLootTable(NBTTagCompound nbttagcompound) {
+-        this.lootTable = (ResourceKey) nbttagcompound.read("LootTable", LootTable.KEY_CODEC).orElse((Object) null);
++        this.lootTable = (ResourceKey) nbttagcompound.read("LootTable", LootTable.KEY_CODEC).orElse(null); // CraftBukkit - decompile error
+         this.lootTableSeed = nbttagcompound.getLongOr("LootTableSeed", 0L);
+         return this.lootTable != null;
+     }
+@@ -233,7 +258,7 @@
+             this.item = ItemStack.EMPTY;
+         }
+ 
+-        this.hitDirection = (EnumDirection) nbttagcompound.read("hit_direction", EnumDirection.LEGACY_ID_CODEC).orElse((Object) null);
++        this.hitDirection = (EnumDirection) nbttagcompound.read("hit_direction", EnumDirection.LEGACY_ID_CODEC).orElse(null); // CraftBukkit - decompile error
+     }
+ 
+     @Override

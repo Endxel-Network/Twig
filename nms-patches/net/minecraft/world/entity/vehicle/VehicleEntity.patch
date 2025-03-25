@@ -13,7 +13,7 @@
 +
  public abstract class VehicleEntity extends Entity {
  
-     protected static final DataWatcherObject<Integer> DATA_ID_HURT = DataWatcher.defineId(VehicleEntity.class, DataWatcherRegistry.INT);
+     protected static final DataWatcherObject<Integer> DATA_ID_HURT = DataWatcher.<Integer>defineId(VehicleEntity.class, DataWatcherRegistry.INT);
 @@ -40,6 +47,18 @@
              return false;
          } else {

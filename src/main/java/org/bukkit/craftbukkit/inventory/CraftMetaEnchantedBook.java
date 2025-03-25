@@ -37,9 +37,6 @@ class CraftMetaEnchantedBook extends CraftMetaItem implements EnchantmentStorage
 
         getOrEmpty(tag, STORED_ENCHANTMENTS).ifPresent((itemEnchantments) -> {
             enchantments = buildEnchantments(itemEnchantments);
-            if (!itemEnchantments.showInTooltip) {
-                addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            }
         });
     }
 

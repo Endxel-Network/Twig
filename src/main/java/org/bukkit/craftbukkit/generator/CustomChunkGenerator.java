@@ -6,22 +6,17 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.core.Holder;
 import net.minecraft.core.IRegistryCustom;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.RegionLimitedWorldAccess;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.random.WeightedRandomList;
-import net.minecraft.world.entity.EnumCreatureType;
 import net.minecraft.world.level.BlockColumn;
 import net.minecraft.world.level.GeneratorAccessSeed;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.World;
-import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.BiomeSettingsMobs;
 import net.minecraft.world.level.biome.WorldChunkManager;
 import net.minecraft.world.level.block.ITileEntity;
 import net.minecraft.world.level.block.entity.TileEntity;
@@ -284,11 +279,6 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
         }
 
         return delegate.getBaseHeight(i, j, heightmap_type, levelheightaccessor, randomstate);
-    }
-
-    @Override
-    public WeightedRandomList<BiomeSettingsMobs.c> getMobsAt(Holder<BiomeBase> holder, StructureManager structuremanager, EnumCreatureType enumcreaturetype, BlockPosition blockposition) {
-        return delegate.getMobsAt(holder, structuremanager, enumcreaturetype, blockposition);
     }
 
     @Override

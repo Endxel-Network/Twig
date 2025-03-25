@@ -432,7 +432,6 @@ public class CraftBlockData implements BlockData {
         register(net.minecraft.world.level.block.BlockKelp.class, org.bukkit.craftbukkit.block.impl.CraftKelp::new);
         register(net.minecraft.world.level.block.BlockLadder.class, org.bukkit.craftbukkit.block.impl.CraftLadder::new);
         register(net.minecraft.world.level.block.BlockLantern.class, org.bukkit.craftbukkit.block.impl.CraftLantern::new);
-        register(net.minecraft.world.level.block.BlockLeaves.class, org.bukkit.craftbukkit.block.impl.CraftLeaves::new);
         register(net.minecraft.world.level.block.BlockLectern.class, org.bukkit.craftbukkit.block.impl.CraftLectern::new);
         register(net.minecraft.world.level.block.BlockLever.class, org.bukkit.craftbukkit.block.impl.CraftLever::new);
         register(net.minecraft.world.level.block.BlockLoom.class, org.bukkit.craftbukkit.block.impl.CraftLoom::new);
@@ -504,12 +503,14 @@ public class CraftBlockData implements BlockData {
         register(net.minecraft.world.level.block.CrafterBlock.class, org.bukkit.craftbukkit.block.impl.CraftCrafter::new);
         register(net.minecraft.world.level.block.CreakingHeartBlock.class, org.bukkit.craftbukkit.block.impl.CraftCreakingHeart::new);
         register(net.minecraft.world.level.block.DecoratedPotBlock.class, org.bukkit.craftbukkit.block.impl.CraftDecoratedPot::new);
+        register(net.minecraft.world.level.block.FlowerBedBlock.class, org.bukkit.craftbukkit.block.impl.CraftFlowerBed::new);
         register(net.minecraft.world.level.block.GlowLichenBlock.class, org.bukkit.craftbukkit.block.impl.CraftGlowLichen::new);
         register(net.minecraft.world.level.block.HangingMossBlock.class, org.bukkit.craftbukkit.block.impl.CraftHangingMoss::new);
         register(net.minecraft.world.level.block.HangingRootsBlock.class, org.bukkit.craftbukkit.block.impl.CraftHangingRoots::new);
         register(net.minecraft.world.level.block.HeavyCoreBlock.class, org.bukkit.craftbukkit.block.impl.CraftHeavyCore::new);
         register(net.minecraft.world.level.block.InfestedRotatedPillarBlock.class, org.bukkit.craftbukkit.block.impl.CraftInfestedRotatedPillar::new);
         register(net.minecraft.world.level.block.LayeredCauldronBlock.class, org.bukkit.craftbukkit.block.impl.CraftLayeredCauldron::new);
+        register(net.minecraft.world.level.block.LeafLitterBlock.class, org.bukkit.craftbukkit.block.impl.CraftLeafLitter::new);
         register(net.minecraft.world.level.block.LightBlock.class, org.bukkit.craftbukkit.block.impl.CraftLight::new);
         register(net.minecraft.world.level.block.LightningRodBlock.class, org.bukkit.craftbukkit.block.impl.CraftLightningRod::new);
         register(net.minecraft.world.level.block.MangroveLeavesBlock.class, org.bukkit.craftbukkit.block.impl.CraftMangroveLeaves::new);
@@ -517,9 +518,7 @@ public class CraftBlockData implements BlockData {
         register(net.minecraft.world.level.block.MangroveRootsBlock.class, org.bukkit.craftbukkit.block.impl.CraftMangroveRoots::new);
         register(net.minecraft.world.level.block.MossyCarpetBlock.class, org.bukkit.craftbukkit.block.impl.CraftMossyCarpet::new);
         register(net.minecraft.world.level.block.MultifaceBlock.class, org.bukkit.craftbukkit.block.impl.CraftMultiface::new);
-        register(net.minecraft.world.level.block.ParticleLeavesBlock.class, org.bukkit.craftbukkit.block.impl.CraftParticleLeaves::new);
         register(net.minecraft.world.level.block.PiglinWallSkullBlock.class, org.bukkit.craftbukkit.block.impl.CraftPiglinWallSkull::new);
-        register(net.minecraft.world.level.block.PinkPetalsBlock.class, org.bukkit.craftbukkit.block.impl.CraftPinkPetals::new);
         register(net.minecraft.world.level.block.PitcherCropBlock.class, org.bukkit.craftbukkit.block.impl.CraftPitcherCrop::new);
         register(net.minecraft.world.level.block.PointedDripstoneBlock.class, org.bukkit.craftbukkit.block.impl.CraftPointedDripstone::new);
         register(net.minecraft.world.level.block.SculkCatalystBlock.class, org.bukkit.craftbukkit.block.impl.CraftSculkCatalyst::new);
@@ -529,8 +528,11 @@ public class CraftBlockData implements BlockData {
         register(net.minecraft.world.level.block.SmallDripleafBlock.class, org.bukkit.craftbukkit.block.impl.CraftSmallDripleaf::new);
         register(net.minecraft.world.level.block.SnifferEggBlock.class, org.bukkit.craftbukkit.block.impl.CraftSnifferEgg::new);
         register(net.minecraft.world.level.block.TallSeagrassBlock.class, org.bukkit.craftbukkit.block.impl.CraftTallSeagrass::new);
+        register(net.minecraft.world.level.block.TestBlock.class, org.bukkit.craftbukkit.block.impl.CraftTest::new);
+        register(net.minecraft.world.level.block.TintedParticleLeavesBlock.class, org.bukkit.craftbukkit.block.impl.CraftTintedParticleLeaves::new);
         register(net.minecraft.world.level.block.TorchflowerCropBlock.class, org.bukkit.craftbukkit.block.impl.CraftTorchflowerCrop::new);
         register(net.minecraft.world.level.block.TrialSpawnerBlock.class, org.bukkit.craftbukkit.block.impl.CraftTrialSpawner::new);
+        register(net.minecraft.world.level.block.UntintedParticleLeavesBlock.class, org.bukkit.craftbukkit.block.impl.CraftUntintedParticleLeaves::new);
         register(net.minecraft.world.level.block.VaultBlock.class, org.bukkit.craftbukkit.block.impl.CraftVault::new);
         register(net.minecraft.world.level.block.WallHangingSignBlock.class, org.bukkit.craftbukkit.block.impl.CraftWallHangingSign::new);
         register(net.minecraft.world.level.block.WaterloggedTransparentBlock.class, org.bukkit.craftbukkit.block.impl.CraftWaterloggedTransparent::new);

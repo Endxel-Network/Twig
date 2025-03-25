@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/EntityLargeFireball.java
 +++ b/net/minecraft/world/entity/projectile/EntityLargeFireball.java
-@@ -13,17 +13,24 @@
+@@ -13,6 +13,11 @@
  import net.minecraft.world.phys.MovingObjectPositionEntity;
  import net.minecraft.world.phys.Vec3D;
  
@@ -11,7 +11,8 @@
 +
  public class EntityLargeFireball extends EntityFireballFireball {
  
-     public int explosionPower = 1;
+     private static final byte DEFAULT_EXPLOSION_POWER = 1;
+@@ -20,11 +25,13 @@
  
      public EntityLargeFireball(EntityTypes<? extends EntityLargeFireball> entitytypes, World world) {
          super(entitytypes, world);
@@ -25,7 +26,7 @@
      }
  
      @Override
-@@ -34,8 +41,16 @@
+@@ -35,8 +42,16 @@
          if (world instanceof WorldServer worldserver) {
              boolean flag = worldserver.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
  
@@ -44,13 +45,12 @@
          }
  
      }
-@@ -65,7 +80,8 @@
+@@ -65,6 +80,7 @@
+     @Override
      public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
          super.readAdditionalSaveData(nbttagcompound);
-         if (nbttagcompound.contains("ExplosionPower", 99)) {
--            this.explosionPower = nbttagcompound.getByte("ExplosionPower");
-+            // CraftBukkit - set bukkitYield when setting explosionpower
-+            bukkitYield = this.explosionPower = nbttagcompound.getByte("ExplosionPower");
-         }
- 
+-        this.explosionPower = nbttagcompound.getByteOr("ExplosionPower", (byte) 1);
++        // CraftBukkit - set bukkitYield when setting explosionpower
++        bukkitYield = this.explosionPower = nbttagcompound.getByteOr("ExplosionPower", (byte) 1);
      }
+ }

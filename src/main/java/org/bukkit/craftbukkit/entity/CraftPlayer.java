@@ -1153,11 +1153,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public Location getRespawnLocation() {
-        WorldServer world = getHandle().server.getLevel(getHandle().getRespawnDimension());
-        BlockPosition bed = getHandle().getRespawnPosition();
+        EntityPlayer.RespawnConfig respawnConfig = getHandle().getRespawnConfig();
+        if (respawnConfig == null) {
+            return null;
+        }
+
+        WorldServer world = getHandle().server.getLevel(respawnConfig.dimension());
+        BlockPosition bed = respawnConfig.pos();
 
         if (world != null && bed != null) {
-            Optional<EntityPlayer.RespawnPosAngle> spawnLoc = EntityPlayer.findRespawnAndUseSpawnBlock(world, bed, getHandle().getRespawnAngle(), getHandle().isRespawnForced(), true);
+            Optional<EntityPlayer.RespawnPosAngle> spawnLoc = EntityPlayer.findRespawnAndUseSpawnBlock(world, respawnConfig, true);
             if (spawnLoc.isPresent()) {
                 EntityPlayer.RespawnPosAngle vec = spawnLoc.get();
                 return CraftLocation.toBukkit(vec.position(), world.getWorld(), vec.yaw(), 0);
@@ -1184,9 +1189,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public void setRespawnLocation(Location location, boolean override) {
         if (location == null) {
-            getHandle().setRespawnPosition(null, null, 0.0F, override, false, PlayerSpawnChangeEvent.Cause.PLUGIN);
+            getHandle().setRespawnPosition(new EntityPlayer.RespawnConfig(null, null, 0.0F, false), override, PlayerSpawnChangeEvent.Cause.PLUGIN);
         } else {
-            getHandle().setRespawnPosition(((CraftWorld) location.getWorld()).getHandle().dimension(), CraftLocation.toBlockPosition(location), location.getYaw(), override, false, PlayerSpawnChangeEvent.Cause.PLUGIN);
+            getHandle().setRespawnPosition(new EntityPlayer.RespawnConfig(((CraftWorld) location.getWorld()).getHandle().dimension(), CraftLocation.toBlockPosition(location), location.getYaw(), false), override, PlayerSpawnChangeEvent.Cause.PLUGIN);
         }
     }
 
@@ -1202,10 +1207,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public Location getBedLocation() {
-        Preconditions.checkState(isSleeping(), "Not sleeping");
+        Optional<BlockPosition> bed = getHandle().getSleepingPos();
+        Preconditions.checkState(bed.isPresent(), "Not sleeping");
 
-        BlockPosition bed = getHandle().getRespawnPosition();
-        return CraftLocation.toBukkit(bed, getWorld());
+        return CraftLocation.toBukkit(bed.get(), getWorld());
     }
 
     @Override
@@ -1761,20 +1766,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public void readExtraData(NBTTagCompound nbttagcompound) {
         hasPlayedBefore = true;
         if (nbttagcompound.contains("bukkit")) {
-            NBTTagCompound data = nbttagcompound.getCompound("bukkit");
+            NBTTagCompound data = nbttagcompound.getCompoundOrEmpty("bukkit");
 
             if (data.contains("firstPlayed")) {
-                firstPlayed = data.getLong("firstPlayed");
-                lastPlayed = data.getLong("lastPlayed");
+                firstPlayed = data.getLongOr("firstPlayed", firstPlayed);
+                lastPlayed = data.getLongOr("lastPlayed", lastPlayed);
             }
 
             if (data.contains("newExp")) {
                 EntityPlayer handle = getHandle();
-                handle.newExp = data.getInt("newExp");
-                handle.newTotalExp = data.getInt("newTotalExp");
-                handle.newLevel = data.getInt("newLevel");
-                handle.expToDrop = data.getInt("expToDrop");
-                handle.keepLevel = data.getBoolean("keepLevel");
+                handle.newExp = data.getIntOr("newExp", handle.newExp);
+                handle.newTotalExp = data.getIntOr("newTotalExp", handle.newTotalExp);
+                handle.newLevel = data.getIntOr("newLevel", handle.newLevel);
+                handle.expToDrop = data.getIntOr("expToDrop", handle.expToDrop);
+                handle.keepLevel = data.getBooleanOr("keepLevel", handle.keepLevel);
             }
         }
     }
@@ -1784,7 +1789,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             nbttagcompound.put("bukkit", new NBTTagCompound());
         }
 
-        NBTTagCompound data = nbttagcompound.getCompound("bukkit");
+        NBTTagCompound data = nbttagcompound.getCompoundOrEmpty("bukkit");
         EntityPlayer handle = getHandle();
         data.putInt("newExp", handle.newExp);
         data.putInt("newTotalExp", handle.newTotalExp);

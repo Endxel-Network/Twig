@@ -27,24 +27,24 @@ public class CraftVillagerZombie extends CraftZombie implements ZombieVillager {
 
     @Override
     public Villager.Profession getVillagerProfession() {
-        return CraftVillager.CraftProfession.minecraftToBukkit(getHandle().getVillagerData().getProfession());
+        return CraftVillager.CraftProfession.minecraftHolderToBukkit(getHandle().getVillagerData().profession());
     }
 
     @Override
     public void setVillagerProfession(Villager.Profession profession) {
         Preconditions.checkArgument(profession != null, "Villager.Profession cannot be null");
-        getHandle().setVillagerData(getHandle().getVillagerData().setProfession(CraftVillager.CraftProfession.bukkitToMinecraft(profession)));
+        getHandle().setVillagerData(getHandle().getVillagerData().withProfession(CraftVillager.CraftProfession.bukkitToMinecraftHolder(profession)));
     }
 
     @Override
     public Villager.Type getVillagerType() {
-        return CraftVillager.CraftType.minecraftToBukkit(getHandle().getVillagerData().getType());
+        return CraftVillager.CraftType.minecraftHolderToBukkit(getHandle().getVillagerData().type());
     }
 
     @Override
     public void setVillagerType(Villager.Type type) {
         Preconditions.checkArgument(type != null, "Villager.Type cannot be null");
-        getHandle().setVillagerData(getHandle().getVillagerData().setType(CraftVillager.CraftType.bukkitToMinecraft(type)));
+        getHandle().setVillagerData(getHandle().getVillagerData().withType(CraftVillager.CraftType.bukkitToMinecraftHolder(type)));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CraftVillagerZombie extends CraftZombie implements ZombieVillager {
             getHandle().villagerConversionTime = -1;
             getHandle().getEntityData().set(EntityZombieVillager.DATA_CONVERTING_ID, false);
             getHandle().conversionStarter = null;
-            getHandle().removeEffect(MobEffects.DAMAGE_BOOST, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION);
+            getHandle().removeEffect(MobEffects.STRENGTH, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONVERSION);
         } else {
             getHandle().startConverting(null, time);
         }

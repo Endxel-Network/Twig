@@ -55,7 +55,7 @@
 +        // CraftBukkit start - Save player
 +        this.player = playerinventory;
 +        // CraftBukkit end
-         boolean flag = true;
+         int k = 18;
  
          this.addChestGrid(iinventory, 8, 18);
 @@ -72,6 +110,7 @@

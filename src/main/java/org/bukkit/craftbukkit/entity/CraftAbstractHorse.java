@@ -2,6 +2,8 @@ package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
 import java.util.UUID;
+import net.minecraft.world.entity.EntityLiving;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.GenericAttributes;
 import net.minecraft.world.entity.animal.horse.EntityHorseAbstract;
 import org.bukkit.craftbukkit.CraftServer;
@@ -89,11 +91,12 @@ public abstract class CraftAbstractHorse extends CraftAnimals implements Abstrac
     }
 
     public UUID getOwnerUUID() {
-        return getHandle().getOwnerUUID();
+        EntityReference<EntityLiving> owner = getHandle().getOwnerReference();
+        return (owner != null) ? owner.getUUID() : null;
     }
 
     public void setOwnerUUID(UUID uuid) {
-        getHandle().setOwnerUUID(uuid);
+        getHandle().owner = (uuid != null) ? new EntityReference<>(uuid) : null;
     }
 
     @Override

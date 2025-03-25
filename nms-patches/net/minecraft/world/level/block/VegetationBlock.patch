@@ -1,5 +1,5 @@
---- a/net/minecraft/world/level/block/BlockPlant.java
-+++ b/net/minecraft/world/level/block/BlockPlant.java
+--- a/net/minecraft/world/level/block/VegetationBlock.java
++++ b/net/minecraft/world/level/block/VegetationBlock.java
 @@ -12,6 +12,10 @@
  import net.minecraft.world.level.block.state.IBlockData;
  import net.minecraft.world.level.pathfinder.PathMode;
@@ -8,9 +8,9 @@
 +import net.minecraft.world.level.World;
 +// CraftBukkit end
 +
- public abstract class BlockPlant extends Block {
+ public abstract class VegetationBlock extends Block {
  
-     protected BlockPlant(BlockBase.Info blockbase_info) {
+     protected VegetationBlock(BlockBase.Info blockbase_info) {
 @@ -27,7 +31,15 @@
  
      @Override

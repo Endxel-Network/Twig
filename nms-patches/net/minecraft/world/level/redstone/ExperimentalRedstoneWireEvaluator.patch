@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/redstone/ExperimentalRedstoneWireEvaluator.java
 +++ b/net/minecraft/world/level/redstone/ExperimentalRedstoneWireEvaluator.java
-@@ -17,6 +17,11 @@
+@@ -15,6 +15,11 @@
  import net.minecraft.world.level.block.state.properties.BlockPropertyRedstoneSide;
  import net.minecraft.world.level.block.state.properties.BlockStateEnum;
  
@@ -12,11 +12,11 @@
  public class ExperimentalRedstoneWireEvaluator extends RedstoneWireEvaluator {
  
      private final Deque<BlockPosition> wiresToTurnOff = new ArrayDeque();
-@@ -41,7 +46,16 @@
+@@ -39,7 +44,16 @@
              int j = unpackPower(i);
              IBlockData iblockdata1 = world.getBlockState(blockposition1);
  
--            if (iblockdata1.is((Block) this.wireBlock) && !((Integer) iblockdata1.getValue(BlockRedstoneWire.POWER)).equals(j)) {
+-            if (iblockdata1.is(this.wireBlock) && !((Integer) iblockdata1.getValue(BlockRedstoneWire.POWER)).equals(j)) {
 +            // CraftBukkit start
 +            int oldPower = iblockdata.getValue(BlockRedstoneWire.POWER);
 +            if (oldPower != j) {
@@ -25,8 +25,16 @@
 +
 +                j = event.getNewCurrent();
 +            }
-+            if (iblockdata1.is((Block) this.wireBlock) && oldPower != j) {
++            if (iblockdata1.is(this.wireBlock) && oldPower != j) {
 +                // CraftBukkit end
                  int k = 2;
  
                  if (!flag || !flag1) {
+@@ -140,6 +154,7 @@
+         }
+ 
+         int k1;
++        Orientation orientation2; // CraftBukkit - decompile error
+ 
+         for (; !this.wiresToTurnOn.isEmpty(); this.propagateChangeToNeighbors(world, blockposition1, k1, orientation2, false)) {
+             blockposition1 = (BlockPosition) this.wiresToTurnOn.removeFirst();

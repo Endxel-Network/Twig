@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.vehicle.EntityMinecartMobSpawner;
 import net.minecraft.world.level.MobSpawnerData;
@@ -36,7 +36,7 @@ final class CraftMinecartMobSpawner extends CraftMinecart implements SpawnerMine
     @Override
     public void setSpawnedType(EntityType entityType) {
         if (entityType == null) {
-            getHandle().getSpawner().spawnPotentials = SimpleWeightedRandomList.empty(); // need clear the spawnPotentials to avoid nextSpawnData being replaced later
+            getHandle().getSpawner().spawnPotentials = WeightedList.of(); // need clear the spawnPotentials to avoid nextSpawnData being replaced later
             getHandle().getSpawner().nextSpawnData = new MobSpawnerData();
             return;
         }

@@ -1,10 +1,11 @@
 --- a/net/minecraft/world/level/block/entity/TileEntitySign.java
 +++ b/net/minecraft/world/level/block/entity/TileEntitySign.java
-@@ -36,6 +36,16 @@
+@@ -34,6 +34,17 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
 +// CraftBukkit start
++import java.util.Objects;
 +import net.minecraft.nbt.NBTBase;
 +import net.minecraft.server.level.EntityPlayer;
 +import org.bukkit.block.sign.Side;
@@ -17,25 +18,7 @@
  public class TileEntitySign extends TileEntity {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -101,7 +111,7 @@
-     protected void saveAdditional(NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {
-         super.saveAdditional(nbttagcompound, holderlookup_a);
-         DynamicOps<NBTBase> dynamicops = holderlookup_a.createSerializationContext(DynamicOpsNBT.INSTANCE);
--        DataResult dataresult = SignText.DIRECT_CODEC.encodeStart(dynamicops, this.frontText);
-+        DataResult<NBTBase> dataresult = SignText.DIRECT_CODEC.encodeStart(dynamicops, this.frontText); // CraftBukkit - decompile error
-         Logger logger = TileEntitySign.LOGGER;
- 
-         Objects.requireNonNull(logger);
-@@ -121,7 +131,7 @@
-     protected void loadAdditional(NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {
-         super.loadAdditional(nbttagcompound, holderlookup_a);
-         DynamicOps<NBTBase> dynamicops = holderlookup_a.createSerializationContext(DynamicOpsNBT.INSTANCE);
--        DataResult dataresult;
-+        DataResult<SignText> dataresult; // CraftBukkit - decompile error
-         Logger logger;
- 
-         if (nbttagcompound.contains("front_text")) {
-@@ -173,12 +183,13 @@
+@@ -145,12 +156,13 @@
      public void updateSignText(EntityHuman entityhuman, boolean flag, List<FilteredText> list) {
          if (!this.isWaxed() && entityhuman.getUUID().equals(this.getPlayerWhoMayEdit()) && this.level != null) {
              this.updateText((signtext) -> {
@@ -50,7 +33,7 @@
          }
      }
  
-@@ -188,7 +199,8 @@
+@@ -160,7 +172,8 @@
          return this.setText((SignText) unaryoperator.apply(signtext), flag);
      }
  
@@ -60,7 +43,7 @@
          for (int i = 0; i < list.size(); ++i) {
              FilteredText filteredtext = (FilteredText) list.get(i);
              ChatModifier chatmodifier = signtext.getMessage(i, entityhuman.isTextFilteringEnabled()).getStyle();
-@@ -200,6 +212,29 @@
+@@ -172,6 +185,29 @@
              }
          }
  
@@ -90,7 +73,15 @@
          return signtext;
      }
  
-@@ -250,11 +285,40 @@
+@@ -213,6 +249,7 @@
+             if (chatclickable instanceof ChatClickable.RunCommand chatclickable_runcommand) {
+                 ChatClickable.RunCommand chatclickable_runcommand1 = chatclickable_runcommand;
+ 
++                String s; // CraftBukkit - decompile error
+                 try {
+                     s = chatclickable_runcommand1.command();
+                 } catch (Throwable throwable) {
+@@ -229,11 +266,40 @@
          return flag1;
      }
  
@@ -125,15 +116,15 @@
 +    private CommandListenerWrapper createCommandSourceStack(@Nullable EntityHuman entityhuman, World world, BlockPosition blockposition) {
 +        // CraftBukkit end
          String s = entityhuman == null ? "Sign" : entityhuman.getName().getString();
-         Object object = entityhuman == null ? IChatBaseComponent.literal("Sign") : entityhuman.getDisplayName();
+         IChatBaseComponent ichatbasecomponent = (IChatBaseComponent) (entityhuman == null ? IChatBaseComponent.literal("Sign") : entityhuman.getDisplayName());
  
--        return new CommandListenerWrapper(ICommandListener.NULL, Vec3D.atCenterOf(blockposition), Vec2F.ZERO, (WorldServer) world, 2, s, (IChatBaseComponent) object, world.getServer(), entityhuman);
+-        return new CommandListenerWrapper(ICommandListener.NULL, Vec3D.atCenterOf(blockposition), Vec2F.ZERO, (WorldServer) world, 2, s, ichatbasecomponent, world.getServer(), entityhuman);
 +        // CraftBukkit - commandSource
-+        return new CommandListenerWrapper(commandSource, Vec3D.atCenterOf(blockposition), Vec2F.ZERO, (WorldServer) world, 2, s, (IChatBaseComponent) object, world.getServer(), entityhuman);
++        return new CommandListenerWrapper(commandSource, Vec3D.atCenterOf(blockposition), Vec2F.ZERO, (WorldServer) world, 2, s, ichatbasecomponent, world.getServer(), entityhuman);
      }
  
      @Override
-@@ -273,12 +337,17 @@
+@@ -252,12 +318,17 @@
  
      @Nullable
      public UUID getPlayerWhoMayEdit() {

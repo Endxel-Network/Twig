@@ -141,40 +141,40 @@ public final class CraftPersistentDataTypeRegistry {
         if (Objects.equals(Byte.class, type)) {
             return this.createAdapter(
                     Byte.class, NBTTagByte.class, NBTBase.TAG_BYTE,
-                    NBTTagByte::valueOf, NBTTagByte::getAsByte
+                    NBTTagByte::valueOf, NBTTagByte::byteValue
             );
         }
         if (Objects.equals(Short.class, type)) {
             return this.createAdapter(
-                    Short.class, NBTTagShort.class, NBTBase.TAG_SHORT, NBTTagShort::valueOf, NBTTagShort::getAsShort
+                    Short.class, NBTTagShort.class, NBTBase.TAG_SHORT, NBTTagShort::valueOf, NBTTagShort::shortValue
             );
         }
         if (Objects.equals(Integer.class, type)) {
             return this.createAdapter(
-                    Integer.class, NBTTagInt.class, NBTBase.TAG_INT, NBTTagInt::valueOf, NBTTagInt::getAsInt
+                    Integer.class, NBTTagInt.class, NBTBase.TAG_INT, NBTTagInt::valueOf, NBTTagInt::intValue
             );
         }
         if (Objects.equals(Long.class, type)) {
             return this.createAdapter(
-                    Long.class, NBTTagLong.class, NBTBase.TAG_LONG, NBTTagLong::valueOf, NBTTagLong::getAsLong
+                    Long.class, NBTTagLong.class, NBTBase.TAG_LONG, NBTTagLong::valueOf, NBTTagLong::longValue
             );
         }
         if (Objects.equals(Float.class, type)) {
             return this.createAdapter(
                     Float.class, NBTTagFloat.class, NBTBase.TAG_FLOAT,
-                    NBTTagFloat::valueOf, NBTTagFloat::getAsFloat
+                    NBTTagFloat::valueOf, NBTTagFloat::floatValue
             );
         }
         if (Objects.equals(Double.class, type)) {
             return this.createAdapter(
                     Double.class, NBTTagDouble.class, NBTBase.TAG_DOUBLE,
-                    NBTTagDouble::valueOf, NBTTagDouble::getAsDouble
+                    NBTTagDouble::valueOf, NBTTagDouble::doubleValue
             );
         }
         if (Objects.equals(String.class, type)) {
             return this.createAdapter(
                     String.class, NBTTagString.class, NBTBase.TAG_STRING,
-                    NBTTagString::valueOf, NBTTagString::getAsString
+                    NBTTagString::valueOf, NBTTagString::value
             );
         }
 
@@ -216,8 +216,8 @@ public final class CraftPersistentDataTypeRegistry {
                         final PersistentDataContainer[] containerArray = new CraftPersistentDataContainer[tag.size()];
                         for (int i = 0; i < tag.size(); i++) {
                             final CraftPersistentDataContainer container = new CraftPersistentDataContainer(this);
-                            final NBTTagCompound compound = tag.getCompound(i);
-                            for (final String key : compound.getAllKeys()) {
+                            final NBTTagCompound compound = tag.getCompoundOrEmpty(i);
+                            for (final String key : compound.keySet()) {
                                 container.put(key, compound.get(key));
                             }
                             containerArray[i] = container;
@@ -236,7 +236,7 @@ public final class CraftPersistentDataTypeRegistry {
                     CraftPersistentDataContainer::toTagCompound,
                     tag -> {
                         final CraftPersistentDataContainer container = new CraftPersistentDataContainer(this);
-                        for (final String key : tag.getAllKeys()) {
+                        for (final String key : tag.keySet()) {
                             container.put(key, tag.get(key));
                         }
                         return container;
@@ -365,14 +365,12 @@ public final class CraftPersistentDataTypeRegistry {
         Preconditions.checkArgument(type instanceof ListPersistentDataType<?, ?>, "The passed list cannot be written to the PDC with a %s (expected a list data type)", type.getClass().getSimpleName());
         final ListPersistentDataType<P, ?> listPersistentDataType = (ListPersistentDataType<P, ?>) type;
 
-        final TagAdapter<P, NBTBase> elementAdapter = this.getOrCreateAdapter(listPersistentDataType.elementType());
-
         final List<NBTBase> values = Lists.newArrayListWithCapacity(list.size());
         for (final P primitiveValue : list) {
             values.add(this.wrap(listPersistentDataType.elementType(), primitiveValue));
         }
 
-        return new NBTTagList(values, values.isEmpty() ? NBTTagList.TAG_END : elementAdapter.nmsTypeByte());
+        return new NBTTagList(values);
     }
 
     /**
@@ -424,7 +422,7 @@ public final class CraftPersistentDataTypeRegistry {
             return false;
         }
 
-        final byte elementType = listTag.getElementType();
+        final byte elementType = listTag.identifyRawElementType();
         final TagAdapter elementAdapter = this.getOrCreateAdapter(listPersistentDataType.elementType());
 
         return elementAdapter.nmsTypeByte() == elementType || elementType == NBTTagList.TAG_END;

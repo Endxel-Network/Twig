@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/boss/wither/EntityWither.java
 +++ b/net/minecraft/world/entity/boss/wither/EntityWither.java
-@@ -57,6 +57,18 @@
+@@ -56,6 +56,18 @@
  import net.minecraft.world.level.block.state.IBlockData;
  import net.minecraft.world.phys.Vec3D;
  
@@ -18,9 +18,9 @@
 +
  public class EntityWither extends EntityMonster implements IRangedEntity {
  
-     private static final DataWatcherObject<Integer> DATA_TARGET_A = DataWatcher.defineId(EntityWither.class, DataWatcherRegistry.INT);
-@@ -252,15 +264,40 @@
-             i = this.getInvulnerableTicks() - 1;
+     private static final DataWatcherObject<Integer> DATA_TARGET_A = DataWatcher.<Integer>defineId(EntityWither.class, DataWatcherRegistry.INT);
+@@ -247,15 +259,40 @@
+ 
              this.bossEvent.setProgress(1.0F - (float) i / 220.0F);
              if (i <= 0) {
 -                worldserver.explode(this, this.getX(), this.getEyeY(), this.getZ(), 7.0F, false, World.a.MOB);
@@ -63,15 +63,15 @@
              }
  
          } else {
-@@ -305,6 +342,7 @@
+@@ -299,6 +336,7 @@
                          if (!list.isEmpty()) {
                              EntityLiving entityliving1 = (EntityLiving) list.get(this.random.nextInt(list.size()));
  
 +                            if (CraftEventFactory.callEntityTargetLivingEvent(this, entityliving1, EntityTargetEvent.TargetReason.CLOSEST_ENTITY).isCancelled()) continue; // CraftBukkit
-                             this.setAlternativeTarget(i, entityliving1.getId());
+                             this.setAlternativeTarget(j, entityliving1.getId());
                          }
                      }
-@@ -331,6 +369,11 @@
+@@ -322,6 +360,11 @@
                          IBlockData iblockdata = worldserver.getBlockState(blockposition);
  
                          if (canDestroy(iblockdata)) {
@@ -83,7 +83,7 @@
                              flag = worldserver.destroyBlock(blockposition, true, this) || flag;
                          }
                      }
-@@ -342,7 +385,7 @@
+@@ -333,7 +376,7 @@
              }
  
              if (this.tickCount % 20 == 0) {
@@ -92,7 +92,7 @@
              }
  
              this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-@@ -499,7 +542,7 @@
+@@ -490,7 +533,7 @@
      @Override
      public void checkDespawn() {
          if (this.level().getDifficulty() == EnumDifficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {

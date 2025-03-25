@@ -11,7 +11,7 @@
 +
  public record LootDataType<T>(ResourceKey<IRegistry<T>> registryKey, Codec<T> codec, LootDataType.a<T> validator) {
  
-     public static final LootDataType<LootItemCondition> PREDICATE = new LootDataType<>(Registries.PREDICATE, LootItemCondition.DIRECT_CODEC, createSimpleValidator());
+     public static final LootDataType<LootItemCondition> PREDICATE = new LootDataType<LootItemCondition>(Registries.PREDICATE, LootItemCondition.DIRECT_CODEC, createSimpleValidator());
 @@ -32,6 +37,7 @@
      private static LootDataType.a<LootTable> createLootTableValidator() {
          return (lootcollector, resourcekey, loottable) -> {

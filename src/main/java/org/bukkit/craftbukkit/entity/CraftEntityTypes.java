@@ -29,6 +29,8 @@ import net.minecraft.world.entity.projectile.EntityFireball;
 import net.minecraft.world.entity.projectile.EntityFireworks;
 import net.minecraft.world.entity.projectile.EntityPotion;
 import net.minecraft.world.entity.projectile.EntitySnowball;
+import net.minecraft.world.entity.projectile.ThrownLingeringPotion;
+import net.minecraft.world.entity.projectile.ThrownSplashPotion;
 import net.minecraft.world.entity.vehicle.EntityMinecartAbstract;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -125,6 +127,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.LlamaSpit;
 import org.bukkit.entity.MagmaCube;
@@ -161,6 +164,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Snowman;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.Spider;
+import org.bukkit.entity.SplashPotion;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Stray;
 import org.bukkit.entity.Strider;
@@ -168,7 +172,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Tadpole;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.entity.ThrownExpBottle;
-import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.TraderLlama;
 import org.bukkit.entity.Trident;
 import org.bukkit.entity.TropicalFish;
@@ -253,11 +256,11 @@ public final class CraftEntityTypes {
 
     private static final BiConsumer<SpawnData, net.minecraft.world.entity.Entity> POS = (spawnData, entity) -> entity.setPos(spawnData.x(), spawnData.y(), spawnData.z());
     private static final BiConsumer<SpawnData, net.minecraft.world.entity.Entity> ABS_MOVE = (spawnData, entity) -> {
-        entity.absMoveTo(spawnData.x(), spawnData.y(), spawnData.z(), spawnData.yaw(), spawnData.pitch());
+        entity.absSnapTo(spawnData.x(), spawnData.y(), spawnData.z(), spawnData.yaw(), spawnData.pitch());
         entity.setYHeadRot(spawnData.yaw()); // SPIGOT-3587
     };
-    private static final BiConsumer<SpawnData, net.minecraft.world.entity.Entity> MOVE = (spawnData, entity) -> entity.moveTo(spawnData.x(), spawnData.y(), spawnData.z(), spawnData.yaw(), spawnData.pitch());
-    private static final BiConsumer<SpawnData, net.minecraft.world.entity.Entity> MOVE_EMPTY_ROT = (spawnData, entity) -> entity.moveTo(spawnData.x(), spawnData.y(), spawnData.z(), 0, 0);
+    private static final BiConsumer<SpawnData, net.minecraft.world.entity.Entity> MOVE = (spawnData, entity) -> entity.snapTo(spawnData.x(), spawnData.y(), spawnData.z(), spawnData.yaw(), spawnData.pitch());
+    private static final BiConsumer<SpawnData, net.minecraft.world.entity.Entity> MOVE_EMPTY_ROT = (spawnData, entity) -> entity.snapTo(spawnData.x(), spawnData.y(), spawnData.z(), 0, 0);
     private static final BiConsumer<SpawnData, EntityFireball> DIRECTION = (spawnData, entity) -> {
         Vector direction = spawnData.location().getDirection();
         entity.assignDirectionalMovement(new Vec3D(direction.getX(), direction.getY(), direction.getZ()), 1.0);
@@ -371,7 +374,7 @@ public final class CraftEntityTypes {
                         return EntityPainting.create(spawnData.minecraftWorld(), hangingData.position(), hangingData.direction()).orElse(null);
                     } else {
                         EntityPainting entity = new EntityPainting(EntityTypes.PAINTING, spawnData.minecraftWorld());
-                        entity.absMoveTo(spawnData.x(), spawnData.y(), spawnData.z(), spawnData.yaw(), spawnData.pitch());
+                        entity.absSnapTo(spawnData.x(), spawnData.y(), spawnData.z(), spawnData.yaw(), spawnData.pitch());
                         entity.setDirection(hangingData.direction());
                         return entity;
                     }
@@ -440,8 +443,12 @@ public final class CraftEntityTypes {
         register(new EntityTypeData<>(EntityType.LEASH_KNOT, LeashHitch.class, CraftLeash::new, spawnData -> new EntityLeash(spawnData.minecraftWorld(), BlockPosition.containing(spawnData.x(), spawnData.y(), spawnData.z())))); // SPIGOT-5732: LeashHitch has no direction and is always centered at a block
         register(new EntityTypeData<>(EntityType.SNOWBALL, Snowball.class, CraftSnowball::new, spawnData -> new EntitySnowball(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z(), new net.minecraft.world.item.ItemStack(Items.SNOWBALL))));
         register(new EntityTypeData<>(EntityType.EYE_OF_ENDER, EnderSignal.class, CraftEnderSignal::new, spawnData -> new EntityEnderSignal(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z())));
-        register(new EntityTypeData<>(EntityType.POTION, ThrownPotion.class, CraftThrownPotion::new, spawnData -> {
-            EntityPotion entity = new EntityPotion(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z(), new net.minecraft.world.item.ItemStack(Items.SPLASH_POTION));
+        register(new EntityTypeData<>(EntityType.SPLASH_POTION, SplashPotion.class, CraftSplashPotion::new, spawnData -> {
+            EntityPotion entity = new ThrownSplashPotion(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z(), new net.minecraft.world.item.ItemStack(Items.SPLASH_POTION));
+            return entity;
+        }));
+        register(new EntityTypeData<>(EntityType.LINGERING_POTION, LingeringPotion.class, CraftLingeringPotion::new, spawnData -> {
+            EntityPotion entity = new ThrownLingeringPotion(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z(), new net.minecraft.world.item.ItemStack(Items.LINGERING_POTION));
             return entity;
         }));
         register(new EntityTypeData<>(EntityType.TNT, TNTPrimed.class, CraftTNTPrimed::new, spawnData -> new EntityTNTPrimed(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z(), null)));

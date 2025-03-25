@@ -10,8 +10,8 @@
 +
  public class EntityLlamaTrader extends EntityLlama {
  
-     private int despawnDelay = 47999;
-@@ -94,7 +98,7 @@
+     private static final int DEFAULT_DESPAWN_DELAY = 47999;
+@@ -92,7 +96,7 @@
              this.despawnDelay = this.isLeashedToWanderingTrader() ? ((EntityVillagerTrader) this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
              if (this.despawnDelay <= 0) {
                  this.removeLeash();
@@ -20,7 +20,7 @@
              }
  
          }
-@@ -160,7 +164,7 @@
+@@ -158,7 +162,7 @@
  
          @Override
          public void start() {

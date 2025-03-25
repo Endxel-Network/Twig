@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/decoration/EntityPainting.java
 +++ b/net/minecraft/world/entity/decoration/EntityPainting.java
-@@ -72,7 +72,7 @@
+@@ -91,7 +91,7 @@
      public static Optional<EntityPainting> create(World world, BlockPosition blockposition, EnumDirection enumdirection) {
          EntityPainting entitypainting = new EntityPainting(world, blockposition);
          List<Holder<PaintingVariant>> list = new ArrayList();
@@ -9,7 +9,7 @@
  
          Objects.requireNonNull(list);
          iterable.forEach(list::add);
-@@ -138,22 +138,32 @@
+@@ -155,22 +155,32 @@
  
      @Override
      protected AxisAlignedBB calculateBoundingBox(BlockPosition blockposition, EnumDirection enumdirection) {

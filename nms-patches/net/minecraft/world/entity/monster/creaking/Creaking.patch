@@ -18,7 +18,7 @@
      }
  
      public void creakingDeathEffects(DamageSource damagesource) {
-@@ -476,7 +476,7 @@
+@@ -458,7 +458,7 @@
  
      @Override
      protected SoundEffect getHurtSound(DamageSource damagesource) {
@@ -27,12 +27,3 @@
      }
  
      @Override
-@@ -549,7 +549,7 @@
-     }
- 
-     public void activate(EntityHuman entityhuman) {
--        this.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, (Object) entityhuman);
-+        this.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, entityhuman); // CraftBukkit - decompile error
-         this.gameEvent(GameEvent.ENTITY_ACTION);
-         this.makeSound(SoundEffects.CREAKING_ACTIVATE);
-         this.setIsActive(true);

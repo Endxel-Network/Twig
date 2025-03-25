@@ -9,7 +9,6 @@ import net.minecraft.world.item.component.DyedItemColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ColorableArmorMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
@@ -125,10 +124,6 @@ class CraftMetaLeatherArmor extends CraftMetaItem implements LeatherArmorMeta {
 
     static void readColor(LeatherArmorMeta meta, DataComponentPatch tag) {
         getOrEmpty(tag, COLOR).ifPresent((dyedItemColor) -> {
-            if (!dyedItemColor.showInTooltip()) {
-                meta.addItemFlags(ItemFlag.HIDE_DYE);
-            }
-
             try {
                 meta.setColor(Color.fromRGB(dyedItemColor.rgb()));
             } catch (IllegalArgumentException ex) {
@@ -147,7 +142,7 @@ class CraftMetaLeatherArmor extends CraftMetaItem implements LeatherArmorMeta {
 
     static void applyColor(LeatherArmorMeta meta, CraftMetaItem.Applicator tag) {
         if (hasColor(meta)) {
-            tag.put(COLOR, new DyedItemColor(meta.getColor().asRGB(), !meta.hasItemFlag(ItemFlag.HIDE_DYE)));
+            tag.put(COLOR, new DyedItemColor(meta.getColor().asRGB()));
         }
     }
 

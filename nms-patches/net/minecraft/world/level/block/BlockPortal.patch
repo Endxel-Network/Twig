@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/level/block/BlockPortal.java
 +++ b/net/minecraft/world/level/block/BlockPortal.java
-@@ -39,6 +39,15 @@
- import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+@@ -42,6 +42,15 @@
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  import org.slf4j.Logger;
  
 +// CraftBukkit start
@@ -15,7 +15,7 @@
 +
  public class BlockPortal extends Block implements Portal {
  
-     public static final MapCodec<BlockPortal> CODEC = simpleCodec(BlockPortal::new);
+     private static final Logger LOGGER = LogUtils.getLogger();
 @@ -77,7 +86,8 @@
              }
  
@@ -28,7 +28,7 @@
                      entity.setPortalCooldown();
 @@ -104,6 +114,10 @@
      @Override
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity) {
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
          if (entity.canUsePortal(false)) {
 +            // CraftBukkit start - Entity in portal
 +            EntityPortalEnterEvent event = new EntityPortalEnterEvent(entity.getBukkitEntity(), new org.bukkit.Location(world.getWorld(), blockposition.getX(), blockposition.getY(), blockposition.getZ()));

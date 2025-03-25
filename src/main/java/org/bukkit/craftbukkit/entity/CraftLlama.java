@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.EnumItemSlot;
 import net.minecraft.world.entity.animal.horse.EntityLlama;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryLlama;
@@ -34,7 +35,7 @@ public class CraftLlama extends CraftChestedHorse implements Llama {
 
     @Override
     public LlamaInventory getInventory() {
-        return new CraftInventoryLlama(getHandle().inventory, getHandle().getBodyArmorAccess());
+        return new CraftInventoryLlama(getHandle().inventory, getHandle().createEquipmentSlotContainer(EnumItemSlot.BODY));
     }
 
     @Override

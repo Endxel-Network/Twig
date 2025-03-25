@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityMushroomCow.java
 +++ b/net/minecraft/world/entity/animal/EntityMushroomCow.java
-@@ -43,6 +43,13 @@
+@@ -49,6 +49,13 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.storage.loot.LootTables;
  
@@ -11,10 +11,10 @@
 +import org.bukkit.event.entity.EntityTransformEvent;
 +// CraftBukkit end
 +
- public class EntityMushroomCow extends EntityCow implements IShearable, VariantHolder<EntityMushroomCow.Type> {
+ public class EntityMushroomCow extends AbstractCow implements IShearable {
  
-     private static final DataWatcherObject<String> DATA_TYPE = DataWatcher.defineId(EntityMushroomCow.class, DataWatcherRegistry.STRING);
-@@ -120,6 +127,11 @@
+     private static final DataWatcherObject<Integer> DATA_TYPE = DataWatcher.<Integer>defineId(EntityMushroomCow.class, DataWatcherRegistry.INT);
+@@ -126,6 +133,11 @@
              if (world instanceof WorldServer) {
                  WorldServer worldserver = (WorldServer) world;
  
@@ -26,7 +26,7 @@
                  this.shear(worldserver, SoundCategory.PLAYERS, itemstack);
                  this.gameEvent(GameEvent.SHEAR, entityhuman);
                  itemstack.hurtAndBreak(1, entityhuman, getSlotForHand(enumhand));
-@@ -163,11 +175,19 @@
+@@ -167,11 +179,19 @@
              worldserver.sendParticles(Particles.EXPLOSION, this.getX(), this.getY(0.5D), this.getZ(), 1, 0.0D, 0.0D, 0.0D, 0.0D);
              this.dropFromShearingLootTable(worldserver, LootTables.SHEAR_MOOSHROOM, itemstack, (worldserver1, itemstack1) -> {
                  for (int i = 0; i < itemstack1.getCount(); ++i) {
@@ -48,12 +48,12 @@
      }
  
      @Override
-@@ -263,7 +283,7 @@
-         }
- 
-         static EntityMushroomCow.Type byName(String s) {
--            return (EntityMushroomCow.Type) EntityMushroomCow.Type.CODEC.byName(s, (Enum) EntityMushroomCow.Type.RED);
-+            return (EntityMushroomCow.Type) EntityMushroomCow.Type.CODEC.byName(s, EntityMushroomCow.Type.RED); // CraftBukkit - decompile error
-         }
+@@ -190,7 +210,7 @@
+     public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
+         super.readAdditionalSaveData(nbttagcompound);
+         this.setVariant((EntityMushroomCow.Type) nbttagcompound.read("Type", EntityMushroomCow.Type.CODEC).orElse(EntityMushroomCow.Type.DEFAULT));
+-        this.stewEffects = (SuspiciousStewEffects) nbttagcompound.read("stew_effects", SuspiciousStewEffects.CODEC).orElse((Object) null);
++        this.stewEffects = (SuspiciousStewEffects) nbttagcompound.read("stew_effects", SuspiciousStewEffects.CODEC).orElse(null); // CraftBukkit - decompile error
      }
- }
+ 
+     private Optional<SuspiciousStewEffects> getEffectsFromItemStack(ItemStack itemstack) {

@@ -33,7 +33,6 @@ import net.minecraft.world.entity.projectile.EntityFireworks;
 import net.minecraft.world.entity.projectile.EntityFishingHook;
 import net.minecraft.world.entity.projectile.EntityLargeFireball;
 import net.minecraft.world.entity.projectile.EntityLlamaSpit;
-import net.minecraft.world.entity.projectile.EntityPotion;
 import net.minecraft.world.entity.projectile.EntityProjectile;
 import net.minecraft.world.entity.projectile.EntityShulkerBullet;
 import net.minecraft.world.entity.projectile.EntitySmallFireball;
@@ -43,6 +42,8 @@ import net.minecraft.world.entity.projectile.EntityThrownExpBottle;
 import net.minecraft.world.entity.projectile.EntityThrownTrident;
 import net.minecraft.world.entity.projectile.EntityTippedArrow;
 import net.minecraft.world.entity.projectile.EntityWitherSkull;
+import net.minecraft.world.entity.projectile.ThrownLingeringPotion;
+import net.minecraft.world.entity.projectile.ThrownSplashPotion;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.phys.Vec3D;
@@ -402,7 +403,8 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public Player getKiller() {
-        return getHandle().lastHurtByPlayer == null ? null : (Player) getHandle().lastHurtByPlayer.getBukkitEntity();
+        EntityHuman lastHurtByPlayer = getHandle().getLastHurtByPlayer();
+        return lastHurtByPlayer == null ? null : (Player) lastHurtByPlayer.getBukkitEntity();
     }
 
     @Override
@@ -486,9 +488,9 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             ((EntityArrow) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 3.0F, 1.0F); // ItemBow
         } else if (ThrownPotion.class.isAssignableFrom(projectile)) {
             if (LingeringPotion.class.isAssignableFrom(projectile)) {
-                launch = new EntityPotion(world, getHandle(), new net.minecraft.world.item.ItemStack(Items.LINGERING_POTION));
+                launch = new ThrownLingeringPotion(world, getHandle(), new net.minecraft.world.item.ItemStack(Items.LINGERING_POTION));
             } else {
-                launch = new EntityPotion(world, getHandle(), new net.minecraft.world.item.ItemStack(Items.SPLASH_POTION));
+                launch = new ThrownSplashPotion(world, getHandle(), new net.minecraft.world.item.ItemStack(Items.SPLASH_POTION));
             }
             ((EntityProjectile) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), -20.0F, 0.5F, 1.0F); // ItemSplashPotion
         } else if (ThrownExpBottle.class.isAssignableFrom(projectile)) {
@@ -521,7 +523,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             }
 
             ((EntityFireball) launch).projectileSource = this;
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            launch.snapTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (LlamaSpit.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
             Vector direction = location.getDirection();
@@ -530,17 +532,17 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
             ((EntityLlamaSpit) launch).setOwner(getHandle());
             ((EntityLlamaSpit) launch).shoot(direction.getX(), direction.getY(), direction.getZ(), 1.5F, 10.0F); // EntityLlama
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            launch.snapTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (ShulkerBullet.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
 
             launch = new EntityShulkerBullet(world, getHandle(), null, null);
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            launch.snapTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (Firework.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
 
             launch = new EntityFireworks(world, net.minecraft.world.item.ItemStack.EMPTY, getHandle());
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            launch.snapTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         }
 
         Preconditions.checkArgument(launch != null, "Projectile (%s) not supported", projectile.getName());

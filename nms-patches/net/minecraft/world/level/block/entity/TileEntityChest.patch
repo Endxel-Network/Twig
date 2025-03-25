@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityChest.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityChest.java
-@@ -24,6 +24,12 @@
+@@ -25,6 +25,12 @@
  import net.minecraft.world.level.block.state.IBlockData;
  import net.minecraft.world.level.block.state.properties.BlockPropertyChestType;
  
@@ -13,7 +13,7 @@
  public class TileEntityChest extends TileEntityLootable implements LidBlockEntity {
  
      private static final int EVENT_SET_OPEN_COUNT = 1;
-@@ -31,6 +37,36 @@
+@@ -32,6 +38,36 @@
      public final ContainerOpenersCounter openersCounter;
      private final ChestLidController chestLidController;
  
@@ -49,4 +49,4 @@
 +
      protected TileEntityChest(TileEntityTypes<?> tileentitytypes, BlockPosition blockposition, IBlockData iblockdata) {
          super(tileentitytypes, blockposition, iblockdata);
-         this.items = NonNullList.withSize(27, ItemStack.EMPTY);
+         this.items = NonNullList.<ItemStack>withSize(27, ItemStack.EMPTY);

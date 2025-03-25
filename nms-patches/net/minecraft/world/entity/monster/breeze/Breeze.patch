@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/breeze/Breeze.java
 +++ b/net/minecraft/world/entity/monster/breeze/Breeze.java
-@@ -77,7 +77,7 @@
+@@ -76,7 +76,7 @@
  
      @Override
      public BehaviorController<Breeze> getBrain() {
@@ -9,7 +9,7 @@
      }
  
      @Override
-@@ -252,6 +252,7 @@
+@@ -251,6 +251,7 @@
  
      @Override
      public boolean canAttackType(EntityTypes<?> entitytypes) {

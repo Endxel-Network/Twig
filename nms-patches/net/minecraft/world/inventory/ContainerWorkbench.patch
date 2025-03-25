@@ -54,7 +54,7 @@
          return stillValid(this.access, entityhuman, Blocks.CRAFTING_TABLE);
      }
  
-@@ -181,4 +192,17 @@
+@@ -179,4 +190,17 @@
      protected EntityHuman owner() {
          return this.player;
      }

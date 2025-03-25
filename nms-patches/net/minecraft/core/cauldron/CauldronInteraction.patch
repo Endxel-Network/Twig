@@ -42,12 +42,12 @@
                      entityhuman.awardStat(StatisticList.ITEM_USED.get(item));
 -                    world.setBlockAndUpdate(blockposition, Blocks.WATER_CAULDRON.defaultBlockState());
 +                    // world.setBlockAndUpdate(blockposition, Blocks.WATER_CAULDRON.defaultBlockState()); // CraftBukkit
-                     world.playSound((EntityHuman) null, blockposition, SoundEffects.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                     world.playSound((Entity) null, blockposition, SoundEffects.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                      world.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PLACE, blockposition);
                  }
 @@ -93,12 +104,17 @@
          });
-         map1.put(Items.GLASS_BOTTLE, (iblockdata, world, blockposition, entityhuman, enumhand, itemstack) -> {
+         map1.put(Items.GLASS_BOTTLE, (CauldronInteraction) (iblockdata, world, blockposition, entityhuman, enumhand, itemstack) -> {
              if (!world.isClientSide) {
 +                // CraftBukkit start
 +                if (!LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition, entityhuman, CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
@@ -61,7 +61,7 @@
                  entityhuman.awardStat(StatisticList.ITEM_USED.get(item));
 -                LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition);
 +                // LayeredCauldronBlock.lowerFillLevel(iblockdata, world, blockposition); // CraftBukkit
-                 world.playSound((EntityHuman) null, blockposition, SoundEffects.BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                 world.playSound((Entity) null, blockposition, SoundEffects.BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                  world.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PICKUP, blockposition);
              }
 @@ -113,10 +129,15 @@
@@ -78,7 +78,7 @@
                          entityhuman.awardStat(StatisticList.ITEM_USED.get(itemstack.getItem()));
 -                        world.setBlockAndUpdate(blockposition, (IBlockData) iblockdata.cycle(LayeredCauldronBlock.LEVEL));
 +                        // world.setBlockAndUpdate(blockposition, (IBlockData) iblockdata.cycle(LayeredCauldronBlock.LEVEL)); // CraftBukkit
-                         world.playSound((EntityHuman) null, blockposition, SoundEffects.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                         world.playSound((Entity) null, blockposition, SoundEffects.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                          world.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PLACE, blockposition);
                      }
 @@ -194,12 +215,17 @@
@@ -97,7 +97,7 @@
                  entityhuman.awardStat(StatisticList.ITEM_USED.get(item));
 -                world.setBlockAndUpdate(blockposition, Blocks.CAULDRON.defaultBlockState());
 +                // world.setBlockAndUpdate(blockposition, Blocks.CAULDRON.defaultBlockState()); // CraftBukkit
-                 world.playSound((EntityHuman) null, blockposition, soundeffect, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                 world.playSound((Entity) null, blockposition, soundeffect, SoundCategory.BLOCKS, 1.0F, 1.0F);
                  world.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PICKUP, blockposition);
              }
 @@ -210,12 +236,17 @@
@@ -116,7 +116,7 @@
              entityhuman.awardStat(StatisticList.ITEM_USED.get(item));
 -            world.setBlockAndUpdate(blockposition, iblockdata);
 +            // world.setBlockAndUpdate(blockposition, iblockdata); // CraftBukkit
-             world.playSound((EntityHuman) null, blockposition, soundeffect, SoundCategory.BLOCKS, 1.0F, 1.0F);
+             world.playSound((Entity) null, blockposition, soundeffect, SoundCategory.BLOCKS, 1.0F, 1.0F);
              world.gameEvent((Entity) null, (Holder) GameEvent.FLUID_PLACE, blockposition);
          }
 @@ -242,11 +273,16 @@

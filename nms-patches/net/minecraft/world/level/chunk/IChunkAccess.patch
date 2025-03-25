@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/chunk/IChunkAccess.java
 +++ b/net/minecraft/world/level/chunk/IChunkAccess.java
-@@ -85,6 +85,11 @@
+@@ -84,6 +84,11 @@
      protected final LevelHeightAccessor levelHeightAccessor;
      protected final ChunkSection[] sections;
  
@@ -12,7 +12,7 @@
      public IChunkAccess(ChunkCoordIntPair chunkcoordintpair, ChunkConverter chunkconverter, LevelHeightAccessor levelheightaccessor, IRegistry<BiomeBase> iregistry, long i, @Nullable ChunkSection[] achunksection, @Nullable BlendingData blendingdata) {
          this.chunkPos = chunkcoordintpair;
          this.upgradeData = chunkconverter;
-@@ -103,7 +108,11 @@
+@@ -102,7 +107,11 @@
          }
  
          replaceMissingSections(iregistry, this.sections);
@@ -24,7 +24,7 @@
  
      private static void replaceMissingSections(IRegistry<BiomeBase> iregistry, ChunkSection[] achunksection) {
          for (int i = 0; i < achunksection.length; ++i) {
-@@ -275,6 +284,7 @@
+@@ -279,6 +288,7 @@
      public boolean tryMarkSaved() {
          if (this.unsaved) {
              this.unsaved = false;
@@ -32,7 +32,7 @@
              return true;
          } else {
              return false;
-@@ -282,7 +292,7 @@
+@@ -286,7 +296,7 @@
      }
  
      public boolean isUnsaved() {
@@ -41,7 +41,7 @@
      }
  
      public abstract ChunkStatus getPersistedStatus();
-@@ -463,6 +473,27 @@
+@@ -467,6 +477,27 @@
          }
      }
  

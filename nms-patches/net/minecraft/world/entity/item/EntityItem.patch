@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/item/EntityItem.java
 +++ b/net/minecraft/world/entity/item/EntityItem.java
-@@ -34,6 +34,15 @@
+@@ -36,6 +36,15 @@
  import net.minecraft.world.level.portal.TeleportTransition;
  import net.minecraft.world.phys.Vec3D;
  
@@ -15,8 +15,8 @@
 +
  public class EntityItem extends Entity implements TraceableEntity {
  
-     private static final DataWatcherObject<ItemStack> DATA_ITEM = DataWatcher.defineId(EntityItem.class, DataWatcherRegistry.ITEM_STACK);
-@@ -52,6 +61,7 @@
+     private static final DataWatcherObject<ItemStack> DATA_ITEM = DataWatcher.<ItemStack>defineId(EntityItem.class, DataWatcherRegistry.ITEM_STACK);
+@@ -57,6 +66,7 @@
      @Nullable
      public UUID target;
      public final float bobOffs;
@@ -24,7 +24,7 @@
  
      public EntityItem(EntityTypes<? extends EntityItem> entitytypes, World world) {
          super(entitytypes, world);
-@@ -133,12 +143,15 @@
+@@ -142,12 +152,15 @@
      @Override
      public void tick() {
          if (this.getItem().isEmpty()) {
@@ -44,7 +44,7 @@
  
              this.xo = this.getX();
              this.yo = this.getY();
-@@ -188,9 +201,11 @@
+@@ -197,9 +210,11 @@
                  this.mergeWithNeighbours();
              }
  
@@ -56,7 +56,7 @@
  
              this.hasImpulse |= this.updateInWaterStateAndDoFluidPushing();
              if (!this.level().isClientSide) {
-@@ -202,7 +217,13 @@
+@@ -211,7 +226,13 @@
              }
  
              if (!this.level().isClientSide && this.age >= 6000) {
@@ -71,7 +71,7 @@
              }
  
          }
-@@ -287,11 +308,16 @@
+@@ -291,11 +312,16 @@
      }
  
      private static void merge(EntityItem entityitem, ItemStack itemstack, EntityItem entityitem1, ItemStack itemstack1) {
@@ -89,7 +89,7 @@
          }
  
      }
-@@ -320,12 +346,17 @@
+@@ -324,12 +350,17 @@
          } else if (!this.getItem().canBeHurtBy(damagesource)) {
              return false;
          } else {
@@ -108,16 +108,25 @@
              }
  
              return true;
-@@ -382,7 +413,7 @@
-         }
+@@ -361,14 +392,14 @@
+         this.health = nbttagcompound.getShortOr("Health", (short) 5);
+         this.age = nbttagcompound.getShortOr("Age", (short) 0);
+         this.pickupDelay = nbttagcompound.getShortOr("PickupDelay", (short) 0);
+-        this.target = (UUID) nbttagcompound.read("Owner", UUIDUtil.CODEC).orElse((Object) null);
+-        this.thrower = (UUID) nbttagcompound.read("Thrower", UUIDUtil.CODEC).orElse((Object) null);
++        this.target = (UUID) nbttagcompound.read("Owner", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
++        this.thrower = (UUID) nbttagcompound.read("Thrower", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
+         this.cachedThrower = null;
+         RegistryOps<NBTBase> registryops = this.registryAccess().<NBTBase>createSerializationContext(DynamicOpsNBT.INSTANCE);
  
+         this.setItem((ItemStack) nbttagcompound.read("Item", ItemStack.CODEC, registryops).orElse(ItemStack.EMPTY));
          if (this.getItem().isEmpty()) {
 -            this.discard();
 +            this.discard(null); // CraftBukkit - add Bukkit remove cause
          }
  
      }
-@@ -394,10 +425,50 @@
+@@ -380,10 +411,50 @@
              Item item = itemstack.getItem();
              int i = itemstack.getCount();
  

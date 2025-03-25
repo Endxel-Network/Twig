@@ -10,8 +10,8 @@
 +
  public abstract class EntityIllagerWizard extends EntityIllagerAbstract {
  
-     private static final DataWatcherObject<Byte> DATA_SPELL_CASTING_ID = DataWatcher.defineId(EntityIllagerWizard.class, DataWatcherRegistry.BYTE);
-@@ -159,6 +163,11 @@
+     private static final DataWatcherObject<Byte> DATA_SPELL_CASTING_ID = DataWatcher.<Byte>defineId(EntityIllagerWizard.class, DataWatcherRegistry.BYTE);
+@@ -172,6 +176,11 @@
          public void tick() {
              --this.attackWarmupDelay;
              if (this.attackWarmupDelay == 0) {

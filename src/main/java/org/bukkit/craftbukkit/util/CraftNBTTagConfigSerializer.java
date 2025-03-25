@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.minecraft.nbt.DynamicOpsNBT;
 import net.minecraft.nbt.MojangsonParser;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +21,7 @@ public class CraftNBTTagConfigSerializer {
     private static final Pattern ARRAY = Pattern.compile("^\\[.*]");
     private static final Pattern INTEGER = Pattern.compile("[-+]?(?:0|[1-9][0-9]*)?i", Pattern.CASE_INSENSITIVE);
     private static final Pattern DOUBLE = Pattern.compile("[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d", Pattern.CASE_INSENSITIVE);
-    private static final MojangsonParser MOJANGSON_PARSER = new MojangsonParser(new StringReader(""));
+    private static final MojangsonParser<NBTBase> MOJANGSON_PARSER = MojangsonParser.create(DynamicOpsNBT.INSTANCE);
 
     public static String serialize(@NotNull final NBTBase base) {
         final SnbtPrinterTagVisitor snbtVisitor = new SnbtPrinterTagVisitor();
@@ -31,7 +32,7 @@ public class CraftNBTTagConfigSerializer {
         // The new logic expects the top level object to be a single string, holding the entire nbt tag as SNBT.
         if (object instanceof final String snbtString) {
             try {
-                return MojangsonParser.parseTag(snbtString);
+                return MojangsonParser.parseCompoundFully(snbtString);
             } catch (final CommandSyntaxException e) {
                 throw new RuntimeException("Failed to deserialise nbt", e);
             }
@@ -65,7 +66,7 @@ public class CraftNBTTagConfigSerializer {
 
             if (ARRAY.matcher(string).matches()) {
                 try {
-                    return new MojangsonParser(new StringReader(string)).readArrayTag();
+                    return MOJANGSON_PARSER.parseAsArgument(new StringReader(string));
                 } catch (CommandSyntaxException e) {
                     throw new RuntimeException("Could not deserialize found list ", e);
                 }
@@ -74,12 +75,19 @@ public class CraftNBTTagConfigSerializer {
             } else if (DOUBLE.matcher(string).matches()) {
                 return NBTTagDouble.valueOf(Double.parseDouble(string.substring(0, string.length() - 1)));
             } else {
-                NBTBase nbtBase = MOJANGSON_PARSER.type(string);
+                NBTBase nbtBase;
+                try {
+                    nbtBase = MOJANGSON_PARSER.parseAsArgument(new StringReader(string));
+                } catch (CommandSyntaxException e) {
+                    throw new RuntimeException("Could not deserialize found value ", e);
+                }
 
                 if (nbtBase instanceof NBTTagInt) { // If this returns an integer, it did not use our method from above
-                    return NBTTagString.valueOf(nbtBase.getAsString()); // It then is a string that was falsely read as an int
+                    return NBTTagString.valueOf(String.valueOf(((NBTTagInt) nbtBase).intValue())); // It then is a string that was falsely read as an int
                 } else if (nbtBase instanceof NBTTagDouble) {
-                    return NBTTagString.valueOf(String.valueOf(((NBTTagDouble) nbtBase).getAsDouble())); // Doubles add "d" at the end
+                    return NBTTagString.valueOf(String.valueOf(((NBTTagDouble) nbtBase).doubleValue())); // Doubles add "d" at the end
+                } else if (nbtBase instanceof NBTTagString) {
+                    return NBTTagString.valueOf(string);
                 } else {
                     return nbtBase;
                 }

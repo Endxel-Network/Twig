@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/vehicle/AbstractChestBoat.java
 +++ b/net/minecraft/world/entity/vehicle/AbstractChestBoat.java
-@@ -27,6 +27,15 @@
+@@ -25,6 +25,15 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.storage.loot.LootTable;
  
@@ -16,7 +16,7 @@
  public abstract class AbstractChestBoat extends AbstractBoat implements HasCustomInventoryScreen, ContainerEntity {
  
      private static final int CONTAINER_SIZE = 27;
-@@ -70,11 +79,18 @@
+@@ -68,11 +77,18 @@
  
      @Override
      public void remove(Entity.RemovalReason entity_removalreason) {
@@ -28,7 +28,7 @@
 +    public void remove(Entity.RemovalReason entity_removalreason, EntityRemoveEvent.Cause cause) {
 +        // CraftBukkit end
          if (!this.level().isClientSide && entity_removalreason.shouldDestroy()) {
-             InventoryUtils.dropContents(this.level(), (Entity) this, (IInventory) this);
+             InventoryUtils.dropContents(this.level(), (Entity) this, this);
          }
  
 -        super.remove(entity_removalreason);
@@ -36,9 +36,9 @@
      }
  
      @Override
-@@ -212,4 +228,51 @@
+@@ -210,4 +226,51 @@
      public void stopOpen(EntityHuman entityhuman) {
-         this.level().gameEvent((Holder) GameEvent.CONTAINER_CLOSE, this.position(), GameEvent.a.of((Entity) entityhuman));
+         this.level().gameEvent(GameEvent.CONTAINER_CLOSE, this.position(), GameEvent.a.of((Entity) entityhuman));
      }
 +
 +    // CraftBukkit start

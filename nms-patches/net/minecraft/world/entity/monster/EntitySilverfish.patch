@@ -25,7 +25,7 @@
                                      world.destroyBlock(blockposition1, true, this.silverfish);
                                  } else {
 @@ -229,9 +239,14 @@
-                 IBlockData iblockdata = world.getBlockState(blockposition);
+                 IBlockData iblockdata = generatoraccess.getBlockState(blockposition);
  
                  if (BlockMonsterEggs.isCompatibleHostBlock(iblockdata)) {
 +                    // CraftBukkit start
@@ -33,7 +33,7 @@
 +                        return;
 +                    }
 +                    // CraftBukkit end
-                     world.setBlock(blockposition, BlockMonsterEggs.infestedStateByHost(iblockdata), 3);
+                     generatoraccess.setBlock(blockposition, BlockMonsterEggs.infestedStateByHost(iblockdata), 3);
                      this.mob.spawnAnim();
 -                    this.mob.discard();
 +                    this.mob.discard(EntityRemoveEvent.Cause.ENTER_BLOCK); // CraftBukkit - add Bukkit remove cause

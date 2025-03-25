@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/commands/CommandDifficulty.java
 +++ b/net/minecraft/server/commands/CommandDifficulty.java
-@@ -44,11 +44,12 @@
+@@ -40,11 +40,12 @@
  
      public static int setDifficulty(CommandListenerWrapper commandlistenerwrapper, EnumDifficulty enumdifficulty) throws CommandSyntaxException {
          MinecraftServer minecraftserver = commandlistenerwrapper.getServer();

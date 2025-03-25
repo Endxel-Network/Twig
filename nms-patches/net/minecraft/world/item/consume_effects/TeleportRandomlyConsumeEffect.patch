@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/consume_effects/TeleportRandomlyConsumeEffect.java
 +++ b/net/minecraft/world/item/consume_effects/TeleportRandomlyConsumeEffect.java
-@@ -53,7 +53,16 @@
+@@ -52,7 +52,16 @@
  
              Vec3D vec3d = entityliving.position();
  
@@ -15,6 +15,6 @@
 +
 +            if (status.get()) {
 +                // CraftBukkit end
-                 world.gameEvent((Holder) GameEvent.TELEPORT, vec3d, GameEvent.a.of((Entity) entityliving));
-                 SoundEffect soundeffect;
+                 world.gameEvent(GameEvent.TELEPORT, vec3d, GameEvent.a.of((Entity) entityliving));
                  SoundCategory soundcategory;
+                 SoundEffect soundeffect;

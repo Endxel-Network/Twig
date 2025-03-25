@@ -1,12 +1,13 @@
 --- a/net/minecraft/world/item/crafting/RecipeMap.java
 +++ b/net/minecraft/world/item/crafting/RecipeMap.java
-@@ -12,13 +12,21 @@
+@@ -10,13 +10,22 @@
  import net.minecraft.resources.ResourceKey;
  import net.minecraft.world.level.World;
  
 +// CraftBukkit start
 +import com.google.common.collect.LinkedHashMultimap;
 +import com.google.common.collect.Maps;
++import java.util.Iterator;
 +import java.util.LinkedHashMap;
 +// CraftBukkit end
 +
@@ -25,15 +26,15 @@
          this.byType = multimap;
          this.byKey = map;
      }
-@@ -35,11 +43,39 @@
-             com_google_common_collect_immutablemap_builder.put(recipeholder.id(), recipeholder);
+@@ -30,11 +39,39 @@
+             immutablemap_builder.put(recipeholder.id(), recipeholder);
          }
  
--        return new RecipeMap(builder.build(), com_google_common_collect_immutablemap_builder.build());
+-        return new RecipeMap(immutablemultimap_builder.build(), immutablemap_builder.build());
 +        // CraftBukkit start - mutable, ordered
-+        return new RecipeMap(LinkedHashMultimap.create(builder.build()), Maps.newLinkedHashMap(com_google_common_collect_immutablemap_builder.build()));
-+    }
-+
++        return new RecipeMap(LinkedHashMultimap.create(immutablemultimap_builder.build()), Maps.newLinkedHashMap(immutablemap_builder.build()));
+     }
+ 
 +    public void addRecipe(RecipeHolder<?> irecipe) {
 +        Collection<RecipeHolder<?>> map = this.byType.get(irecipe.value().getType());
 +
@@ -43,8 +44,8 @@
 +            map.add(irecipe);
 +            byKey.putFirst(irecipe.id(), irecipe); // CraftBukkit - ordered
 +        }
-     }
- 
++    }
++
 +    public boolean removeRecipe(ResourceKey<IRecipe<?>> mcKey) {
 +        boolean removed = false;
 +        Iterator<RecipeHolder<?>> iter = byType.values().iterator();

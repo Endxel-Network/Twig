@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/boss/enderdragon/EntityEnderDragon.java
 +++ b/net/minecraft/world/entity/boss/enderdragon/EntityEnderDragon.java
-@@ -52,6 +52,22 @@
+@@ -51,6 +51,22 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
@@ -39,7 +39,7 @@
      }
  
      public void setDragonFight(EnderDragonBattle enderdragonbattle) {
-@@ -218,7 +236,7 @@
+@@ -212,7 +230,7 @@
  
                      Vec3D vec3d1 = idragoncontroller.getFlyTargetLocation();
  
@@ -48,7 +48,7 @@
                          double d0 = vec3d1.x - this.getX();
                          double d1 = vec3d1.y - this.getY();
                          double d2 = vec3d1.z - this.getZ();
-@@ -379,7 +397,14 @@
+@@ -369,7 +387,14 @@
              if (this.nearestCrystal.isRemoved()) {
                  this.nearestCrystal = null;
              } else if (this.tickCount % 10 == 0 && this.getHealth() < this.getMaxHealth()) {
@@ -64,7 +64,7 @@
              }
          }
  
-@@ -458,6 +483,9 @@
+@@ -439,6 +464,9 @@
          int j1 = MathHelper.floor(axisalignedbb.maxZ);
          boolean flag = false;
          boolean flag1 = false;
@@ -74,7 +74,7 @@
  
          for (int k1 = i; k1 <= l; ++k1) {
              for (int l1 = j; l1 <= i1; ++l1) {
-@@ -467,7 +495,11 @@
+@@ -448,7 +476,11 @@
  
                      if (!iblockdata.isAir() && !iblockdata.is(TagsBlock.DRAGON_TRANSPARENT)) {
                          if (worldserver.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && !iblockdata.is(TagsBlock.DRAGON_IMMUNE)) {
@@ -87,7 +87,7 @@
                          } else {
                              flag = true;
                          }
-@@ -476,6 +508,49 @@
+@@ -457,6 +489,49 @@
              }
          }
  
@@ -137,7 +137,7 @@
          if (flag1) {
              BlockPosition blockposition1 = new BlockPosition(i + this.random.nextInt(l - i + 1), j + this.random.nextInt(i1 - j + 1), k + this.random.nextInt(j1 - k + 1));
  
-@@ -531,7 +606,7 @@
+@@ -512,7 +587,7 @@
  
      @Override
      public void kill(WorldServer worldserver) {
@@ -146,7 +146,7 @@
          this.gameEvent(GameEvent.ENTITY_DIE);
          if (this.dragonFight != null) {
              this.dragonFight.updateDragon(this);
-@@ -540,6 +615,21 @@
+@@ -521,6 +596,21 @@
  
      }
  
@@ -168,19 +168,19 @@
      @Override
      protected void tickDeath() {
          if (this.dragonFight != null) {
-@@ -555,16 +645,21 @@
+@@ -536,16 +626,21 @@
              this.level().addParticle(Particles.EXPLOSION_EMITTER, this.getX() + (double) f, this.getY() + 2.0D + (double) f1, this.getZ() + (double) f2, 0.0D, 0.0D, 0.0D);
          }
  
 +        // CraftBukkit start - SPIGOT-2420: Moved up to #getExpReward method
 +        /*
-         short short0 = 500;
+         int i = 500;
  
          if (this.dragonFight != null && !this.dragonFight.hasPreviouslyKilledDragon()) {
-             short0 = 12000;
+             i = 12000;
          }
 +        */
-+        int short0 = expToDrop;
++        int i = expToDrop;
 +        // CraftBukkit end
  
          World world = this.level();
@@ -188,19 +188,19 @@
          if (world instanceof WorldServer worldserver) {
 -            if (this.dragonDeathTime > 150 && this.dragonDeathTime % 5 == 0 && worldserver.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
 +            if (this.dragonDeathTime > 150 && this.dragonDeathTime % 5 == 0 && true) {  // CraftBukkit - SPIGOT-2420: Already checked for the game rule when calculating the xp
-                 EntityExperienceOrb.award(worldserver, this.position(), MathHelper.floor((float) short0 * 0.08F));
+                 EntityExperienceOrb.award(worldserver, this.position(), MathHelper.floor((float) i * 0.08F));
              }
  
-@@ -592,7 +687,7 @@
+@@ -569,7 +664,7 @@
              if (world1 instanceof WorldServer) {
                  WorldServer worldserver1 = (WorldServer) world1;
  
 -                if (worldserver1.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
 +                if (true) { // CraftBukkit - SPIGOT-2420: Already checked for the game rule when calculating the xp
-                     EntityExperienceOrb.award(worldserver1, this.position(), MathHelper.floor((float) short0 * 0.2F));
+                     EntityExperienceOrb.award(worldserver1, this.position(), MathHelper.floor((float) i * 0.2F));
                  }
  
-@@ -600,7 +695,7 @@
+@@ -577,7 +672,7 @@
                      this.dragonFight.setDragonKilled(this);
                  }
  
@@ -209,7 +209,7 @@
                  this.gameEvent(GameEvent.ENTITY_DIE);
              }
          }
-@@ -814,6 +909,7 @@
+@@ -788,6 +883,7 @@
          super.addAdditionalSaveData(nbttagcompound);
          nbttagcompound.putInt("DragonPhase", this.phaseManager.getCurrentPhase().getPhase().getId());
          nbttagcompound.putInt("DragonDeathTime", this.dragonDeathTime);
@@ -217,15 +217,11 @@
      }
  
      @Override
-@@ -827,6 +923,11 @@
-             this.dragonDeathTime = nbttagcompound.getInt("DragonDeathTime");
-         }
- 
-+        // CraftBukkit start - SPIGOT-2420: The ender dragon drops xp over time which can also happen between server starts
-+        if (nbttagcompound.contains("Bukkit.expToDrop")) {
-+            this.expToDrop = nbttagcompound.getInt("Bukkit.expToDrop");
-+        }
-+        // CraftBukkit end
+@@ -797,6 +893,7 @@
+             this.phaseManager.setPhase(DragonControllerPhase.getById(integer));
+         });
+         this.dragonDeathTime = nbttagcompound.getIntOr("DragonDeathTime", 0);
++        this.expToDrop = nbttagcompound.getIntOr("Bukkit.expToDrop", this.expToDrop); // CraftBukkit - SPIGOT-2420: The ender dragon drops xp over time which can also happen between server starts
      }
  
      @Override

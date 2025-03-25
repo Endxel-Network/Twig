@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/ai/sensing/TemptingSensor.java
 +++ b/net/minecraft/world/entity/ai/sensing/TemptingSensor.java
-@@ -19,6 +19,14 @@
+@@ -18,6 +18,14 @@
  import net.minecraft.world.entity.player.EntityHuman;
  import net.minecraft.world.item.ItemStack;
  
@@ -15,7 +15,7 @@
  public class TemptingSensor extends Sensor<EntityCreature> {
  
      private static final PathfinderTargetCondition TEMPT_TARGETING = PathfinderTargetCondition.forNonCombat().ignoreLineOfSight();
-@@ -31,7 +39,7 @@
+@@ -30,7 +38,7 @@
      protected void doTick(WorldServer worldserver, EntityCreature entitycreature) {
          BehaviorController<?> behaviorcontroller = entitycreature.getBrain();
          PathfinderTargetCondition pathfindertargetcondition = TemptingSensor.TEMPT_TARGETING.copy().range((double) ((float) entitycreature.getAttributeValue(GenericAttributes.TEMPT_RANGE)));
@@ -23,12 +23,12 @@
 +        Stream<net.minecraft.server.level.EntityPlayer> stream = worldserver.players().stream().filter(IEntitySelector.NO_SPECTATORS).filter((entityplayer) -> { // CraftBukkit - decompile error
              return pathfindertargetcondition.test(worldserver, entitycreature, entityplayer);
          }).filter(this::playerHoldingTemptation).filter((entityplayer) -> {
-             return !entitycreature.hasPassenger((Entity) entityplayer);
-@@ -43,7 +51,17 @@
+             return !entitycreature.hasPassenger(entityplayer);
+@@ -42,7 +50,17 @@
          if (!list.isEmpty()) {
              EntityHuman entityhuman = (EntityHuman) list.get(0);
  
--            behaviorcontroller.setMemory(MemoryModuleType.TEMPTING_PLAYER, (Object) entityhuman);
+-            behaviorcontroller.setMemory(MemoryModuleType.TEMPTING_PLAYER, entityhuman);
 +            // CraftBukkit start
 +            EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent(entitycreature, entityhuman, EntityTargetEvent.TargetReason.TEMPT);
 +            if (event.isCancelled()) {

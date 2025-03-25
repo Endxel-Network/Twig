@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/consume_effects/ApplyStatusEffectsConsumeEffect.java
 +++ b/net/minecraft/world/item/consume_effects/ApplyStatusEffectsConsumeEffect.java
-@@ -13,6 +13,10 @@
+@@ -12,6 +12,10 @@
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.level.World;
  
@@ -11,7 +11,7 @@
  public record ApplyStatusEffectsConsumeEffect(List<MobEffect> effects, float probability) implements ConsumeEffect {
  
      public static final MapCodec<ApplyStatusEffectsConsumeEffect> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -38,7 +42,7 @@
+@@ -37,14 +41,14 @@
      }
  
      @Override
@@ -20,10 +20,9 @@
          if (entityliving.getRandom().nextFloat() >= this.probability) {
              return false;
          } else {
-@@ -48,7 +52,7 @@
-             while (iterator.hasNext()) {
-                 MobEffect mobeffect = (MobEffect) iterator.next();
+             boolean flag = false;
  
+             for (MobEffect mobeffect : this.effects) {
 -                if (entityliving.addEffect(new MobEffect(mobeffect))) {
 +                if (entityliving.addEffect(new MobEffect(mobeffect), cause)) { // CraftBukkit
                      flag = true;

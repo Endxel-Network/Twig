@@ -25,12 +25,14 @@ import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
+import org.bukkit.craftbukkit.inventory.components.CraftBlocksAttacksComponent;
 import org.bukkit.craftbukkit.inventory.components.CraftCustomModelDataComponent;
 import org.bukkit.craftbukkit.inventory.components.CraftEquippableComponent;
 import org.bukkit.craftbukkit.inventory.components.CraftFoodComponent;
 import org.bukkit.craftbukkit.inventory.components.CraftJukeboxComponent;
 import org.bukkit.craftbukkit.inventory.components.CraftToolComponent;
 import org.bukkit.craftbukkit.inventory.components.CraftUseCooldownComponent;
+import org.bukkit.craftbukkit.inventory.components.CraftWeaponComponent;
 import org.bukkit.craftbukkit.util.CraftLegacy;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -47,12 +49,15 @@ public final class CraftItemFactory implements ItemFactory {
         instance = new CraftItemFactory();
         ConfigurationSerialization.registerClass(SerializableMeta.class);
         ConfigurationSerialization.registerClass(CraftCustomModelDataComponent.class);
+        ConfigurationSerialization.registerClass(CraftBlocksAttacksComponent.class);
+        ConfigurationSerialization.registerClass(CraftBlocksAttacksComponent.CraftDamageReduction.class);
         ConfigurationSerialization.registerClass(CraftEquippableComponent.class);
         ConfigurationSerialization.registerClass(CraftFoodComponent.class);
         ConfigurationSerialization.registerClass(CraftToolComponent.class);
         ConfigurationSerialization.registerClass(CraftToolComponent.CraftToolRule.class);
         ConfigurationSerialization.registerClass(CraftJukeboxComponent.class);
         ConfigurationSerialization.registerClass(CraftUseCooldownComponent.class);
+        ConfigurationSerialization.registerClass(CraftWeaponComponent.class);
     }
 
     private CraftItemFactory() {

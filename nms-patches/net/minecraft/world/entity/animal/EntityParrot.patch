@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityParrot.java
 +++ b/net/minecraft/world/entity/animal/EntityParrot.java
-@@ -248,7 +248,7 @@
+@@ -254,7 +254,7 @@
              }
  
              if (!this.level().isClientSide) {
@@ -9,7 +9,7 @@
                      this.tame(entityhuman);
                      this.level().broadcastEntityEvent(this, (byte) 7);
                  } else {
-@@ -269,7 +269,7 @@
+@@ -275,7 +275,7 @@
              }
          } else {
              this.usePlayerItem(entityhuman, enumhand, itemstack);
@@ -18,7 +18,7 @@
              if (entityhuman.isCreative() || !this.isInvulnerable()) {
                  this.hurt(this.damageSources().playerAttack(entityhuman), Float.MAX_VALUE);
              }
-@@ -363,7 +363,7 @@
+@@ -369,7 +369,7 @@
  
      @Override
      public boolean isPushable() {
@@ -27,7 +27,7 @@
      }
  
      @Override
-@@ -378,8 +378,14 @@
+@@ -384,8 +384,14 @@
          if (this.isInvulnerableTo(worldserver, damagesource)) {
              return false;
          } else {
@@ -43,3 +43,14 @@
          }
      }
  
+@@ -485,8 +491,8 @@
+         }
+ 
+         static {
+-            PrimitiveCodec primitivecodec = Codec.INT;
+-            IntFunction intfunction = EntityParrot.Variant.BY_ID;
++            PrimitiveCodec<Integer> primitivecodec = Codec.INT; // CraftBukkit - decompile error
++            IntFunction<EntityParrot.Variant> intfunction = EntityParrot.Variant.BY_ID; // CraftBukkit - decompile error
+ 
+             Objects.requireNonNull(intfunction);
+             LEGACY_CODEC = primitivecodec.xmap(intfunction::apply, EntityParrot.Variant::getId);

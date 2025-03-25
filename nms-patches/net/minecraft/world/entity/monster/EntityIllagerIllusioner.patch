@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/EntityIllagerIllusioner.java
 +++ b/net/minecraft/world/entity/monster/EntityIllagerIllusioner.java
-@@ -218,7 +218,7 @@
+@@ -214,7 +214,7 @@
  
          @Override
          protected void performSpellCasting() {
@@ -9,7 +9,7 @@
          }
  
          @Nullable
-@@ -269,7 +269,7 @@
+@@ -263,7 +263,7 @@
  
          @Override
          protected void performSpellCasting() {

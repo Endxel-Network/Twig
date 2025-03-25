@@ -169,7 +169,7 @@
              }
  
              if (dedicatedserverproperties.enableQuery) {
-@@ -293,6 +367,7 @@
+@@ -278,6 +352,7 @@
              this.queryThreadGs4.stop();
          }
  
@@ -177,7 +177,7 @@
      }
  
      @Override
-@@ -314,7 +389,15 @@
+@@ -299,7 +374,15 @@
          while (!this.consoleInput.isEmpty()) {
              ServerCommand servercommand = (ServerCommand) this.consoleInput.remove(0);
  
@@ -194,7 +194,7 @@
          }
  
      }
-@@ -541,16 +624,52 @@
+@@ -524,16 +607,52 @@
  
      @Override
      public String getPluginNames() {
@@ -251,7 +251,7 @@
      }
  
      public void storeUsingWhiteList(boolean flag) {
-@@ -660,4 +779,15 @@
+@@ -643,4 +762,15 @@
              }
          }
      }

@@ -23,16 +23,14 @@
  
      public ContainerBeacon(int i, IInventory iinventory) {
          this(i, iinventory, new ContainerProperties(3), ContainerAccess.NULL);
-@@ -34,7 +43,8 @@
+@@ -34,6 +43,7 @@
  
      public ContainerBeacon(int i, IInventory iinventory, IContainerProperties icontainerproperties, ContainerAccess containeraccess) {
          super(Containers.BEACON, i);
--        this.beacon = new InventorySubcontainer(this, 1) {
 +        player = (PlayerInventory) iinventory; // CraftBukkit - TODO: check this
-+        this.beacon = new InventorySubcontainer(1) { // CraftBukkit - decompile error
+         this.beacon = new InventorySubcontainer(1) {
              @Override
              public boolean canPlaceItem(int j, ItemStack itemstack) {
-                 return itemstack.is(TagsItem.BEACON_PAYMENT_ITEMS);
 @@ -69,6 +79,7 @@
  
      @Override

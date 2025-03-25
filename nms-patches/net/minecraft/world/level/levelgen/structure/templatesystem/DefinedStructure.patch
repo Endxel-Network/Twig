@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
 +++ b/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
-@@ -56,6 +56,12 @@
+@@ -58,6 +58,12 @@
  import net.minecraft.world.phys.shapes.VoxelShapeBitSet;
  import net.minecraft.world.phys.shapes.VoxelShapeDiscrete;
  
@@ -13,7 +13,7 @@
  public class DefinedStructure {
  
      public static final String PALETTE_TAG = "palette";
-@@ -74,6 +80,11 @@
+@@ -76,6 +82,11 @@
      private BaseBlockPosition size;
      private String author;
  
@@ -34,7 +34,7 @@
              return definedstructure_blockinfo.pos.getY();
          }).thenComparingInt((definedstructure_blockinfo) -> {
              return definedstructure_blockinfo.pos.getX();
-@@ -253,6 +264,19 @@
+@@ -247,6 +258,19 @@
          if (this.palettes.isEmpty()) {
              return false;
          } else {
@@ -54,9 +54,9 @@
              List<DefinedStructure.BlockInfo> list = definedstructureinfo.getRandomPalette(this.palettes, blockposition).blocks();
  
              if ((!list.isEmpty() || !definedstructureinfo.isIgnoreEntities() && !this.entityInfoList.isEmpty()) && this.size.getX() >= 1 && this.size.getY() >= 1 && this.size.getZ() >= 1) {
-@@ -284,6 +308,20 @@
-                             Clearable.tryClear(tileentity);
-                             worldaccess.setBlock(blockposition2, Blocks.BARRIER.defaultBlockState(), 20);
+@@ -271,6 +295,20 @@
+                         if (definedstructure_blockinfo.nbt != null) {
+                             worldaccess.setBlock(blockposition2, Blocks.BARRIER.defaultBlockState(), 820);
                          }
 +                        // CraftBukkit start
 +                        if (structureTransformer != null) {
@@ -75,16 +75,16 @@
  
                          if (worldaccess.setBlock(blockposition2, iblockdata, i)) {
                              j = Math.min(j, blockposition2.getX());
-@@ -296,7 +334,7 @@
-                             if (definedstructure_blockinfo.nbt != null) {
-                                 tileentity = worldaccess.getBlockEntity(blockposition2);
+@@ -284,7 +322,7 @@
+                                 TileEntity tileentity = worldaccess.getBlockEntity(blockposition2);
+ 
                                  if (tileentity != null) {
 -                                    if (tileentity instanceof RandomizableContainer) {
 +                                    if (structureTransformer == null && tileentity instanceof RandomizableContainer) { // CraftBukkit - only process if don't have a transformer access (Was already set above) - SPIGOT-7520: Use structureTransformer as check, so that it is the same as above
                                          definedstructure_blockinfo.nbt.putLong("LootTableSeed", randomsource.nextLong());
                                      }
  
-@@ -401,7 +439,7 @@
+@@ -380,7 +418,7 @@
                  }
  
                  if (!definedstructureinfo.isIgnoreEntities()) {
@@ -93,7 +93,7 @@
                  }
  
                  return true;
-@@ -503,11 +541,13 @@
+@@ -475,11 +513,13 @@
      }
  
      private static Optional<Entity> createEntityIgnoreException(WorldAccess worldaccess, NBTTagCompound nbttagcompound) {
@@ -111,9 +111,9 @@
      }
  
      public BaseBlockPosition getSize(EnumBlockRotation enumblockrotation) {
-@@ -721,6 +761,11 @@
+@@ -681,6 +721,11 @@
  
-         nbttagcompound.put("entities", nbttaglist3);
+         nbttagcompound.put("entities", nbttaglist4);
          nbttagcompound.put("size", this.newIntegerList(this.size.getX(), this.size.getY(), this.size.getZ()));
 +        // CraftBukkit start - PDC
 +        if (!this.persistentDataContainer.isEmpty()) {
@@ -123,10 +123,10 @@
          return GameProfileSerializer.addCurrentDataVersion(nbttagcompound);
      }
  
-@@ -760,6 +805,12 @@
-             }
-         }
- 
+@@ -711,6 +756,12 @@
+                 this.entityInfoList.add(new DefinedStructure.EntityInfo(vec3d, blockposition, nbttagcompound2));
+             });
+         });
 +        // CraftBukkit start - PDC
 +        NBTBase base = nbttagcompound.get("BukkitValues");
 +        if (base instanceof NBTTagCompound) {
@@ -136,7 +136,16 @@
      }
  
      private void loadPalette(HolderGetter<Block> holdergetter, NBTTagList nbttaglist, NBTTagList nbttaglist1) {
-@@ -924,7 +975,7 @@
+@@ -728,7 +779,7 @@
+             NBTTagList nbttaglist2 = nbttagcompound.getListOrEmpty("pos");
+             BlockPosition blockposition = new BlockPosition(nbttaglist2.getIntOr(0, 0), nbttaglist2.getIntOr(1, 0), nbttaglist2.getIntOr(2, 0));
+             IBlockData iblockdata = definedstructure_c.stateFor(nbttagcompound.getIntOr("state", 0));
+-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttagcompound.getCompound("nbt").orElse((Object) null);
++            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttagcompound.getCompound("nbt").orElse(null); // CraftBukkit - decompile error
+             DefinedStructure.BlockInfo definedstructure_blockinfo = new DefinedStructure.BlockInfo(blockposition, iblockdata, nbttagcompound1);
+ 
+             addToLists(definedstructure_blockinfo, list, list1, list2);
+@@ -791,7 +842,7 @@
          public IBlockData stateFor(int i) {
              IBlockData iblockdata = (IBlockData) this.ids.byId(i);
  

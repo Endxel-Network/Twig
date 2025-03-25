@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.InclusiveRange;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.util.random.WeightedEntry.b;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentTable;
 import net.minecraft.world.level.MobSpawnerAbstract;
@@ -54,7 +54,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
     @Override
     public void setSpawnedType(EntityType entityType) {
         if (entityType == null) {
-            this.getSnapshot().getSpawner().spawnPotentials = SimpleWeightedRandomList.empty(); // need clear the spawnPotentials to avoid nextSpawnData being replaced later
+            this.getSnapshot().getSpawner().spawnPotentials = WeightedList.of(); // need clear the spawnPotentials to avoid nextSpawnData being replaced later
             this.getSnapshot().getSpawner().nextSpawnData = new MobSpawnerData();
             return;
         }
@@ -87,7 +87,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
     }
 
     public static void setSpawnedEntity(MobSpawnerAbstract spawner, EntitySnapshot snapshot, SpawnRule spawnRule, SpawnerEntry.Equipment equipment) {
-        spawner.spawnPotentials = SimpleWeightedRandomList.empty(); // need clear the spawnPotentials to avoid nextSpawnData being replaced later
+        spawner.spawnPotentials = WeightedList.of(); // need clear the spawnPotentials to avoid nextSpawnData being replaced later
 
         if (snapshot == null) {
             spawner.nextSpawnData = new MobSpawnerData();
@@ -108,8 +108,8 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
 
         NBTTagCompound compoundTag = ((CraftEntitySnapshot) snapshot).getData();
 
-        SimpleWeightedRandomList.a<MobSpawnerData> builder = SimpleWeightedRandomList.builder(); // PAIL rename Builder
-        spawner.spawnPotentials.unwrap().forEach(entry -> builder.add(entry.data(), entry.getWeight().asInt()));
+        WeightedList.a<MobSpawnerData> builder = WeightedList.builder(); // PAIL rename Builder
+        spawner.spawnPotentials.unwrap().forEach(entry -> builder.add(entry.value(), entry.weight()));
         builder.add(new MobSpawnerData(compoundTag, Optional.ofNullable(toMinecraftRule(spawnRule)), getEquipment(equipment)), weight);
         spawner.spawnPotentials = builder.build();
     }
@@ -129,7 +129,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
     public static void setPotentialSpawns(MobSpawnerAbstract spawner, Collection<SpawnerEntry> entries) {
         Preconditions.checkArgument(entries != null, "Entries cannot be null");
 
-        SimpleWeightedRandomList.a<MobSpawnerData> builder = SimpleWeightedRandomList.builder();
+        WeightedList.a<MobSpawnerData> builder = WeightedList.builder();
         for (SpawnerEntry spawnerEntry : entries) {
             NBTTagCompound compoundTag = ((CraftEntitySnapshot) spawnerEntry.getSnapshot()).getData();
             builder.add(new MobSpawnerData(compoundTag, Optional.ofNullable(toMinecraftRule(spawnerEntry.getSpawnRule())), getEquipment(spawnerEntry.getEquipment())), spawnerEntry.getSpawnWeight());
@@ -145,12 +145,12 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
     public static List<SpawnerEntry> getPotentialSpawns(MobSpawnerAbstract spawner) {
         List<SpawnerEntry> entries = new ArrayList<>();
 
-        for (b<MobSpawnerData> entry : spawner.spawnPotentials.unwrap()) { // PAIL rename Wrapper
-            CraftEntitySnapshot snapshot = CraftEntitySnapshot.create(entry.data().getEntityToSpawn());
+        for (Weighted<MobSpawnerData> entry : spawner.spawnPotentials.unwrap()) {
+            CraftEntitySnapshot snapshot = CraftEntitySnapshot.create(entry.value().getEntityToSpawn());
 
             if (snapshot != null) {
-                SpawnRule rule = entry.data().customSpawnRules().map(CraftCreatureSpawner::fromMinecraftRule).orElse(null);
-                entries.add(new SpawnerEntry(snapshot, entry.getWeight().asInt(), rule, getEquipment(entry.data().equipment())));
+                SpawnRule rule = entry.value().customSpawnRules().map(CraftCreatureSpawner::fromMinecraftRule).orElse(null);
+                entries.add(new SpawnerEntry(snapshot, entry.weight(), rule, getEquipment(entry.value().equipment())));
             }
         }
         return entries;

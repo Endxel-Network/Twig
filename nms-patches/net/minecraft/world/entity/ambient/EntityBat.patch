@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/ambient/EntityBat.java
 +++ b/net/minecraft/world/entity/ambient/EntityBat.java
-@@ -30,6 +30,10 @@
+@@ -29,6 +29,10 @@
  import net.minecraft.world.level.levelgen.HeightMap;
  import net.minecraft.world.phys.Vec3D;
  
@@ -19,14 +19,14 @@
 +                if (worldserver.getNearestPlayer(EntityBat.BAT_RESTING_TARGETING, this) != null && CraftEventFactory.handleBatToggleSleepEvent(this, true)) { // CraftBukkit - Call BatToggleSleepEvent
                      this.setResting(false);
                      if (!flag) {
-                         worldserver.levelEvent((EntityHuman) null, 1025, blockposition, 0);
+                         worldserver.levelEvent((Entity) null, 1025, blockposition, 0);
                      }
                  }
 -            } else {
 +            } else if (CraftEventFactory.handleBatToggleSleepEvent(this, true)) { // CraftBukkit - Call BatToggleSleepEvent
                  this.setResting(false);
                  if (!flag) {
-                     worldserver.levelEvent((EntityHuman) null, 1025, blockposition, 0);
+                     worldserver.levelEvent((Entity) null, 1025, blockposition, 0);
 @@ -177,7 +181,7 @@
  
              this.zza = 0.5F;

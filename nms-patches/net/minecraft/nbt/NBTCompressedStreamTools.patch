@@ -4,4 +4,4 @@
 +// mc-dev import
  package net.minecraft.nbt;
  
- import java.io.BufferedOutputStream;
+ import com.google.common.annotations.VisibleForTesting;

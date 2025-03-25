@@ -1,6 +1,6 @@
 --- a/net/minecraft/core/dispenser/DispenseBehaviorShears.java
 +++ b/net/minecraft/core/dispenser/DispenseBehaviorShears.java
-@@ -23,6 +23,13 @@
+@@ -21,6 +21,13 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.phys.AxisAlignedBB;
  
@@ -14,7 +14,7 @@
  public class DispenseBehaviorShears extends DispenseBehaviorMaybe {
  
      public DispenseBehaviorShears() {}
-@@ -30,11 +37,34 @@
+@@ -28,11 +35,34 @@
      @Override
      protected ItemStack execute(SourceBlock sourceblock, ItemStack itemstack) {
          WorldServer worldserver = sourceblock.level();
@@ -50,17 +50,13 @@
              if (this.isSuccess()) {
                  itemstack.hurtAndBreak(1, worldserver, (EntityPlayer) null, (item) -> {
                  });
-@@ -64,7 +94,7 @@
+@@ -62,10 +92,15 @@
          return false;
      }
  
 -    private static boolean tryShearLivingEntity(WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack) {
 +    private static boolean tryShearLivingEntity(WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack, org.bukkit.block.Block bukkitBlock, CraftItemStack craftItem) { // CraftBukkit - add args
-         List<EntityLiving> list = worldserver.getEntitiesOfClass(EntityLiving.class, new AxisAlignedBB(blockposition), IEntitySelector.NO_SPECTATORS);
-         Iterator iterator = list.iterator();
- 
-@@ -73,6 +103,11 @@
- 
+         for (EntityLiving entityliving : worldserver.getEntitiesOfClass(EntityLiving.class, new AxisAlignedBB(blockposition), IEntitySelector.NO_SPECTATORS)) {
              if (entityliving instanceof IShearable ishearable) {
                  if (ishearable.readyForShearing()) {
 +                    // CraftBukkit start

@@ -19,6 +19,7 @@ public class CraftEquipmentSlot {
         set(EquipmentSlot.CHEST, EnumItemSlot.CHEST);
         set(EquipmentSlot.HEAD, EnumItemSlot.HEAD);
         set(EquipmentSlot.BODY, EnumItemSlot.BODY);
+        set(EquipmentSlot.SADDLE, EnumItemSlot.SADDLE);
     }
 
     private static void set(EquipmentSlot type, EnumItemSlot value) {

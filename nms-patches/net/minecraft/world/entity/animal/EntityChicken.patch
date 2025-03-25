@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityChicken.java
 +++ b/net/minecraft/world/entity/animal/EntityChicken.java
-@@ -99,10 +99,12 @@
+@@ -116,10 +116,12 @@
  
          if (world instanceof WorldServer worldserver) {
              if (this.isAlive() && !this.isBaby() && !this.isChickenJockey() && --this.eggTime <= 0) {

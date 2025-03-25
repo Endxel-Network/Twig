@@ -317,7 +317,7 @@ public class CraftChunk implements Chunk {
             NBTTagCompound data = new NBTTagCompound();
 
             data.put("block_states", SerializableChunkData.BLOCK_STATE_CODEC.encodeStart(DynamicOpsNBT.INSTANCE, cs[i].getStates()).getOrThrow());
-            sectionBlockIDs[i] = SerializableChunkData.BLOCK_STATE_CODEC.parse(DynamicOpsNBT.INSTANCE, data.getCompound("block_states")).getOrThrow(SerializableChunkData.a::new);
+            sectionBlockIDs[i] = SerializableChunkData.BLOCK_STATE_CODEC.parse(DynamicOpsNBT.INSTANCE, data.getCompoundOrEmpty("block_states")).getOrThrow(SerializableChunkData.a::new);
             sectionEmpty[i] = cs[i].hasOnlyAir();
 
             LevelLightEngine lightengine = worldServer.getLightEngine();
@@ -338,7 +338,7 @@ public class CraftChunk implements Chunk {
 
             if (biome != null) {
                 data.put("biomes", biomeCodec.encodeStart(DynamicOpsNBT.INSTANCE, cs[i].getBiomes()).getOrThrow());
-                biome[i] = biomeCodec.parse(DynamicOpsNBT.INSTANCE, data.getCompound("biomes")).getOrThrow(SerializableChunkData.a::new);
+                biome[i] = biomeCodec.parse(DynamicOpsNBT.INSTANCE, data.getCompoundOrEmpty("biomes")).getOrThrow(SerializableChunkData.a::new);
             }
         }
 

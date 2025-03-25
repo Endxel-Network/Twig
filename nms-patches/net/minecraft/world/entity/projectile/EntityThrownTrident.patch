@@ -10,8 +10,8 @@
 +
  public class EntityThrownTrident extends EntityArrow {
  
-     private static final DataWatcherObject<Byte> ID_LOYALTY = DataWatcher.defineId(EntityThrownTrident.class, DataWatcherRegistry.BYTE);
-@@ -76,10 +80,10 @@
+     private static final DataWatcherObject<Byte> ID_LOYALTY = DataWatcher.<Byte>defineId(EntityThrownTrident.class, DataWatcherRegistry.BYTE);
+@@ -77,10 +81,10 @@
                      }
                  }
  
@@ -24,12 +24,3 @@
                      return;
                  }
  
-@@ -137,7 +141,7 @@
- 
-             world = this.level();
-             if (world instanceof WorldServer) {
--                worldserver = (WorldServer) world;
-+                WorldServer worldserver = (WorldServer) world; // CraftBukkit - decompile error
-                 EnchantmentManager.doPostAttackEffectsWithItemSourceOnBreak(worldserver, entity, damagesource, this.getWeaponItem(), (item) -> {
-                     this.kill(worldserver);
-                 });

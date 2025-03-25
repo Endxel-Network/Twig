@@ -352,7 +352,7 @@ public final class CraftLegacy {
                     Optional<NBTTagCompound> propMap = blockTag.getElement("Properties").result();
                     if (propMap.isPresent()) {
                         NBTTagCompound properties = propMap.get();
-                        for (String dataKey : properties.getAllKeys()) {
+                        for (String dataKey : properties.keySet()) {
                             IBlockState state = states.getProperty(dataKey);
 
                             if (state == null) {
@@ -360,8 +360,9 @@ public final class CraftLegacy {
                                 continue;
                             }
 
-                            Preconditions.checkState(!properties.getString(dataKey).isEmpty(), "Empty data string");
-                            Optional opt = state.getValue(properties.getString(dataKey));
+                            Optional<String> propertyString = properties.getString(dataKey);
+                            Preconditions.checkState(propertyString.isPresent() && !propertyString.get().isEmpty(), "Empty data string");
+                            Optional opt = state.getValue(propertyString.get());
                             Preconditions.checkArgument(opt.isPresent(), "No state value %s for %s", properties.getString(dataKey), dataKey);
 
                             blockData = blockData.setValue(state, (Comparable) opt.get());

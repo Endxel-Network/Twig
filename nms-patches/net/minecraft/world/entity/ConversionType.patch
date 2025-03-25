@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/ConversionType.java
 +++ b/net/minecraft/world/entity/ConversionType.java
-@@ -12,6 +12,11 @@
+@@ -11,6 +11,11 @@
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.scores.Scoreboard;
  
@@ -12,25 +12,25 @@
  public enum ConversionType {
  
      SINGLE(true) {
-@@ -31,7 +36,7 @@
-                 while (iterator.hasNext()) {
-                     entity1 = (Entity) iterator.next();
+@@ -26,7 +31,7 @@
+ 
+                 for (Entity entity1 : entityinsentient1.getPassengers()) {
                      entity1.stopRiding();
 -                    entity1.remove(Entity.RemovalReason.DISCARDED);
 +                    entity1.remove(Entity.RemovalReason.DISCARDED, EntityRemoveEvent.Cause.TRANSFORMATION); // CraftBukkit - add Bukkit remove cause
                  }
  
                  entity.startRiding(entityinsentient1);
-@@ -52,7 +57,7 @@
+@@ -44,7 +49,7 @@
                      ItemStack itemstack = entityinsentient.getItemBySlot(enumitemslot);
  
                      if (!itemstack.isEmpty()) {
 -                        entityinsentient1.setItemSlot(enumitemslot, itemstack.copyAndClear());
 +                        entityinsentient1.setItemSlot(enumitemslot, itemstack.copy()); // CraftBukkit - SPIGOT-7996: don't clear yet
-                         entityinsentient1.setDropChance(enumitemslot, entityinsentient.getEquipmentDropChance(enumitemslot));
+                         entityinsentient1.setDropChance(enumitemslot, entityinsentient.getDropChances().byEquipment(enumitemslot));
                      }
                  }
-@@ -64,7 +69,7 @@
+@@ -56,7 +61,7 @@
              entityinsentient1.hurtTime = entityinsentient.hurtTime;
              entityinsentient1.yBodyRot = entityinsentient.yBodyRot;
              entityinsentient1.setOnGround(entityinsentient.onGround());
@@ -39,7 +39,7 @@
  
              Objects.requireNonNull(entityinsentient1);
              optional.ifPresent(entityinsentient1::setSleepingPos);
-@@ -75,6 +80,21 @@
+@@ -68,6 +73,21 @@
  
              this.convertCommon(entityinsentient, entityinsentient1, conversionparams);
          }
@@ -61,7 +61,7 @@
      },
      SPLIT_ON_DEATH(false) {
          @Override
-@@ -107,6 +127,8 @@
+@@ -100,6 +120,8 @@
  
      abstract void convert(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams);
  
@@ -69,8 +69,8 @@
 +
      void convertCommon(EntityInsentient entityinsentient, EntityInsentient entityinsentient1, ConversionParams conversionparams) {
          entityinsentient1.setAbsorptionAmount(entityinsentient.getAbsorptionAmount());
-         Iterator iterator = entityinsentient.getActiveEffects().iterator();
-@@ -156,7 +178,7 @@
+ 
+@@ -146,7 +168,7 @@
          entityinsentient1.setNoGravity(entityinsentient.isNoGravity());
          entityinsentient1.setPortalCooldown(entityinsentient.getPortalCooldown());
          entityinsentient1.setSilent(entityinsentient.isSilent());

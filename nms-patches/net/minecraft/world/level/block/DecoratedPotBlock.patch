@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/DecoratedPotBlock.java
 +++ b/net/minecraft/world/level/block/DecoratedPotBlock.java
-@@ -240,6 +240,11 @@
+@@ -213,6 +213,11 @@
  
          if (world instanceof WorldServer worldserver) {
              if (iprojectile.mayInteract(worldserver, blockposition) && iprojectile.mayBreak(worldserver)) {
@@ -9,6 +9,6 @@
 +                    return;
 +                }
 +                // CraftBukkit end
-                 world.setBlock(blockposition, (IBlockData) iblockdata.setValue(DecoratedPotBlock.CRACKED, true), 4);
+                 world.setBlock(blockposition, (IBlockData) iblockdata.setValue(DecoratedPotBlock.CRACKED, true), 260);
                  world.destroyBlock(blockposition, true, iprojectile);
              }

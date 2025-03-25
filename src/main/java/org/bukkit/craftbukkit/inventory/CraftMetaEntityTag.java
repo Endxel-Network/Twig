@@ -54,9 +54,9 @@ public class CraftMetaEntityTag extends CraftMetaItem {
     void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
-            entityTag = tag.getCompound(ENTITY_TAG.NBT);
-        }
+        tag.getCompound(ENTITY_TAG.NBT).ifPresent((entityTag) -> {
+            this.entityTag = entityTag;
+        });
     }
 
     @Override

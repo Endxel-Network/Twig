@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockEndGateway.java
 +++ b/net/minecraft/world/level/block/BlockEndGateway.java
-@@ -23,6 +23,10 @@
+@@ -24,6 +24,10 @@
  import net.minecraft.world.level.portal.TeleportTransition;
  import net.minecraft.world.phys.Vec3D;
  
@@ -11,7 +11,7 @@
  public class BlockEndGateway extends BlockTileEntity implements Portal {
  
      public static final MapCodec<BlockEndGateway> CODEC = simpleCodec(BlockEndGateway::new);
-@@ -112,7 +116,7 @@
+@@ -113,7 +117,7 @@
          if (tileentity instanceof TileEntityEndGateway tileentityendgateway) {
              Vec3D vec3d = tileentityendgateway.getPortalPosition(worldserver, blockposition);
  

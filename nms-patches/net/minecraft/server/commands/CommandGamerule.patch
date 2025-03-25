@@ -7,7 +7,7 @@
 -        T t0 = commandlistenerwrapper.getServer().getGameRules().getRule(gamerules_gamerulekey);
 +        T t0 = commandlistenerwrapper.getLevel().getGameRules().getRule(gamerules_gamerulekey); // CraftBukkit
  
-         t0.setFromArgument(commandcontext, "value");
+         ((GameRules.GameRuleValue) t0).setFromArgument(commandcontext, "value");
          commandlistenerwrapper.sendSuccess(() -> {
 @@ -44,7 +44,7 @@
      }

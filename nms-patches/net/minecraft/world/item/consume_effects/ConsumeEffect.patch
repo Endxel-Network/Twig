@@ -28,3 +28,12 @@
  
      public static record a<T extends ConsumeEffect>(MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
  
+@@ -30,7 +42,7 @@
+         public static final ConsumeEffect.a<PlaySoundConsumeEffect> PLAY_SOUND = register("play_sound", PlaySoundConsumeEffect.CODEC, PlaySoundConsumeEffect.STREAM_CODEC);
+ 
+         private static <T extends ConsumeEffect> ConsumeEffect.a<T> register(String s, MapCodec<T> mapcodec, StreamCodec<RegistryFriendlyByteBuf, T> streamcodec) {
+-            return (ConsumeEffect.a) IRegistry.register(BuiltInRegistries.CONSUME_EFFECT_TYPE, s, new ConsumeEffect.a(mapcodec, streamcodec));
++            return (ConsumeEffect.a) IRegistry.register(BuiltInRegistries.CONSUME_EFFECT_TYPE, s, new ConsumeEffect.a<>(mapcodec, streamcodec)); // CraftBukkit - decompile error
+         }
+     }
+ }

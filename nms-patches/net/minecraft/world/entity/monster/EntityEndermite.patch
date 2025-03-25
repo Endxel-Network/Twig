@@ -11,7 +11,7 @@
  public class EntityEndermite extends EntityMonster {
  
      private static final int MAX_LIFE = 2400;
-@@ -113,7 +117,7 @@
+@@ -114,7 +118,7 @@
              }
  
              if (this.life >= 2400) {

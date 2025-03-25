@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/armadillo/Armadillo.java
 +++ b/net/minecraft/world/entity/animal/armadillo/Armadillo.java
-@@ -48,6 +48,10 @@
+@@ -49,6 +49,10 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.storage.loot.LootTables;
  
@@ -11,7 +11,7 @@
  public class Armadillo extends EntityAnimal {
  
      public static final float BABY_SCALE = 0.6F;
-@@ -135,16 +139,18 @@
+@@ -136,16 +140,18 @@
          GameProfilerFiller gameprofilerfiller = Profiler.get();
  
          gameprofilerfiller.push("armadilloBrain");
@@ -65,12 +65,3 @@
                  this.gameEvent(GameEvent.ENTITY_INTERACT);
                  this.playSound(SoundEffects.ARMADILLO_BRUSH);
              }
-@@ -431,7 +445,7 @@
-         }
- 
-         public static Armadillo.a fromName(String s) {
--            return (Armadillo.a) Armadillo.a.CODEC.byName(s, (Enum) Armadillo.a.IDLE);
-+            return (Armadillo.a) Armadillo.a.CODEC.byName(s, Armadillo.a.IDLE); // CraftBukkit - decompile error
-         }
- 
-         @Override

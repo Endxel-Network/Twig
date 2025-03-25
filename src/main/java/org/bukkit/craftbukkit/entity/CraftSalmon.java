@@ -30,6 +30,6 @@ public class CraftSalmon extends CraftFish implements Salmon {
     public void setVariant(Variant variant) {
         Preconditions.checkArgument(variant != null, "variant");
 
-        getHandle().setVariant(EntitySalmon.a.values()[variant.ordinal()]);
+        getHandle().setVariant(EntitySalmon.Variant.values()[variant.ordinal()]);
     }
 }

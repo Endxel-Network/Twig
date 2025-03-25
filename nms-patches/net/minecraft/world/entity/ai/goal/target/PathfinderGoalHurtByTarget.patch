@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/ai/goal/target/PathfinderGoalHurtByTarget.java
 +++ b/net/minecraft/world/entity/ai/goal/target/PathfinderGoalHurtByTarget.java
-@@ -67,7 +67,7 @@
+@@ -60,7 +60,7 @@
  
      @Override
      public void start() {
@@ -9,7 +9,7 @@
          this.targetMob = this.mob.getTarget();
          this.timestamp = this.mob.getLastHurtByMobTimestamp();
          this.unseenMemoryTicks = 300;
-@@ -114,6 +114,6 @@
+@@ -99,6 +99,6 @@
      }
  
      protected void alertOther(EntityInsentient entityinsentient, EntityLiving entityliving) {

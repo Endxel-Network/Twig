@@ -1,6 +1,6 @@
 --- a/net/minecraft/commands/CommandListenerWrapper.java
 +++ b/net/minecraft/commands/CommandListenerWrapper.java
-@@ -46,6 +46,8 @@
+@@ -44,6 +44,8 @@
  import net.minecraft.world.phys.Vec2F;
  import net.minecraft.world.phys.Vec3D;
  
@@ -9,7 +9,7 @@
  public class CommandListenerWrapper implements ExecutionCommandSource<CommandListenerWrapper>, ICompletionProvider {
  
      public static final SimpleCommandExceptionType ERROR_NOT_PLAYER = new SimpleCommandExceptionType(IChatBaseComponent.translatable("permissions.requires.player"));
-@@ -65,6 +67,7 @@
+@@ -63,6 +65,7 @@
      private final Vec2F rotation;
      private final CommandSigningContext signingContext;
      private final TaskChainer chatMessageChainer;
@@ -17,7 +17,7 @@
  
      public CommandListenerWrapper(ICommandListener icommandlistener, Vec3D vec3d, Vec2F vec2f, WorldServer worldserver, int i, String s, IChatBaseComponent ichatbasecomponent, MinecraftServer minecraftserver, @Nullable Entity entity) {
          this(icommandlistener, vec3d, vec2f, worldserver, i, s, ichatbasecomponent, minecraftserver, entity, false, CommandResultCallback.EMPTY, ArgumentAnchor.Anchor.FEET, CommandSigningContext.ANONYMOUS, TaskChainer.immediate(minecraftserver));
-@@ -171,9 +174,23 @@
+@@ -169,9 +172,23 @@
  
      @Override
      public boolean hasPermission(int i) {
@@ -41,16 +41,16 @@
      public Vec3D getPosition() {
          return this.worldPosition;
      }
-@@ -302,7 +319,7 @@
-             while (iterator.hasNext()) {
-                 EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+@@ -296,7 +313,7 @@
  
+         if (this.server.getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK)) {
+             for (EntityPlayer entityplayer : this.server.getPlayerList().getPlayers()) {
 -                if (entityplayer.commandSource() != this.source && this.server.getPlayerList().isOp(entityplayer.getGameProfile())) {
 +                if (entityplayer.commandSource() != this.source && entityplayer.getBukkitEntity().hasPermission("minecraft.admin.command_feedback")) { // CraftBukkit
-                     entityplayer.sendSystemMessage(ichatmutablecomponent);
+                     entityplayer.sendSystemMessage(ichatbasecomponent1);
                  }
              }
-@@ -400,4 +417,10 @@
+@@ -394,4 +411,10 @@
      public boolean isSilent() {
          return this.silent;
      }

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
-@@ -96,18 +96,52 @@
+@@ -97,6 +97,40 @@
  import org.apache.commons.lang3.mutable.MutableBoolean;
  import org.slf4j.Logger;
  
@@ -41,51 +41,7 @@
  public final class ItemStack implements DataComponentHolder {
  
      private static final List<IChatBaseComponent> OP_NBT_WARNING = List.of(IChatBaseComponent.translatable("item.op_warning.line1").withStyle(EnumChatFormat.RED, EnumChatFormat.BOLD), IChatBaseComponent.translatable("item.op_warning.line2").withStyle(EnumChatFormat.RED), IChatBaseComponent.translatable("item.op_warning.line3").withStyle(EnumChatFormat.RED));
-     public static final Codec<ItemStack> CODEC = Codec.lazyInitialized(() -> {
--        return RecordCodecBuilder.create((instance) -> {
-+        return RecordCodecBuilder.<ItemStack>create((instance) -> { // CraftBukkit - decompile error
-             return instance.group(Item.CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder), ExtraCodecs.intRange(1, 99).fieldOf("count").orElse(1).forGetter(ItemStack::getCount), DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter((itemstack) -> {
-                 return itemstack.components.asPatch();
-             })).apply(instance, ItemStack::new);
-         });
-     });
-     public static final Codec<ItemStack> SINGLE_ITEM_CODEC = Codec.lazyInitialized(() -> {
--        return RecordCodecBuilder.create((instance) -> {
-+        return RecordCodecBuilder.<ItemStack>create((instance) -> { // CraftBukkit - decompile error
-             return instance.group(Item.CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder), DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter((itemstack) -> {
-                 return itemstack.components.asPatch();
-             })).apply(instance, (holder, datacomponentpatch) -> {
-@@ -132,19 +166,25 @@
-             if (i <= 0) {
-                 return ItemStack.EMPTY;
-             } else {
--                Holder<Item> holder = (Holder) null.ITEM_STREAM_CODEC.decode(registryfriendlybytebuf);
-+                Holder<Item> holder = (Holder) ITEM_STREAM_CODEC.decode(registryfriendlybytebuf); // CraftBukkit - decompile error
-                 DataComponentPatch datacomponentpatch = (DataComponentPatch) DataComponentPatch.STREAM_CODEC.decode(registryfriendlybytebuf);
- 
--                return new ItemStack(holder, i, datacomponentpatch);
-+                // CraftBukkit start
-+                ItemStack itemstack = new ItemStack(holder, i, datacomponentpatch);
-+                if (!datacomponentpatch.isEmpty()) {
-+                    CraftItemStack.setItemMeta(itemstack, CraftItemStack.getItemMeta(itemstack));
-+                }
-+                return itemstack;
-+                // CraftBukkit end
-             }
-         }
- 
-         public void encode(RegistryFriendlyByteBuf registryfriendlybytebuf, ItemStack itemstack) {
--            if (itemstack.isEmpty()) {
-+            if (itemstack.isEmpty() || itemstack.getItem() == null) { // CraftBukkit - NPE fix itemstack.getItem()
-                 registryfriendlybytebuf.writeVarInt(0);
-             } else {
-                 registryfriendlybytebuf.writeVarInt(itemstack.getCount());
--                null.ITEM_STREAM_CODEC.encode(registryfriendlybytebuf, itemstack.getItemHolder());
-+                ITEM_STREAM_CODEC.encode(registryfriendlybytebuf, itemstack.getItemHolder()); // CraftBukkit - decompile error
-                 DataComponentPatch.STREAM_CODEC.encode(registryfriendlybytebuf, itemstack.components.asPatch());
-             }
-         }
-@@ -187,7 +227,7 @@
+@@ -136,7 +170,7 @@
  
          return dataresult.isError() ? dataresult.map((unit) -> {
              return itemstack;
@@ -94,18 +50,28 @@
              int i = itemstack.getCount();
  
              return "Item stack with stack size of " + i + " was larger than maximum: " + itemstack.getMaxStackSize();
-@@ -294,8 +334,9 @@
-                 j = itemstack.getMaxStackSize();
-             } while (i <= j);
+@@ -154,12 +188,18 @@
+                     Holder<Item> holder = (Holder) Item.STREAM_CODEC.decode(registryfriendlybytebuf);
+                     DataComponentPatch datacomponentpatch = (DataComponentPatch) streamcodec.decode(registryfriendlybytebuf);
  
-+            int finalI = i, finalJ = j; // CraftBukkit - decompile error
-             return DataResult.error(() -> {
--                return "Item stack with count of " + i + " was larger than maximum: " + j;
-+                return "Item stack with count of " + finalI + " was larger than maximum: " + finalJ; // CraftBukkit - decompile error
-             });
-         }
-     }
-@@ -377,15 +418,173 @@
+-                    return new ItemStack(holder, i, datacomponentpatch);
++                    // CraftBukkit start
++                    ItemStack itemstack = new ItemStack(holder, i, datacomponentpatch);
++                    if (!datacomponentpatch.isEmpty()) {
++                        CraftItemStack.setItemMeta(itemstack, CraftItemStack.getItemMeta(itemstack));
++                    }
++                    return itemstack;
++                    // CraftBukkit end
+                 }
+             }
+ 
+             public void encode(RegistryFriendlyByteBuf registryfriendlybytebuf, ItemStack itemstack) {
+-                if (itemstack.isEmpty()) {
++                if (itemstack.isEmpty() || itemstack.getItem() == null) { // CraftBukkit - NPE fix itemstack.getItem()
+                     registryfriendlybytebuf.writeVarInt(0);
+                 } else {
+                     registryfriendlybytebuf.writeVarInt(itemstack.getCount());
+@@ -343,15 +383,173 @@
              return EnumInteractionResult.PASS;
          } else {
              Item item = this.getItem();
@@ -260,7 +226,7 @@
 +                            IBlockData blockData = world.getBlockState(position);
 +
 +                            if (blockData.getBlock() instanceof BlockBed) {
-+                                world.blockUpdated(position, Blocks.AIR);
++                                world.updateNeighborsAt(position, Blocks.AIR);
 +                                blockData.updateNeighbourShapes(world, position, 3);
 +                            }
 +                        }
@@ -281,7 +247,7 @@
  
              return enuminteractionresult;
          }
-@@ -492,6 +691,21 @@
+@@ -454,6 +652,21 @@
  
      public void hurtAndBreak(int i, WorldServer worldserver, @Nullable EntityPlayer entityplayer, Consumer<Item> consumer) {
          int j = this.processDurabilityChange(i, worldserver, entityplayer);
@@ -303,7 +269,7 @@
  
          if (j != 0) {
              this.applyDamage(this.getDamageValue() + j, entityplayer, consumer);
-@@ -511,6 +725,11 @@
+@@ -473,6 +686,11 @@
          this.setDamageValue(i);
          if (this.isBroken()) {
              Item item = this.getItem();
@@ -315,7 +281,7 @@
  
              this.shrink(1);
              consumer.accept(item);
-@@ -770,6 +989,12 @@
+@@ -747,6 +965,12 @@
          return this.getItem().useOnRelease(this);
      }
  
@@ -326,18 +292,9 @@
 +    // CraftBukkit end
 +
      @Nullable
-     public <T> T set(DataComponentType<? super T> datacomponenttype, @Nullable T t0) {
-         return this.components.set(datacomponenttype, t0);
-@@ -858,7 +1083,7 @@
-     }
- 
-     private <T extends TooltipProvider> void addToTooltip(DataComponentType<T> datacomponenttype, Item.b item_b, Consumer<IChatBaseComponent> consumer, TooltipFlag tooltipflag) {
--        T t0 = (TooltipProvider) this.get(datacomponenttype);
-+        T t0 = (T) this.get(datacomponenttype); // CraftBukkit - decompile error
- 
-         if (t0 != null) {
-             t0.addToTooltip(item_b, consumer, tooltipflag);
-@@ -1091,6 +1316,13 @@
+     public <T> T set(DataComponentType<T> datacomponenttype, @Nullable T t0) {
+         return (T) this.components.set(datacomponenttype, t0);
+@@ -1084,6 +1308,13 @@
          EnchantmentManager.forEachModifier(this, enumitemslot, biconsumer);
      }
  
@@ -351,7 +308,7 @@
      public IChatBaseComponent getDisplayName() {
          IChatMutableComponent ichatmutablecomponent = IChatBaseComponent.empty().append(this.getHoverName());
  
-@@ -1153,7 +1385,7 @@
+@@ -1146,7 +1377,7 @@
      }
  
      public void consume(int i, @Nullable EntityLiving entityliving) {

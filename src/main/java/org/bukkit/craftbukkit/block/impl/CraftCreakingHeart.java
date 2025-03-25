@@ -15,17 +15,17 @@ public final class CraftCreakingHeart extends org.bukkit.craftbukkit.block.data.
 
     // org.bukkit.craftbukkit.block.data.type.CraftCreakingHeart
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean ACTIVE = getBoolean(net.minecraft.world.level.block.CreakingHeartBlock.class, "active");
+    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> CREAKING_HEART_STATE = getEnum(net.minecraft.world.level.block.CreakingHeartBlock.class, "creaking_heart_state");
     private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean NATURAL = getBoolean(net.minecraft.world.level.block.CreakingHeartBlock.class, "natural");
 
     @Override
     public boolean isActive() {
-        return get(ACTIVE);
+        return getCreakingHeartState() == State.AWAKE;
     }
 
     @Override
     public void setActive(boolean active) {
-        set(ACTIVE, active);
+        setCreakingHeartState(State.AWAKE);
     }
 
     @Override
@@ -36,6 +36,16 @@ public final class CraftCreakingHeart extends org.bukkit.craftbukkit.block.data.
     @Override
     public void setNatural(boolean natural) {
         set(NATURAL, natural);
+    }
+
+    @Override
+    public org.bukkit.block.data.type.CreakingHeart.State getCreakingHeartState() {
+        return get(CREAKING_HEART_STATE, org.bukkit.block.data.type.CreakingHeart.State.class);
+    }
+
+    @Override
+    public void setCreakingHeartState(org.bukkit.block.data.type.CreakingHeart.State state) {
+        set(CREAKING_HEART_STATE, state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftOrientable

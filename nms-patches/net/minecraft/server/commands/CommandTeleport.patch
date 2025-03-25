@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/commands/CommandTeleport.java
 +++ b/net/minecraft/server/commands/CommandTeleport.java
-@@ -31,6 +31,14 @@
+@@ -30,6 +30,14 @@
  import net.minecraft.world.phys.Vec2F;
  import net.minecraft.world.phys.Vec3D;
  
@@ -15,7 +15,7 @@
  public class CommandTeleport {
  
      private static final SimpleCommandExceptionType INVALID_POSITION = new SimpleCommandExceptionType(IChatBaseComponent.translatable("commands.teleport.invalidPosition"));
-@@ -167,7 +175,30 @@
+@@ -160,7 +168,30 @@
              float f4 = MathHelper.wrapDegrees(f2);
              float f5 = MathHelper.wrapDegrees(f3);
  

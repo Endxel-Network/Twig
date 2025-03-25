@@ -14,7 +14,7 @@
  
      public static final MapCodec<LayeredCauldronBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 @@ -64,39 +70,67 @@
-     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity) {
+     protected void entityInside(IBlockData iblockdata, World world, BlockPosition blockposition, Entity entity, InsideBlockEffectApplier insideblockeffectapplier) {
          if (world instanceof WorldServer worldserver) {
              if (entity.isOnFire() && this.isEntityInsideContent(iblockdata, blockposition, entity)) {
 -                entity.clearFire();
@@ -56,7 +56,7 @@
          IBlockData iblockdata1 = i == 0 ? Blocks.CAULDRON.defaultBlockState() : (IBlockData) iblockdata.setValue(LayeredCauldronBlock.LEVEL, i);
  
 -        world.setBlockAndUpdate(blockposition, iblockdata1);
--        world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
+-        world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
 +        return changeLevel(iblockdata, world, blockposition, iblockdata1, entity, reason);
      }
  
@@ -74,7 +74,7 @@
 +            return false;
 +        }
 +        newState.update(true);
-+        world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(newBlock));
++        world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(newBlock));
 +        return true;
 +    }
 +    // CraftBukkit end
@@ -85,7 +85,7 @@
              IBlockData iblockdata1 = (IBlockData) iblockdata.cycle(LayeredCauldronBlock.LEVEL);
  
 -            world.setBlockAndUpdate(blockposition, iblockdata1);
--            world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
+-            world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
 +            changeLevel(iblockdata, world, blockposition, iblockdata1, null, CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL); // CraftBukkit
          }
      }
@@ -95,7 +95,7 @@
              IBlockData iblockdata1 = (IBlockData) iblockdata.setValue(LayeredCauldronBlock.LEVEL, (Integer) iblockdata.getValue(LayeredCauldronBlock.LEVEL) + 1);
  
 -            world.setBlockAndUpdate(blockposition, iblockdata1);
--            world.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
+-            world.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata1));
 +            // CraftBukkit start
 +            if (!changeLevel(iblockdata, world, blockposition, iblockdata1, null, CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL)) {
 +                return;

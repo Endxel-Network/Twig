@@ -11,8 +11,8 @@
 +
  public class EntityWitherSkull extends EntityFireball {
  
-     private static final DataWatcherObject<Boolean> DATA_DANGEROUS = DataWatcher.defineId(EntityWitherSkull.class, DataWatcherRegistry.BOOLEAN);
-@@ -69,7 +74,7 @@
+     private static final DataWatcherObject<Boolean> DATA_DANGEROUS = DataWatcher.<Boolean>defineId(EntityWitherSkull.class, DataWatcherRegistry.BOOLEAN);
+@@ -70,7 +75,7 @@
                      if (entity.isAlive()) {
                          EnchantmentManager.doPostAttackEffects(worldserver, entity, damagesource);
                      } else {
@@ -21,16 +21,16 @@
                      }
                  }
              } else {
-@@ -86,7 +91,7 @@
+@@ -87,7 +92,7 @@
                  }
  
-                 if (b0 > 0) {
--                    entityliving.addEffect(new MobEffect(MobEffects.WITHER, 20 * b0, 1), this.getEffectSource());
-+                    entityliving.addEffect(new MobEffect(MobEffects.WITHER, 20 * b0, 1), this.getEffectSource(), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.ATTACK); // CraftBukkit
+                 if (i > 0) {
+-                    entityliving1.addEffect(new MobEffect(MobEffects.WITHER, 20 * i, 1), this.getEffectSource());
++                    entityliving1.addEffect(new MobEffect(MobEffects.WITHER, 20 * i, 1), this.getEffectSource(), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.ATTACK); // CraftBukkit
                  }
              }
  
-@@ -97,8 +102,16 @@
+@@ -98,8 +103,16 @@
      protected void onHit(MovingObjectPosition movingobjectposition) {
          super.onHit(movingobjectposition);
          if (!this.level().isClientSide) {

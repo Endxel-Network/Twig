@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.entity.HangingSignBlockEntity;
 import net.minecraft.world.level.block.entity.SculkCatalystBlockEntity;
 import net.minecraft.world.level.block.entity.SculkSensorBlockEntity;
 import net.minecraft.world.level.block.entity.SculkShriekerBlockEntity;
+import net.minecraft.world.level.block.entity.TestBlockEntity;
+import net.minecraft.world.level.block.entity.TestInstanceBlockEntity;
 import net.minecraft.world.level.block.entity.TileEntity;
 import net.minecraft.world.level.block.entity.TileEntityBanner;
 import net.minecraft.world.level.block.entity.TileEntityBarrel;
@@ -347,6 +349,8 @@ public final class CraftBlockStates {
         register(Material.CRAFTER, CraftCrafter.class, CraftCrafter::new, CrafterBlockEntity::new);
         register(Material.TRIAL_SPAWNER, CraftTrialSpawner.class, CraftTrialSpawner::new, TrialSpawnerBlockEntity::new);
         register(Material.VAULT, CraftVault.class, CraftVault::new, VaultBlockEntity::new);
+        register(Material.TEST_BLOCK, CraftTestBlock.class, CraftTestBlock::new, TestBlockEntity::new);
+        register(Material.TEST_INSTANCE_BLOCK, CraftTestInstance.class, CraftTestInstance::new, TestInstanceBlockEntity::new);
     }
 
     private static void register(Material blockType, BlockStateFactory<?> factory) {

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/Bogged.java
 +++ b/net/minecraft/world/entity/monster/Bogged.java
-@@ -79,6 +79,12 @@
+@@ -80,6 +80,12 @@
              if (world instanceof WorldServer) {
                  WorldServer worldserver = (WorldServer) world;
  

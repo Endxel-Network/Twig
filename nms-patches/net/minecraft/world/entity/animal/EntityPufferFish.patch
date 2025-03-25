@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityPufferFish.java
 +++ b/net/minecraft/world/entity/animal/EntityPufferFish.java
-@@ -155,7 +155,7 @@
+@@ -150,7 +150,7 @@
          int i = this.getPuffState();
  
          if (entityinsentient.hurtServer(worldserver, this.damageSources().mobAttack(this), (float) (1 + i))) {
@@ -9,7 +9,7 @@
              this.playSound(SoundEffects.PUFFER_FISH_STING, 1.0F, 1.0F);
          }
  
-@@ -171,7 +171,7 @@
+@@ -166,7 +166,7 @@
                      entityplayer.connection.send(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.PUFFER_FISH_STING, 0.0F));
                  }
  

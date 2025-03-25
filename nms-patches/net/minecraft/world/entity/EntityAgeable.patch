@@ -1,14 +1,14 @@
 --- a/net/minecraft/world/entity/EntityAgeable.java
 +++ b/net/minecraft/world/entity/EntityAgeable.java
-@@ -21,6 +21,7 @@
-     protected int age;
-     protected int forcedAge;
+@@ -23,6 +23,7 @@
+     protected int age = 0;
+     protected int forcedAge = 0;
      protected int forcedAgeTimer;
 +    public boolean ageLocked; // CraftBukkit
  
      protected EntityAgeable(EntityTypes<? extends EntityAgeable> entitytypes, World world) {
          super(entitytypes, world);
-@@ -104,6 +105,7 @@
+@@ -106,6 +107,7 @@
          super.addAdditionalSaveData(nbttagcompound);
          nbttagcompound.putInt("Age", this.getAge());
          nbttagcompound.putInt("ForcedAge", this.forcedAge);
@@ -16,15 +16,15 @@
      }
  
      @Override
-@@ -111,6 +113,7 @@
+@@ -113,6 +115,7 @@
          super.readAdditionalSaveData(nbttagcompound);
-         this.setAge(nbttagcompound.getInt("Age"));
-         this.forcedAge = nbttagcompound.getInt("ForcedAge");
-+        this.ageLocked = nbttagcompound.getBoolean("AgeLocked"); // CraftBukkit
+         this.setAge(nbttagcompound.getIntOr("Age", 0));
+         this.forcedAge = nbttagcompound.getIntOr("ForcedAge", 0);
++        this.ageLocked = nbttagcompound.getBooleanOr("AgeLocked", this.ageLocked); // CraftBukkit
      }
  
      @Override
-@@ -125,7 +128,7 @@
+@@ -127,7 +130,7 @@
      @Override
      public void aiStep() {
          super.aiStep();

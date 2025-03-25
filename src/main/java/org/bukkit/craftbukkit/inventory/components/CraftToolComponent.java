@@ -40,6 +40,7 @@ public final class CraftToolComponent implements ToolComponent {
     public CraftToolComponent(Map<String, Object> map) {
         Float speed = SerializableMeta.getObject(Float.class, map, "default-mining-speed", false);
         Integer damage = SerializableMeta.getObject(Integer.class, map, "damage-per-block", false);
+        Boolean canDestroy = SerializableMeta.getObject(Boolean.class, map, "can-destroy-blocks-in-creative", true);
 
         ImmutableList.Builder<ToolRule> rules = ImmutableList.builder();
         Iterable<?> rawRuleList = SerializableMeta.getObject(Iterable.class, map, "rules", true);
@@ -54,7 +55,7 @@ public final class CraftToolComponent implements ToolComponent {
             }
         }
 
-        this.handle = new Tool(rules.build().stream().map(CraftToolRule::new).map(CraftToolRule::getHandle).toList(), speed, damage);
+        this.handle = new Tool(rules.build().stream().map(CraftToolRule::new).map(CraftToolRule::getHandle).toList(), speed, damage, (canDestroy != null) ? canDestroy : true);
     }
 
     @Override
@@ -62,6 +63,7 @@ public final class CraftToolComponent implements ToolComponent {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("default-mining-speed", getDefaultMiningSpeed());
         result.put("damage-per-block", getDamagePerBlock());
+        result.put("can-destroy-blocks-in-creative", canDestroyBlocksInCreative());
         result.put("rules", getRules());
         return result;
     }
@@ -77,7 +79,7 @@ public final class CraftToolComponent implements ToolComponent {
 
     @Override
     public void setDefaultMiningSpeed(float speed) {
-        handle = new Tool(handle.rules(), speed, handle.damagePerBlock());
+        handle = new Tool(handle.rules(), speed, handle.damagePerBlock(), handle.canDestroyBlocksInCreative());
     }
 
     @Override
@@ -88,7 +90,17 @@ public final class CraftToolComponent implements ToolComponent {
     @Override
     public void setDamagePerBlock(int damage) {
         Preconditions.checkArgument(damage >= 0, "damage must be >= 0, was %d", damage);
-        handle = new Tool(handle.rules(), handle.defaultMiningSpeed(), damage);
+        handle = new Tool(handle.rules(), handle.defaultMiningSpeed(), damage, handle.canDestroyBlocksInCreative());
+    }
+
+    @Override
+    public boolean canDestroyBlocksInCreative() {
+        return handle.canDestroyBlocksInCreative();
+    }
+
+    @Override
+    public void setCanDestroyBlocksInCreative(boolean destroy) {
+        handle = new Tool(handle.rules(), handle.defaultMiningSpeed(), handle.damagePerBlock(), destroy);
     }
 
     @Override
@@ -99,7 +111,7 @@ public final class CraftToolComponent implements ToolComponent {
     @Override
     public void setRules(List<ToolRule> rules) {
         Preconditions.checkArgument(rules != null, "rules must not be null");
-        handle = new Tool(rules.stream().map(CraftToolRule::new).map(CraftToolRule::getHandle).toList(), handle.defaultMiningSpeed(), handle.damagePerBlock());
+        handle = new Tool(rules.stream().map(CraftToolRule::new).map(CraftToolRule::getHandle).toList(), handle.defaultMiningSpeed(), handle.damagePerBlock(), handle.canDestroyBlocksInCreative());
     }
 
     @Override
@@ -136,7 +148,7 @@ public final class CraftToolComponent implements ToolComponent {
         rules.addAll(handle.rules());
         rules.add(rule);
 
-        handle = new Tool(rules, handle.defaultMiningSpeed(), handle.damagePerBlock());
+        handle = new Tool(rules, handle.defaultMiningSpeed(), handle.damagePerBlock(), handle.canDestroyBlocksInCreative());
         return new CraftToolRule(rule);
     }
 
@@ -146,7 +158,7 @@ public final class CraftToolComponent implements ToolComponent {
 
         List<Tool.a> rules = new ArrayList<>(handle.rules());
         boolean removed = rules.remove(((CraftToolRule) rule).handle);
-        handle = new Tool(rules, handle.defaultMiningSpeed(), handle.damagePerBlock());
+        handle = new Tool(rules, handle.defaultMiningSpeed(), handle.damagePerBlock(), handle.canDestroyBlocksInCreative());
 
         return removed;
     }

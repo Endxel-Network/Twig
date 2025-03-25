@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/IEntityAngerable.java
 +++ b/net/minecraft/world/entity/IEntityAngerable.java
-@@ -9,6 +9,10 @@
+@@ -10,6 +10,10 @@
  import net.minecraft.world.level.GameRules;
  import net.minecraft.world.level.World;
  
@@ -11,24 +11,23 @@
  public interface IEntityAngerable {
  
      String TAG_ANGER_TIME = "AngerTime";
-@@ -48,14 +52,14 @@
-                     if (entity instanceof EntityInsentient) {
-                         EntityInsentient entityinsentient = (EntityInsentient) entity;
+@@ -34,13 +38,13 @@
+     default void readPersistentAngerSaveData(World world, NBTTagCompound nbttagcompound) {
+         this.setRemainingPersistentAngerTime(nbttagcompound.getIntOr("AngerTime", 0));
+         if (world instanceof WorldServer worldserver) {
+-            UUID uuid = (UUID) nbttagcompound.read("AngryAt", UUIDUtil.CODEC).orElse((Object) null);
++            UUID uuid = (UUID) nbttagcompound.read("AngryAt", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
  
--                        this.setTarget(entityinsentient);
-+                        this.setTarget(entityinsentient, EntityTargetEvent.TargetReason.UNKNOWN, false); // CraftBukkit
-                         this.setLastHurtByMob(entityinsentient);
-                     }
+             this.setPersistentAngerTarget(uuid);
+             Entity entity = uuid != null ? worldserver.getEntity(uuid) : null;
  
-                     if (entity instanceof EntityHuman) {
-                         EntityHuman entityhuman = (EntityHuman) entity;
+             if (entity instanceof EntityLiving entityliving) {
+-                this.setTarget(entityliving);
++                this.setTarget(entityliving, EntityTargetEvent.TargetReason.UNKNOWN, false); // CraftBukkit
+             }
  
--                        this.setTarget(entityhuman);
-+                        this.setTarget(entityhuman, EntityTargetEvent.TargetReason.UNKNOWN, false); // CraftBukkit
-                         this.setLastHurtByPlayer(entityhuman);
-                     }
- 
-@@ -114,7 +118,7 @@
+         }
+@@ -96,7 +100,7 @@
      default void stopBeingAngry() {
          this.setLastHurtByMob((EntityLiving) null);
          this.setPersistentAngerTarget((UUID) null);
@@ -37,7 +36,7 @@
          this.setRemainingPersistentAngerTime(0);
      }
  
-@@ -127,6 +131,8 @@
+@@ -107,6 +111,8 @@
  
      void setTarget(@Nullable EntityLiving entityliving);
  

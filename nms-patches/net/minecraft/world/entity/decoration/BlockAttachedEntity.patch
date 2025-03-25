@@ -107,4 +107,13 @@
 +
      @Override
      public void addAdditionalSaveData(NBTTagCompound nbttagcompound) {
-         BlockPosition blockposition = this.getPos();
+         nbttagcompound.store("block_pos", BlockPosition.CODEC, this.getPos());
+@@ -128,7 +190,7 @@
+ 
+     @Override
+     public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
+-        BlockPosition blockposition = (BlockPosition) nbttagcompound.read("block_pos", BlockPosition.CODEC).orElse((Object) null);
++        BlockPosition blockposition = (BlockPosition) nbttagcompound.read("block_pos", BlockPosition.CODEC).orElse(null); // CraftBukkit - decompile error
+ 
+         if (blockposition != null && blockposition.closerThan(this.blockPosition(), 16.0D)) {
+             this.pos = blockposition;

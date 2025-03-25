@@ -32,7 +32,10 @@ import org.bukkit.craftbukkit.block.banner.CraftPatternType;
 import org.bukkit.craftbukkit.damage.CraftDamageType;
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.entity.CraftCat;
+import org.bukkit.craftbukkit.entity.CraftChicken;
+import org.bukkit.craftbukkit.entity.CraftCow;
 import org.bukkit.craftbukkit.entity.CraftFrog;
+import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.craftbukkit.entity.CraftVillager;
 import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.craftbukkit.generator.structure.CraftStructure;
@@ -50,8 +53,11 @@ import org.bukkit.craftbukkit.util.Handleable;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Cat;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Frog;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.generator.structure.Structure;
@@ -208,6 +214,15 @@ public class CraftRegistry<B extends Keyed, M> implements Registry<B> {
         }
         if (bukkitClass == Cat.Type.class) {
             return new CraftRegistry<>(Cat.Type.class, registryHolder.lookupOrThrow(Registries.CAT_VARIANT), CraftCat.CraftType::new, FieldRename.NONE);
+        }
+        if (bukkitClass == Pig.Variant.class) {
+            return new CraftRegistry<>(Pig.Variant.class, registryHolder.lookupOrThrow(Registries.PIG_VARIANT), CraftPig.CraftVariant::new, FieldRename.NONE);
+        }
+        if (bukkitClass == Cow.Variant.class) {
+            return new CraftRegistry<>(Cow.Variant.class, registryHolder.lookupOrThrow(Registries.COW_VARIANT), CraftCow.CraftVariant::new, FieldRename.NONE);
+        }
+        if (bukkitClass == Chicken.Variant.class) {
+            return new CraftRegistry<>(Chicken.Variant.class, registryHolder.lookupOrThrow(Registries.CHICKEN_VARIANT), CraftChicken.CraftVariant::new, FieldRename.NONE);
         }
         if (bukkitClass == MapCursor.Type.class) {
             return new CraftRegistry<>(MapCursor.Type.class, registryHolder.lookupOrThrow(Registries.MAP_DECORATION_TYPE), CraftMapCursor.CraftType::new, FieldRename.NONE);

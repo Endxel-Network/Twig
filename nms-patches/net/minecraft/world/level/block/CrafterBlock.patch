@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/CrafterBlock.java
 +++ b/net/minecraft/world/level/block/CrafterBlock.java
-@@ -40,6 +40,15 @@
+@@ -39,6 +39,15 @@
  import net.minecraft.world.phys.MovingObjectPositionBlock;
  import net.minecraft.world.phys.Vec3D;
  
@@ -16,9 +16,9 @@
  public class CrafterBlock extends BlockTileEntity {
  
      public static final MapCodec<CrafterBlock> CODEC = simpleCodec(CrafterBlock::new);
-@@ -189,6 +198,13 @@
+@@ -187,6 +196,13 @@
                  RecipeHolder<RecipeCrafting> recipeholder = (RecipeHolder) optional.get();
-                 ItemStack itemstack = ((RecipeCrafting) recipeholder.value()).assemble(craftinginput, worldserver.registryAccess());
+                 ItemStack itemstack = (recipeholder.value()).assemble(craftinginput, worldserver.registryAccess());
  
 +                // CraftBukkit start
 +                CrafterCraftEvent event = CraftEventFactory.callCrafterCraftEvent(blockposition, worldserver, crafterblockentity, itemstack, recipeholder.value().getRemainingItems(craftinginput), recipeholder);
@@ -30,16 +30,16 @@
                  if (itemstack.isEmpty()) {
                      worldserver.levelEvent(1050, blockposition, 0);
                  } else {
-@@ -196,7 +212,7 @@
-                     worldserver.setBlock(blockposition, (IBlockData) iblockdata.setValue(CrafterBlock.CRAFTING, true), 2);
+@@ -195,7 +211,7 @@
                      itemstack.onCraftedBySystem(worldserver);
                      this.dispenseItem(worldserver, blockposition, crafterblockentity, itemstack, iblockdata, recipeholder);
--                    Iterator iterator = ((RecipeCrafting) recipeholder.value()).getRemainingItems(craftinginput).iterator();
-+                    Iterator<ItemStack> iterator = event.getRemainingItems().stream().map(CraftItemStack::asNMSCopy).iterator(); // CraftBukkit
  
-                     while (iterator.hasNext()) {
-                         ItemStack itemstack1 = (ItemStack) iterator.next();
-@@ -227,7 +243,25 @@
+-                    for (ItemStack itemstack1 : (recipeholder.value()).getRemainingItems(craftinginput)) {
++                    for (ItemStack itemstack1 : event.getRemainingItems().stream().map(CraftItemStack::asNMSCopy).toList()) { // CraftBukkit
+                         if (!itemstack1.isEmpty()) {
+                             this.dispenseItem(worldserver, blockposition, crafterblockentity, itemstack1, iblockdata, recipeholder);
+                         }
+@@ -222,7 +238,25 @@
          ItemStack itemstack1 = itemstack.copy();
  
          if (iinventory != null && (iinventory instanceof CrafterBlockEntity || itemstack.getCount() > iinventory.getMaxStackSize(itemstack))) {
@@ -65,7 +65,7 @@
                  ItemStack itemstack2 = itemstack1.copyWithCount(1);
                  ItemStack itemstack3 = TileEntityHopper.addItem(crafterblockentity, iinventory, itemstack2, enumdirection.getOpposite());
  
-@@ -238,7 +272,25 @@
+@@ -233,7 +267,25 @@
                  itemstack1.shrink(1);
              }
          } else if (iinventory != null) {

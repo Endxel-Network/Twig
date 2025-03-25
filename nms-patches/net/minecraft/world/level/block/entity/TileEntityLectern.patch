@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityLectern.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityLectern.java
-@@ -29,13 +29,72 @@
+@@ -33,13 +33,72 @@
  import net.minecraft.world.phys.Vec2F;
  import net.minecraft.world.phys.Vec3D;
  
@@ -74,7 +74,7 @@
          @Override
          public int getContainerSize() {
              return 1;
-@@ -80,11 +139,20 @@
+@@ -84,11 +143,20 @@
          }
  
          @Override
@@ -97,7 +97,7 @@
          }
  
          @Override
-@@ -164,7 +232,7 @@
+@@ -168,7 +236,7 @@
          if (j != this.page) {
              this.page = j;
              this.setChanged();
@@ -106,7 +106,7 @@
          }
  
      }
-@@ -189,6 +257,35 @@
+@@ -193,6 +261,35 @@
          return itemstack;
      }
  
@@ -141,18 +141,26 @@
 +
      private CommandListenerWrapper createCommandSourceStack(@Nullable EntityHuman entityhuman, WorldServer worldserver) {
          String s;
-         Object object;
-@@ -203,7 +300,8 @@
+         IChatBaseComponent ichatbasecomponent;
+@@ -207,7 +304,8 @@
  
          Vec3D vec3d = Vec3D.atCenterOf(this.worldPosition);
  
--        return new CommandListenerWrapper(ICommandListener.NULL, vec3d, Vec2F.ZERO, worldserver, 2, s, (IChatBaseComponent) object, worldserver.getServer(), entityhuman);
+-        return new CommandListenerWrapper(ICommandListener.NULL, vec3d, Vec2F.ZERO, worldserver, 2, s, ichatbasecomponent, worldserver.getServer(), entityhuman);
 +        // CraftBukkit - commandSource
-+        return new CommandListenerWrapper(commandSource, vec3d, Vec2F.ZERO, worldserver, 2, s, (IChatBaseComponent) object, worldserver.getServer(), entityhuman);
++        return new CommandListenerWrapper(commandSource, vec3d, Vec2F.ZERO, worldserver, 2, s, ichatbasecomponent, worldserver.getServer(), entityhuman);
      }
  
      @Override
-@@ -236,7 +334,7 @@
+@@ -244,6 +342,7 @@
+         if ((Boolean) iblockdata.getValue(BlockLectern.HAS_BOOK) && this.level != null) {
+             EnumDirection enumdirection = (EnumDirection) iblockdata.getValue(BlockLectern.FACING);
+             ItemStack itemstack = this.getBook().copy();
++            if (itemstack.isEmpty()) return; // CraftBukkit - SPIGOT-5500
+             float f = 0.25F * (float) enumdirection.getStepX();
+             float f1 = 0.25F * (float) enumdirection.getStepZ();
+             EntityItem entityitem = new EntityItem(this.level, (double) blockposition.getX() + 0.5D + (double) f, (double) (blockposition.getY() + 1), (double) blockposition.getZ() + 0.5D + (double) f1, itemstack);
+@@ -256,7 +355,7 @@
  
      @Override
      public Container createMenu(int i, PlayerInventory playerinventory, EntityHuman entityhuman) {

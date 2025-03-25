@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockSign.java
 +++ b/net/minecraft/world/level/block/BlockSign.java
-@@ -140,7 +140,7 @@
+@@ -139,7 +139,7 @@
              } else if (flag1) {
                  return EnumInteractionResult.SUCCESS_SERVER;
              } else if (!this.otherPlayerIsEditingSign(entityhuman, tileentitysign) && entityhuman.mayBuild() && this.hasEditableText(entityhuman, tileentitysign, flag)) {
@@ -9,7 +9,7 @@
                  return EnumInteractionResult.SUCCESS_SERVER;
              } else {
                  return EnumInteractionResult.PASS;
-@@ -186,6 +186,15 @@
+@@ -185,6 +185,15 @@
      }
  
      public void openTextEdit(EntityHuman entityhuman, TileEntitySign tileentitysign, boolean flag) {
@@ -25,7 +25,7 @@
          tileentitysign.setAllowedPlayerEditor(entityhuman.getUUID());
          entityhuman.openTextEdit(tileentitysign, flag);
      }
-@@ -199,6 +208,6 @@
+@@ -198,6 +207,6 @@
      @Nullable
      @Override
      public <T extends TileEntity> BlockEntityTicker<T> getTicker(World world, IBlockData iblockdata, TileEntityTypes<T> tileentitytypes) {

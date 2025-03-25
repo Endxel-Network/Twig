@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityBee.java
 +++ b/net/minecraft/world/entity/animal/EntityBee.java
-@@ -93,6 +93,12 @@
+@@ -91,6 +91,12 @@
  import net.minecraft.world.level.pathfinder.PathType;
  import net.minecraft.world.phys.Vec3D;
  
@@ -13,7 +13,7 @@
  public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityBird {
  
      public static final float FLAP_DEGREES_PER_TICK = 120.32113F;
-@@ -198,12 +204,19 @@
+@@ -201,9 +207,24 @@
  
      @Override
      public void addAdditionalSaveData(NBTTagCompound nbttagcompound) {
@@ -25,37 +25,42 @@
 +    public void addAdditionalSaveData(NBTTagCompound nbttagcompound, boolean includeAll) {
 +        // CraftBukkit end
          super.addAdditionalSaveData(nbttagcompound);
--        if (this.hasHive()) {
-+        if (includeAll && this.hasHive()) { // CraftBukkit - selectively save hive
-             nbttagcompound.put("hive_pos", GameProfileSerializer.writeBlockPos(this.getHivePos()));
-         }
- 
--        if (this.hasSavedFlowerPos()) {
-+        if (includeAll && this.hasSavedFlowerPos()) { // CraftBukkit - selectively save flower
-             nbttagcompound.put("flower_pos", GameProfileSerializer.writeBlockPos(this.getSavedFlowerPos()));
-         }
- 
-@@ -223,8 +236,8 @@
-         this.ticksWithoutNectarSinceExitingHive = nbttagcompound.getInt("TicksSincePollination");
-         this.stayOutOfHiveCountdown = nbttagcompound.getInt("CannotEnterHiveTicks");
-         this.numCropsGrownSincePollination = nbttagcompound.getInt("CropsGrownSincePollination");
--        this.hivePos = (BlockPosition) GameProfileSerializer.readBlockPos(nbttagcompound, "hive_pos").orElse((Object) null);
--        this.savedFlowerPos = (BlockPosition) GameProfileSerializer.readBlockPos(nbttagcompound, "flower_pos").orElse((Object) null);
-+        this.hivePos = (BlockPosition) GameProfileSerializer.readBlockPos(nbttagcompound, "hive_pos").orElse(null); // CraftBukkit - decompile error
-+        this.savedFlowerPos = (BlockPosition) GameProfileSerializer.readBlockPos(nbttagcompound, "flower_pos").orElse(null); // CraftBukkit - decompile error
+-        nbttagcompound.storeNullable("hive_pos", BlockPosition.CODEC, this.hivePos);
+-        nbttagcompound.storeNullable("flower_pos", BlockPosition.CODEC, this.savedFlowerPos);
++        // CraftBukkit start - selectively save hive
++        if (includeAll) {
++            nbttagcompound.storeNullable("hive_pos", BlockPosition.CODEC, this.hivePos);
++        }
++        // CraftBukkit end
++        // CraftBukkit start - selectively save flower
++        if (includeAll) {
++            nbttagcompound.storeNullable("flower_pos", BlockPosition.CODEC, this.savedFlowerPos);
++        }
++        // CraftBukkit end
+         nbttagcompound.putBoolean("HasNectar", this.hasNectar());
+         nbttagcompound.putBoolean("HasStung", this.hasStung());
+         nbttagcompound.putInt("TicksSincePollination", this.ticksWithoutNectarSinceExitingHive);
+@@ -220,8 +241,8 @@
+         this.ticksWithoutNectarSinceExitingHive = nbttagcompound.getIntOr("TicksSincePollination", 0);
+         this.stayOutOfHiveCountdown = nbttagcompound.getIntOr("CannotEnterHiveTicks", 0);
+         this.numCropsGrownSincePollination = nbttagcompound.getIntOr("CropsGrownSincePollination", 0);
+-        this.hivePos = (BlockPosition) nbttagcompound.read("hive_pos", BlockPosition.CODEC).orElse((Object) null);
+-        this.savedFlowerPos = (BlockPosition) nbttagcompound.read("flower_pos", BlockPosition.CODEC).orElse((Object) null);
++        this.hivePos = (BlockPosition) nbttagcompound.read("hive_pos", BlockPosition.CODEC).orElse(null); // CraftBukkit - decompile error
++        this.savedFlowerPos = (BlockPosition) nbttagcompound.read("flower_pos", BlockPosition.CODEC).orElse(null); // CraftBukkit - decompile error
          this.readPersistentAngerSaveData(this.level(), nbttagcompound);
      }
  
-@@ -248,7 +261,7 @@
+@@ -245,7 +266,7 @@
                  }
  
-                 if (b0 > 0) {
--                    entityliving.addEffect(new MobEffect(MobEffects.POISON, b0 * 20, 0), this);
-+                    entityliving.addEffect(new MobEffect(MobEffects.POISON, b0 * 20, 0), this, EntityPotionEffectEvent.Cause.ATTACK); // CraftBukkit
+                 if (i > 0) {
+-                    entityliving.addEffect(new MobEffect(MobEffects.POISON, i * 20, 0), this);
++                    entityliving.addEffect(new MobEffect(MobEffects.POISON, i * 20, 0), this, EntityPotionEffectEvent.Cause.ATTACK); // CraftBukkit
                  }
              }
  
-@@ -506,7 +519,7 @@
+@@ -503,7 +524,7 @@
  
      @Nullable
      TileEntityBeehive getBeehiveBlockEntity() {
@@ -64,7 +69,7 @@
      }
  
      boolean isHiveValid() {
-@@ -671,8 +684,14 @@
+@@ -668,8 +689,14 @@
          if (this.isInvulnerableTo(worldserver, damagesource)) {
              return false;
          } else {
@@ -80,34 +85,7 @@
          }
      }
  
-@@ -1082,7 +1101,7 @@
- 
-         e() {
-             super();
--            this.travellingTicks = EntityBee.this.level().random.nextInt(10);
-+            this.travellingTicks = EntityBee.this.random.nextInt(10); // CraftBukkit - SPIGOT-7495: Give Bees another chance and let them use their own random, avoid concurrency issues
-             this.blacklistedTargets = Lists.newArrayList();
-             this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE));
-         }
-@@ -1196,7 +1215,7 @@
- 
-         f() {
-             super();
--            this.travellingTicks = EntityBee.this.level().random.nextInt(10);
-+            this.travellingTicks = EntityBee.this.random.nextInt(10); // CraftBukkit - SPIGOT-7495: Give Bees another chance and let them use their own random, avoid concurrency issues
-             this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE));
-         }
- 
-@@ -1301,7 +1320,7 @@
-                             }
-                         }
- 
--                        if (iblockdata1 != null) {
-+                        if (iblockdata1 != null && CraftEventFactory.callEntityChangeBlockEvent(EntityBee.this, blockposition, iblockdata1)) { // CraftBukkit
-                             EntityBee.this.level().levelEvent(2011, blockposition, 15);
-                             EntityBee.this.level().setBlockAndUpdate(blockposition, iblockdata1);
-                             EntityBee.this.incrementNumCropsGrownSincePollination();
-@@ -1378,7 +1397,7 @@
+@@ -709,7 +736,7 @@
          @Override
          protected void alertOther(EntityInsentient entityinsentient, EntityLiving entityliving) {
              if (entityinsentient instanceof EntityBee && this.mob.hasLineOfSight(entityliving)) {
@@ -116,7 +94,7 @@
              }
  
          }
-@@ -1387,7 +1406,7 @@
+@@ -718,7 +745,7 @@
      private static class c extends PathfinderGoalNearestAttackableTarget<EntityHuman> {
  
          c(EntityBee entitybee) {
@@ -125,3 +103,30 @@
              super(entitybee, EntityHuman.class, 10, true, false, entitybee::isAngryAt);
          }
  
+@@ -829,7 +856,7 @@
+         private int ticksStuck;
+ 
+         e() {
+-            this.travellingTicks = EntityBee.this.level().random.nextInt(10);
++            this.travellingTicks = EntityBee.this.random.nextInt(10); // CraftBukkit - SPIGOT-7495: Give Bees another chance and let them use their own random, avoid concurrency issues
+             this.blacklistedTargets = Lists.newArrayList();
+             this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE));
+         }
+@@ -942,7 +969,7 @@
+         int travellingTicks;
+ 
+         f() {
+-            this.travellingTicks = EntityBee.this.level().random.nextInt(10);
++            this.travellingTicks = EntityBee.this.random.nextInt(10); // CraftBukkit - SPIGOT-7495: Give Bees another chance and let them use their own random, avoid concurrency issues
+             this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE));
+         }
+ 
+@@ -1280,7 +1307,7 @@
+                             }
+                         }
+ 
+-                        if (iblockdata1 != null) {
++                        if (iblockdata1 != null && CraftEventFactory.callEntityChangeBlockEvent(EntityBee.this, blockposition, iblockdata1)) { // CraftBukkit
+                             EntityBee.this.level().levelEvent(2011, blockposition, 15);
+                             EntityBee.this.level().setBlockAndUpdate(blockposition, iblockdata1);
+                             EntityBee.this.incrementNumCropsGrownSincePollination();

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/crafting/CraftingManager.java
 +++ b/net/minecraft/world/item/crafting/CraftingManager.java
-@@ -39,6 +39,11 @@
+@@ -38,6 +38,11 @@
  import net.minecraft.world.level.World;
  import org.slf4j.Logger;
  
@@ -12,7 +12,7 @@
  public class CraftingManager extends ResourceDataAbstract<RecipeMap> implements RecipeAccess {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -111,7 +116,25 @@
+@@ -110,7 +115,25 @@
          CraftingManager.LOGGER.info("Loaded {} recipes", recipemap.values().size());
      }
  
@@ -38,16 +38,7 @@
          List<SelectableRecipe.a<RecipeStonecutting>> list = new ArrayList();
          List<CraftingManager.b> list1 = CraftingManager.RECIPE_PROPERTY_SETS.entrySet().stream().map((entry) -> {
              return new CraftingManager.b((ResourceKey) entry.getKey(), (CraftingManager.c) entry.getValue());
-@@ -130,7 +153,7 @@
-                     RecipeStonecutting recipestonecutting = (RecipeStonecutting) irecipe;
- 
-                     if (isIngredientEnabled(featureflagset, recipestonecutting.input()) && recipestonecutting.resultDisplay().isEnabled(featureflagset)) {
--                        list.add(new SelectableRecipe.a<>(recipestonecutting.input(), new SelectableRecipe<>(recipestonecutting.resultDisplay(), Optional.of(recipeholder))));
-+                        list.add(new SelectableRecipe.a<RecipeStonecutting>(recipestonecutting.input(), new SelectableRecipe<>(recipestonecutting.resultDisplay(), Optional.of((RecipeHolder<RecipeStonecutting>) recipeholder)))); // CraftBukkit - decompile error
-                     }
-                 }
- 
-@@ -172,7 +195,10 @@
+@@ -171,7 +194,10 @@
      }
  
      public <I extends RecipeInput, T extends IRecipe<I>> Optional<RecipeHolder<T>> getRecipeFor(Recipes<T> recipes, I i0, World world) {
@@ -59,7 +50,7 @@
      }
  
      public Optional<RecipeHolder<?>> byKey(ResourceKey<IRecipe<?>> resourcekey) {
-@@ -183,7 +209,7 @@
+@@ -182,7 +208,7 @@
      private <T extends IRecipe<?>> RecipeHolder<T> byKeyTyped(Recipes<T> recipes, ResourceKey<IRecipe<?>> resourcekey) {
          RecipeHolder<?> recipeholder = this.recipes.byKey(resourcekey);
  
@@ -68,8 +59,8 @@
      }
  
      public Map<ResourceKey<RecipePropertySet>, RecipePropertySet> getSynchronizedItemProperties() {
-@@ -231,6 +257,22 @@
-         return new RecipeHolder<>(resourcekey, irecipe);
+@@ -230,6 +256,22 @@
+         return new RecipeHolder(resourcekey, irecipe);
      }
  
 +    // CraftBukkit start

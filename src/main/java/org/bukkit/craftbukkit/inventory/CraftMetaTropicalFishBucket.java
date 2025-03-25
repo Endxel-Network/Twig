@@ -10,7 +10,6 @@ import net.minecraft.world.item.component.CustomData;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.entity.CraftTropicalFish;
-import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.entity.TropicalFish;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 
@@ -44,16 +43,16 @@ class CraftMetaTropicalFishBucket extends CraftMetaItem implements TropicalFishB
         getOrEmpty(tag, ENTITY_TAG).ifPresent((nbt) -> {
             entityTag = nbt.copyTag();
 
-            if (entityTag.contains(VARIANT.NBT, CraftMagicNumbers.NBT.TAG_INT)) {
-                this.variant = entityTag.getInt(VARIANT.NBT);
-            }
+            entityTag.getInt(VARIANT.NBT).ifPresent((variant) -> {
+                this.variant = variant;
+            });
         });
         getOrEmpty(tag, BUCKET_ENTITY_TAG).ifPresent((nbt) -> {
             bucketEntityTag = nbt.copyTag();
 
-            if (bucketEntityTag.contains(VARIANT.NBT, CraftMagicNumbers.NBT.TAG_INT)) {
-                this.variant = bucketEntityTag.getInt(VARIANT.NBT);
-            }
+            bucketEntityTag.getInt(VARIANT.NBT).ifPresent((variant) -> {
+                this.variant = variant;
+            });
         });
     }
 
@@ -70,12 +69,8 @@ class CraftMetaTropicalFishBucket extends CraftMetaItem implements TropicalFishB
     void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
-            entityTag = tag.getCompound(ENTITY_TAG.NBT);
-        }
-        if (tag.contains(BUCKET_ENTITY_TAG.NBT)) {
-            bucketEntityTag = tag.getCompound(BUCKET_ENTITY_TAG.NBT);
-        }
+        entityTag = tag.getCompound(ENTITY_TAG.NBT).orElse(entityTag);
+        bucketEntityTag = tag.getCompound(BUCKET_ENTITY_TAG.NBT).orElse(bucketEntityTag);
     }
 
     @Override

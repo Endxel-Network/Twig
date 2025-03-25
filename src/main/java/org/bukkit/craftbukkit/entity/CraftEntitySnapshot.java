@@ -45,7 +45,7 @@ public class CraftEntitySnapshot implements EntitySnapshot {
 
     @Override
     public String getAsString() {
-        return data.getAsString();
+        return data.toString();
     }
 
     private net.minecraft.world.entity.Entity createInternal(World world) {

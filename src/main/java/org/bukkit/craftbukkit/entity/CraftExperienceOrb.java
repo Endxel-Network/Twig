@@ -11,12 +11,12 @@ public class CraftExperienceOrb extends CraftEntity implements ExperienceOrb {
 
     @Override
     public int getExperience() {
-        return getHandle().value;
+        return getHandle().getValue();
     }
 
     @Override
     public void setExperience(int value) {
-        getHandle().value = value;
+        getHandle().setValue(value);
     }
 
     @Override

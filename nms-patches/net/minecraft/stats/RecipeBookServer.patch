@@ -1,6 +1,6 @@
 --- a/net/minecraft/stats/RecipeBookServer.java
 +++ b/net/minecraft/stats/RecipeBookServer.java
-@@ -29,6 +29,8 @@
+@@ -26,6 +26,8 @@
  import net.minecraft.world.item.crafting.display.RecipeDisplayId;
  import org.slf4j.Logger;
  
@@ -9,8 +9,8 @@
  public class RecipeBookServer extends RecipeBook {
  
      public static final String RECIPE_BOOK_TAG = "recipeBook";
-@@ -72,7 +74,7 @@
-             RecipeHolder<?> recipeholder = (RecipeHolder) iterator.next();
+@@ -68,7 +70,7 @@
+         for (RecipeHolder<?> recipeholder : collection) {
              ResourceKey<IRecipe<?>> resourcekey = recipeholder.id();
  
 -            if (!this.known.contains(resourcekey) && !recipeholder.value().isSpecial()) {
@@ -18,7 +18,7 @@
                  this.add(resourcekey);
                  this.addHighlight(resourcekey);
                  this.displayResolver.displaysForRecipe(resourcekey, (recipedisplayentry) -> {
-@@ -82,7 +84,7 @@
+@@ -78,7 +80,7 @@
              }
          }
  
@@ -27,7 +27,7 @@
              entityplayer.connection.send(new ClientboundRecipeBookAddPacket(list, false));
          }
  
-@@ -105,7 +107,7 @@
+@@ -99,7 +101,7 @@
              }
          }
  

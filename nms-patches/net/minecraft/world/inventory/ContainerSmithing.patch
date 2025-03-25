@@ -19,15 +19,6 @@
  
      public ContainerSmithing(int i, PlayerInventory playerinventory) {
          this(i, playerinventory, ContainerAccess.NULL);
-@@ -117,7 +122,7 @@
-     public void createResult() {
-         SmithingRecipeInput smithingrecipeinput = this.createRecipeInput();
-         World world = this.level;
--        Optional optional;
-+        Optional<RecipeHolder<SmithingRecipe>> optional; // CraftBukkit - decompile error
- 
-         if (world instanceof WorldServer worldserver) {
-             optional = worldserver.recipeAccess().getRecipeFor(Recipes.SMITHING, smithingrecipeinput, worldserver);
 @@ -129,7 +134,9 @@
              ItemStack itemstack = ((SmithingRecipe) recipeholder.value()).assemble(smithingrecipeinput, this.level.registryAccess());
  

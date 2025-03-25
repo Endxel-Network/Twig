@@ -11,7 +11,16 @@
  public class TileEntityConduit extends TileEntity {
  
      private static final int BLOCK_REFRESH_RATE = 2;
-@@ -187,8 +191,20 @@
+@@ -55,7 +59,7 @@
+     @Override
+     protected void loadAdditional(NBTTagCompound nbttagcompound, HolderLookup.a holderlookup_a) {
+         super.loadAdditional(nbttagcompound, holderlookup_a);
+-        this.destroyTargetUUID = (UUID) nbttagcompound.read("Target", UUIDUtil.CODEC).orElse((Object) null);
++        this.destroyTargetUUID = (UUID) nbttagcompound.read("Target", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
+     }
+ 
+     @Override
+@@ -174,8 +178,20 @@
      }
  
      private static void applyEffects(World world, BlockPosition blockposition, List<BlockPosition> list) {
@@ -32,16 +41,16 @@
          int k = blockposition.getX();
          int l = blockposition.getY();
          int i1 = blockposition.getZ();
-@@ -202,7 +218,7 @@
-                 EntityHuman entityhuman = (EntityHuman) iterator.next();
- 
+@@ -185,7 +201,7 @@
+         if (!list1.isEmpty()) {
+             for (EntityHuman entityhuman : list1) {
                  if (blockposition.closerThan(entityhuman.blockPosition(), (double) j) && entityhuman.isInWaterOrRain()) {
 -                    entityhuman.addEffect(new MobEffect(MobEffects.CONDUIT_POWER, 260, 0, true, true));
 +                    entityhuman.addEffect(new MobEffect(MobEffects.CONDUIT_POWER, 260, 0, true, true), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.CONDUIT); // CraftBukkit
                  }
              }
  
-@@ -210,6 +226,12 @@
+@@ -193,6 +209,12 @@
      }
  
      private static void updateDestroyTarget(World world, BlockPosition blockposition, IBlockData iblockdata, List<BlockPosition> list, TileEntityConduit tileentityconduit) {
@@ -54,17 +63,17 @@
          EntityLiving entityliving = tileentityconduit.destroyTarget;
          int i = list.size();
  
-@@ -230,9 +252,12 @@
+@@ -213,9 +235,12 @@
              tileentityconduit.destroyTarget = null;
          }
  
 -        if (tileentityconduit.destroyTarget != null) {
--            world.playSound((EntityHuman) null, tileentityconduit.destroyTarget.getX(), tileentityconduit.destroyTarget.getY(), tileentityconduit.destroyTarget.getZ(), SoundEffects.CONDUIT_ATTACK_TARGET, SoundCategory.BLOCKS, 1.0F, 1.0F);
+-            world.playSound((Entity) null, tileentityconduit.destroyTarget.getX(), tileentityconduit.destroyTarget.getY(), tileentityconduit.destroyTarget.getZ(), SoundEffects.CONDUIT_ATTACK_TARGET, SoundCategory.BLOCKS, 1.0F, 1.0F);
 -            tileentityconduit.destroyTarget.hurt(world.damageSources().magic(), 4.0F);
 +        // CraftBukkit start
 +        if (damageTarget && tileentityconduit.destroyTarget != null) {
 +            if (tileentityconduit.destroyTarget.hurtServer((WorldServer) world, world.damageSources().magic().directBlock(world, blockposition), 4.0F)) {
-+                world.playSound(null, tileentityconduit.destroyTarget.getX(), tileentityconduit.destroyTarget.getY(), tileentityconduit.destroyTarget.getZ(), SoundEffects.CONDUIT_ATTACK_TARGET, SoundCategory.BLOCKS, 1.0F, 1.0F);
++                world.playSound((Entity) null, tileentityconduit.destroyTarget.getX(), tileentityconduit.destroyTarget.getY(), tileentityconduit.destroyTarget.getZ(), SoundEffects.CONDUIT_ATTACK_TARGET, SoundCategory.BLOCKS, 1.0F, 1.0F);
 +            }
 +            // CraftBukkit end
          }

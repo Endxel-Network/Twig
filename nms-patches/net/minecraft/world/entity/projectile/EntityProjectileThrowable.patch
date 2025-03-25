@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/EntityProjectileThrowable.java
 +++ b/net/minecraft/world/entity/projectile/EntityProjectileThrowable.java
-@@ -34,6 +34,12 @@
+@@ -37,6 +37,12 @@
  
      protected abstract Item getDefaultItem();
  

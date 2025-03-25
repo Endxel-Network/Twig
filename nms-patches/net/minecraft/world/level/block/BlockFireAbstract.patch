@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/BlockFireAbstract.java
 +++ b/net/minecraft/world/level/block/BlockFireAbstract.java
-@@ -20,6 +20,10 @@
+@@ -22,6 +22,10 @@
  import net.minecraft.world.phys.shapes.VoxelShape;
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
  
@@ -11,14 +11,14 @@
  public abstract class BlockFireAbstract extends Block {
  
      private static final int SECONDS_ON_FIRE = 8;
-@@ -137,7 +141,14 @@
+@@ -147,33 +151,40 @@
              }
  
              if (entity.getRemainingFireTicks() >= 0) {
 -                entity.igniteForSeconds(8.0F);
 +                // CraftBukkit start
-+                org.bukkit.event.entity.EntityCombustEvent event = new org.bukkit.event.entity.EntityCombustByBlockEvent(org.bukkit.craftbukkit.block.CraftBlock.at(world, blockposition), entity.getBukkitEntity(), 8.0F);
-+                world.getCraftServer().getPluginManager().callEvent(event);
++                org.bukkit.event.entity.EntityCombustEvent event = new org.bukkit.event.entity.EntityCombustByBlockEvent(entity.getBukkitEntity().getLocation().getBlock(), entity.getBukkitEntity(), 8.0F); // PAIL - TODO
++                entity.level().getCraftServer().getPluginManager().callEvent(event);
 +
 +                if (!event.isCancelled()) {
 +                    entity.igniteForSeconds(event.getDuration(), false);
@@ -27,7 +27,6 @@
              }
          }
  
-@@ -146,26 +157,26 @@
      }
  
      @Override
@@ -58,7 +57,7 @@
      }
  
      @Override
-@@ -213,4 +224,12 @@
+@@ -217,4 +228,12 @@
              }
          }
      }

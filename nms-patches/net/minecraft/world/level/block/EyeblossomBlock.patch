@@ -10,6 +10,6 @@
 +                return false;
 +            }
 +            // CraftBukkit end
-             worldserver.gameEvent((Holder) GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata));
+             worldserver.gameEvent(GameEvent.BLOCK_CHANGE, blockposition, GameEvent.a.of(iblockdata));
              eyeblossomblock_a.spawnTransformParticle(worldserver, blockposition, randomsource);
              BlockPosition.betweenClosed(blockposition.offset(-3, -2, -3), blockposition.offset(3, 2, 3)).forEach((blockposition1) -> {

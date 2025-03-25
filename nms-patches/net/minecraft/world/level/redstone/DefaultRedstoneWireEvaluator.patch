@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/redstone/DefaultRedstoneWireEvaluator.java
 +++ b/net/minecraft/world/level/redstone/DefaultRedstoneWireEvaluator.java
-@@ -10,6 +10,11 @@
+@@ -9,6 +9,11 @@
  import net.minecraft.world.level.block.BlockRedstoneWire;
  import net.minecraft.world.level.block.state.IBlockData;
  
@@ -12,7 +12,7 @@
  public class DefaultRedstoneWireEvaluator extends RedstoneWireEvaluator {
  
      public DefaultRedstoneWireEvaluator(BlockRedstoneWire blockredstonewire) {
-@@ -20,7 +25,16 @@
+@@ -19,7 +24,16 @@
      public void updatePowerStrength(World world, BlockPosition blockposition, IBlockData iblockdata, @Nullable Orientation orientation, boolean flag) {
          int i = this.calculateTargetStrength(world, blockposition);
  

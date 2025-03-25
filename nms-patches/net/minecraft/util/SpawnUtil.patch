@@ -17,7 +17,7 @@
  
              blockposition_mutableblockposition.setWithOffset(blockposition, i1, k, j1);
              if (worldserver.getWorldBorder().isWithinBounds((BlockPosition) blockposition_mutableblockposition) && moveToPossibleSpawnPosition(worldserver, k, blockposition_mutableblockposition, spawnutil_a) && (!flag || worldserver.noCollision(entitytypes.getSpawnAABB((double) blockposition_mutableblockposition.getX() + 0.5D, (double) blockposition_mutableblockposition.getY(), (double) blockposition_mutableblockposition.getZ() + 0.5D)))) {
--                T t0 = (EntityInsentient) entitytypes.create(worldserver, (Consumer) null, blockposition_mutableblockposition, entityspawnreason, false, false);
+-                T t0 = entitytypes.create(worldserver, (Consumer) null, blockposition_mutableblockposition, entityspawnreason, false, false);
 +                T t0 = entitytypes.create(worldserver, (Consumer<T>) null, blockposition_mutableblockposition, entityspawnreason, false, false); // CraftBukkit - decompile error
  
                  if (t0 != null) {

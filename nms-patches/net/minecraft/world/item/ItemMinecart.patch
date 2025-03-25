@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/ItemMinecart.java
 +++ b/net/minecraft/world/item/ItemMinecart.java
-@@ -67,7 +67,12 @@
+@@ -59,7 +59,12 @@
                  if (world instanceof WorldServer) {
                      WorldServer worldserver = (WorldServer) world;
  
@@ -11,6 +11,6 @@
 +                    }
 +                    // CraftBukkit end
 +                    if (!worldserver.addFreshEntity(entityminecartabstract)) return EnumInteractionResult.PASS; // CraftBukkit
-                     worldserver.gameEvent((Holder) GameEvent.ENTITY_PLACE, blockposition, GameEvent.a.of(itemactioncontext.getPlayer(), worldserver.getBlockState(blockposition.below())));
+                     worldserver.gameEvent(GameEvent.ENTITY_PLACE, blockposition, GameEvent.a.of(itemactioncontext.getPlayer(), worldserver.getBlockState(blockposition.below())));
                  }
  

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/EntityFox.java
 +++ b/net/minecraft/world/entity/animal/EntityFox.java
-@@ -91,6 +91,10 @@
+@@ -94,6 +94,10 @@
  import net.minecraft.world.level.pathfinder.PathType;
  import net.minecraft.world.phys.Vec3D;
  
@@ -8,10 +8,37 @@
 +import org.bukkit.event.entity.EntityRemoveEvent;
 +// CraftBukkit end
 +
- public class EntityFox extends EntityAnimal implements VariantHolder<EntityFox.Type> {
+ public class EntityFox extends EntityAnimal {
  
-     private static final DataWatcherObject<Integer> DATA_TYPE_ID = DataWatcher.defineId(EntityFox.class, DataWatcherRegistry.INT);
-@@ -503,7 +507,8 @@
+     private static final DataWatcherObject<Integer> DATA_TYPE_ID = DataWatcher.<Integer>defineId(EntityFox.class, DataWatcherRegistry.INT);
+@@ -125,7 +129,7 @@
+     };
+     private static final int MIN_TICKS_BEFORE_EAT = 600;
+     private static final EntitySize BABY_DIMENSIONS = EntityTypes.FOX.getDimensions().scale(0.5F).withEyeHeight(0.2975F);
+-    private static final Codec<List<EntityReference<EntityLiving>>> TRUSTED_LIST_CODEC = EntityReference.codec().listOf();
++    private static final Codec<List<EntityReference<EntityLiving>>> TRUSTED_LIST_CODEC = EntityReference.<EntityLiving>codec().listOf(); // CraftBukkit - decompile error
+     private static final boolean DEFAULT_SLEEPING = false;
+     private static final boolean DEFAULT_SITTING = false;
+     private static final boolean DEFAULT_CROUCHING = false;
+@@ -171,7 +175,7 @@
+         this.goalSelector.addGoal(1, new EntityFox.b());
+         this.goalSelector.addGoal(2, new EntityFox.n(2.2D));
+         this.goalSelector.addGoal(3, new EntityFox.e(1.0D));
+-        this.goalSelector.addGoal(4, new PathfinderGoalAvoidTarget(this, EntityHuman.class, 16.0F, 1.6D, 1.4D, (entityliving) -> {
++        this.goalSelector.addGoal(4, new PathfinderGoalAvoidTarget<>(this, EntityHuman.class, 16.0F, 1.6D, 1.4D, (entityliving) -> { // CraftBukkit - decompile error
+             return EntityFox.AVOID_PLAYERS.test(entityliving) && !this.trusts(entityliving) && !this.isDefending();
+         }));
+         this.goalSelector.addGoal(4, new PathfinderGoalAvoidTarget(this, EntityWolf.class, 8.0F, 1.6D, 1.4D, (entityliving) -> {
+@@ -425,7 +429,7 @@
+     public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
+         super.readAdditionalSaveData(nbttagcompound);
+         this.clearTrusted();
+-        ((List) nbttagcompound.read("Trusted", EntityFox.TRUSTED_LIST_CODEC).orElse(List.of())).forEach(this::addTrustedEntity);
++        (nbttagcompound.read("Trusted", EntityFox.TRUSTED_LIST_CODEC).orElse(List.of())).forEach(this::addTrustedEntity); // CraftBukkit - decompile error
+         this.setSleeping(nbttagcompound.getBooleanOr("Sleeping", false));
+         this.setVariant((EntityFox.Type) nbttagcompound.read("Type", EntityFox.Type.CODEC).orElse(EntityFox.Type.DEFAULT));
+         this.setSitting(nbttagcompound.getBooleanOr("Sitting", false));
+@@ -520,7 +524,8 @@
      protected void pickUpItem(WorldServer worldserver, EntityItem entityitem) {
          ItemStack itemstack = entityitem.getItem();
  
@@ -21,7 +48,7 @@
              int i = itemstack.getCount();
  
              if (i > 1) {
-@@ -515,7 +520,7 @@
+@@ -532,7 +537,7 @@
              this.setItemSlot(EnumItemSlot.MAINHAND, itemstack.split(1));
              this.setGuaranteedDrop(EnumItemSlot.MAINHAND);
              this.take(entityitem, itemstack.getCount());
@@ -30,13 +57,13 @@
              this.ticksSinceEaten = 0;
          }
  
-@@ -853,6 +858,16 @@
+@@ -954,6 +959,16 @@
                  if (entityplayer1 != null && entityplayer != entityplayer1) {
-                     entityfox.addTrustedUUID(entityplayer1.getUUID());
+                     entityfox.addTrustedEntity(entityplayer1);
                  }
 +                // CraftBukkit start - call EntityBreedEvent
 +                entityfox.setAge(-24000);
-+                entityfox.moveTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
++                entityfox.snapTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
 +                int experience = this.animal.getRandom().nextInt(7) + 1;
 +                org.bukkit.event.entity.EntityBreedEvent entityBreedEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callEntityBreedEvent(entityfox, animal, partner, entityplayer, this.animal.breedItem, experience);
 +                if (entityBreedEvent.isCancelled()) {
@@ -47,12 +74,12 @@
  
                  if (entityplayer2 != null) {
                      entityplayer2.awardStat(StatisticList.ANIMALS_BRED);
-@@ -863,12 +878,14 @@
+@@ -964,12 +979,14 @@
                  this.partner.setAge(6000);
                  this.animal.resetLove();
                  this.partner.resetLove();
 -                entityfox.setAge(-24000);
--                entityfox.moveTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
+-                entityfox.snapTo(this.animal.getX(), this.animal.getY(), this.animal.getZ(), 0.0F, 0.0F);
 -                worldserver.addFreshEntityWithPassengers(entityfox);
 +                worldserver.addFreshEntityWithPassengers(entityfox, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING); // CraftBukkit - added SpawnReason
                  this.level.broadcastEntityEvent(this.animal, (byte) 18);
@@ -66,7 +93,7 @@
                  }
  
              }
-@@ -1264,6 +1281,11 @@
+@@ -1268,6 +1285,11 @@
              int i = (Integer) iblockdata.getValue(BlockSweetBerryBush.AGE);
  
              iblockdata.setValue(BlockSweetBerryBush.AGE, 1);
@@ -78,12 +105,3 @@
              int j = 1 + EntityFox.this.level().random.nextInt(2) + (i == 3 ? 1 : 0);
              ItemStack itemstack = EntityFox.this.getItemBySlot(EnumItemSlot.MAINHAND);
  
-@@ -1494,7 +1516,7 @@
-         }
- 
-         public static EntityFox.Type byName(String s) {
--            return (EntityFox.Type) EntityFox.Type.CODEC.byName(s, (Enum) EntityFox.Type.RED);
-+            return (EntityFox.Type) EntityFox.Type.CODEC.byName(s, EntityFox.Type.RED); // CraftBukkit - decompile error
-         }
- 
-         public static EntityFox.Type byId(int i) {

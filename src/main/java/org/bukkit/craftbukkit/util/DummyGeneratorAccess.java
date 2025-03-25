@@ -104,7 +104,7 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public void playSound(EntityHuman entityhuman, BlockPosition blockposition, SoundEffect soundeffect, SoundCategory soundcategory, float f, float f1) {
+    public void playSound(Entity entity, BlockPosition blockposition, SoundEffect soundeffect, SoundCategory soundcategory, float f, float f1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -114,7 +114,7 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public void levelEvent(EntityHuman entityhuman, int i, BlockPosition blockposition, int j) {
+    public void levelEvent(Entity entity, int i, BlockPosition blockposition, int j) {
         // Used by PowderSnowBlock.removeFluid
     }
 

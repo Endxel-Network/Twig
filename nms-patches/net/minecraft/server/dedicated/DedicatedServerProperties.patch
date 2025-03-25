@@ -72,7 +72,7 @@
 @@ -269,7 +278,7 @@
  
              if (holder.is(WorldPresets.FLAT)) {
-                 RegistryOps<JsonElement> registryops = holderlookup_a.createSerializationContext(JsonOps.INSTANCE);
+                 RegistryOps<JsonElement> registryops = holderlookup_a.<JsonElement>createSerializationContext(JsonOps.INSTANCE);
 -                DataResult dataresult = GeneratorSettingsFlat.CODEC.parse(new Dynamic(registryops, this.generatorSettings()));
 +                DataResult<GeneratorSettingsFlat> dataresult = GeneratorSettingsFlat.CODEC.parse(new Dynamic(registryops, this.generatorSettings())); // CraftBukkit - decompile error
                  Logger logger = DedicatedServerProperties.LOGGER;

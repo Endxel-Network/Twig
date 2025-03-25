@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.EnumItemSlot;
 import net.minecraft.world.entity.animal.horse.EntityHorse;
 import net.minecraft.world.entity.animal.horse.HorseColor;
 import net.minecraft.world.entity.animal.horse.HorseStyle;
@@ -59,7 +60,7 @@ public class CraftHorse extends CraftAbstractHorse implements Horse {
 
     @Override
     public HorseInventory getInventory() {
-        return new CraftInventoryHorse(getHandle().inventory, getHandle().getBodyArmorAccess());
+        return new CraftInventoryHorse(getHandle().inventory, getHandle().createEquipmentSlotContainer(EnumItemSlot.BODY));
     }
 
     @Override

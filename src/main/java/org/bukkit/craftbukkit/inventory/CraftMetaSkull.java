@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.SystemUtils;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.DynamicOpsNBT;
@@ -18,7 +19,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.profile.CraftPlayerProfile;
-import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
@@ -79,23 +79,19 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
     void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(SKULL_PROFILE.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
-            NBTTagCompound skullTag = tag.getCompound(SKULL_PROFILE.NBT);
+        tag.getCompound(SKULL_PROFILE.NBT).ifPresent((skullTag) -> {
             // convert type of stored Id from String to UUID for backwards compatibility
-            if (skullTag.contains("Id", CraftMagicNumbers.NBT.TAG_STRING)) {
-                UUID uuid = UUID.fromString(skullTag.getString("Id"));
-                skullTag.putUUID("Id", uuid);
-            }
+            skullTag.getString("Id").ifPresent((id) -> {
+                UUID uuid = UUID.fromString(id);
+                skullTag.store("Id", UUIDUtil.CODEC, uuid);
+            });
 
             ResolvableProfile.CODEC.parse(DynamicOpsNBT.INSTANCE, skullTag).result().ifPresent(this::setProfile);
-        }
+        });
 
-        if (tag.contains(BLOCK_ENTITY_TAG.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
-            NBTTagCompound nbtTagCompound = tag.getCompound(BLOCK_ENTITY_TAG.NBT).copy();
-            if (nbtTagCompound.contains(NOTE_BLOCK_SOUND.NBT, 8)) {
-                this.noteBlockSound = MinecraftKey.tryParse(nbtTagCompound.getString(NOTE_BLOCK_SOUND.NBT));
-            }
-        }
+        tag.getCompound(BLOCK_ENTITY_TAG.NBT).flatMap((nbtTagCompound) -> nbtTagCompound.getString(NOTE_BLOCK_SOUND.NBT)).ifPresent((noteBlockSound) -> {
+            this.noteBlockSound = MinecraftKey.tryParse(noteBlockSound);
+        });
     }
 
     private void setProfile(ResolvableProfile profile) {

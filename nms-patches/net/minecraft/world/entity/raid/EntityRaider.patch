@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/raid/EntityRaider.java
 +++ b/net/minecraft/world/entity/raid/EntityRaider.java
-@@ -41,6 +41,10 @@
+@@ -40,6 +40,10 @@
  import net.minecraft.world.level.pathfinder.PathEntity;
  import net.minecraft.world.phys.Vec3D;
  
@@ -10,8 +10,8 @@
 +
  public abstract class EntityRaider extends EntityMonsterPatrolling {
  
-     protected static final DataWatcherObject<Boolean> IS_CELEBRATING = DataWatcher.defineId(EntityRaider.class, DataWatcherRegistry.BOOLEAN);
-@@ -236,7 +240,7 @@
+     protected static final DataWatcherObject<Boolean> IS_CELEBRATING = DataWatcher.<Boolean>defineId(EntityRaider.class, DataWatcherRegistry.BOOLEAN);
+@@ -253,7 +257,7 @@
              this.onItemPickup(entityitem);
              this.setItemSlot(enumitemslot, itemstack);
              this.take(entityitem, itemstack.getCount());
@@ -20,7 +20,7 @@
              this.getCurrentRaid().setLeader(this.getWave(), this);
              this.setPatrolLeader(true);
          } else {
-@@ -290,7 +294,7 @@
+@@ -307,7 +311,7 @@
          @Nullable
          private EntityItem pursuedBannerItemEntity;
  
@@ -29,21 +29,21 @@
              this.mob = entityraider;
              this.setFlags(EnumSet.of(PathfinderGoal.Type.MOVE));
          }
-@@ -547,7 +551,7 @@
-             while (iterator.hasNext()) {
-                 EntityRaider entityraider = (EntityRaider) iterator.next();
+@@ -451,7 +455,7 @@
+             this.mob.getNavigation().stop();
  
+             for (EntityRaider entityraider : getServerLevel((Entity) this.mob).getNearbyEntities(EntityRaider.class, this.shoutTargeting, this.mob, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D))) {
 -                entityraider.setTarget(this.mob.getTarget());
 +                entityraider.setTarget(this.mob.getTarget(), org.bukkit.event.entity.EntityTargetEvent.TargetReason.FOLLOW_LEADER, true); // CraftBukkit
              }
  
          }
-@@ -564,7 +568,7 @@
-                 while (iterator.hasNext()) {
-                     EntityRaider entityraider = (EntityRaider) iterator.next();
+@@ -463,7 +467,7 @@
  
+             if (entityliving != null) {
+                 for (EntityRaider entityraider : getServerLevel((Entity) this.mob).getNearbyEntities(EntityRaider.class, this.shoutTargeting, this.mob, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D))) {
 -                    entityraider.setTarget(entityliving);
-+                    entityraider.setTarget(this.mob.getTarget(), org.bukkit.event.entity.EntityTargetEvent.TargetReason.FOLLOW_LEADER, true); // CraftBukkit
++                    entityraider.setTarget(entityliving, org.bukkit.event.entity.EntityTargetEvent.TargetReason.FOLLOW_LEADER, true); // CraftBukkit
                      entityraider.setAggressive(true);
                  }
  

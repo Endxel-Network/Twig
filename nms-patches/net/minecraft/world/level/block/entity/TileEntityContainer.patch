@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/TileEntityContainer.java
 +++ b/net/minecraft/world/level/block/entity/TileEntityContainer.java
-@@ -178,4 +178,12 @@
+@@ -172,4 +172,12 @@
          nbttagcompound.remove("lock");
          nbttagcompound.remove("Items");
      }

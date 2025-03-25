@@ -1,8 +1,8 @@
 package org.bukkit.craftbukkit.entity;
 
+import java.util.Optional;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.world.entity.vehicle.EntityMinecartAbstract;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftServer;
@@ -78,11 +78,10 @@ public abstract class CraftMinecart extends CraftVehicle implements Minecart {
     public void setDisplayBlock(MaterialData material) {
         if (material != null) {
             IBlockData block = CraftMagicNumbers.getBlock(material);
-            this.getHandle().setDisplayBlockState(block);
+            this.getHandle().setCustomDisplayBlockState(Optional.of(block));
         } else {
             // Set block to air (default) and set the flag to not have a display block.
-            this.getHandle().setDisplayBlockState(Blocks.AIR.defaultBlockState());
-            this.getHandle().setCustomDisplay(false);
+            this.getHandle().setCustomDisplayBlockState(Optional.empty());
         }
     }
 
@@ -90,11 +89,10 @@ public abstract class CraftMinecart extends CraftVehicle implements Minecart {
     public void setDisplayBlockData(BlockData blockData) {
         if (blockData != null) {
             IBlockData block = ((CraftBlockData) blockData).getState();
-            this.getHandle().setDisplayBlockState(block);
+            this.getHandle().setCustomDisplayBlockState(Optional.of(block));
         } else {
             // Set block to air (default) and set the flag to not have a display block.
-            this.getHandle().setDisplayBlockState(Blocks.AIR.defaultBlockState());
-            this.getHandle().setCustomDisplay(false);
+            this.getHandle().setCustomDisplayBlockState(Optional.empty());
         }
     }
 

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/MobBucketItem.java
 +++ b/net/minecraft/world/item/MobBucketItem.java
-@@ -26,6 +26,10 @@
+@@ -18,6 +18,10 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.material.FluidType;
  
@@ -10,8 +10,8 @@
 +
  public class MobBucketItem extends ItemBucket {
  
-     private static final MapCodec<EntityTropicalFish.d> VARIANT_FIELD_CODEC = EntityTropicalFish.d.CODEC.fieldOf("BucketVariantTag");
-@@ -63,7 +67,7 @@
+     private final EntityTypes<? extends EntityInsentient> type;
+@@ -54,7 +58,7 @@
          }
  
          if (entityinsentient != null) {

@@ -49,15 +49,15 @@ public class CraftMetaSpawnEgg extends CraftMetaItem implements SpawnEggMeta {
     void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
-            entityTag = tag.getCompound(ENTITY_TAG.NBT);
+        tag.getCompound(ENTITY_TAG.NBT).ifPresent((entityTag) -> {
+            this.entityTag = entityTag;
 
             // Tag still has some other data, lets try our luck with a conversion
             if (!entityTag.isEmpty()) {
                 // SPIGOT-4128: This is hopeless until we start versioning stacks. RIP data.
                 // entityTag = (NBTTagCompound) MinecraftServer.getServer().dataConverterManager.update(DataConverterTypes.ENTITY, new Dynamic(DynamicOpsNBT.a, entityTag), -1, CraftMagicNumbers.DATA_VERSION).getValue();
             }
-        }
+        });
     }
 
     @Override

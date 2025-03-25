@@ -24,7 +24,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.block.CraftBlockStates;
-import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.util.BlockVector;
 
@@ -82,8 +81,8 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
             NBTTagCompound nbt = blockTag.copyTag();
 
             blockEntityTag = getBlockState(material, nbt);
-            if (nbt.contains("x", CraftMagicNumbers.NBT.TAG_ANY_NUMBER) && nbt.contains("y", CraftMagicNumbers.NBT.TAG_ANY_NUMBER) && nbt.contains("z", CraftMagicNumbers.NBT.TAG_ANY_NUMBER)) {
-                position = new BlockVector(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
+            if (nbt.contains("x") && nbt.contains("y") && nbt.contains("z")) {
+                position = new BlockVector(nbt.getIntOr("x", 0), nbt.getIntOr("y", 0), nbt.getIntOr("z", 0));
             }
         });
 
@@ -161,9 +160,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
     void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(BLOCK_ENTITY_TAG.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
-            internalTag = tag.getCompound(BLOCK_ENTITY_TAG.NBT);
-        }
+        this.internalTag = tag.getCompound(BLOCK_ENTITY_TAG.NBT).orElse(this.internalTag);
     }
 
     @Override
@@ -257,7 +254,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
                 blockEntityTag.putString("id", "minecraft:shulker_box");
             }
 
-            pos = TileEntity.getPosFromTag(blockEntityTag);
+            pos = TileEntity.getPosFromTag(null, blockEntityTag);
         }
 
         // This is expected to always return a CraftBlockEntityState for the passed material:
@@ -277,14 +274,11 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
 
     private static Material shieldToBannerHack(NBTTagCompound tag) {
         if (tag != null) {
-            if (tag.contains("components", CraftMagicNumbers.NBT.TAG_COMPOUND)) {
-                NBTTagCompound components = tag.getCompound("components");
-                if (components.contains("minecraft:base_color", CraftMagicNumbers.NBT.TAG_STRING)) {
-                    DyeColor color = DyeColor.getByWoolData((byte) EnumColor.byName(components.getString("minecraft:base_color"), EnumColor.WHITE).getId());
+            tag.getCompound("components").flatMap((components) -> components.getString("minecraft:base_color").map((baseColor) -> {
+                DyeColor color = DyeColor.getByWoolData((byte) EnumColor.byName(baseColor, EnumColor.WHITE).getId());
 
-                    return CraftMetaShield.shieldToBannerHack(color);
-                }
-            }
+                return CraftMetaShield.shieldToBannerHack(color);
+            })).orElse(Material.WHITE_BANNER);
         }
 
         return Material.WHITE_BANNER;

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/vehicle/EntityMinecartAbstract.java
 +++ b/net/minecraft/world/entity/vehicle/EntityMinecartAbstract.java
-@@ -43,6 +43,14 @@
+@@ -45,6 +45,14 @@
  import net.minecraft.world.phys.AxisAlignedBB;
  import net.minecraft.world.phys.Vec3D;
  
@@ -15,9 +15,9 @@
  public abstract class EntityMinecartAbstract extends VehicleEntity {
  
      private static final Vec3D LOWERED_PASSENGER_ATTACHMENT = new Vec3D(0.0D, 0.0D, 0.0D);
-@@ -76,6 +84,17 @@
-         enummap.put(BlockPropertyTrackPosition.NORTH_EAST, Pair.of(baseblockposition2, baseblockposition1));
-     });
+@@ -69,6 +77,17 @@
+         return ImmutableMap.of(BlockPropertyTrackPosition.NORTH_SOUTH, Pair.of(baseblockposition2, baseblockposition3), BlockPropertyTrackPosition.EAST_WEST, Pair.of(baseblockposition, baseblockposition1), BlockPropertyTrackPosition.ASCENDING_EAST, Pair.of(baseblockposition4, baseblockposition1), BlockPropertyTrackPosition.ASCENDING_WEST, Pair.of(baseblockposition, baseblockposition5), BlockPropertyTrackPosition.ASCENDING_NORTH, Pair.of(baseblockposition2, baseblockposition7), BlockPropertyTrackPosition.ASCENDING_SOUTH, Pair.of(baseblockposition6, baseblockposition3), BlockPropertyTrackPosition.SOUTH_EAST, Pair.of(baseblockposition3, baseblockposition1), BlockPropertyTrackPosition.SOUTH_WEST, Pair.of(baseblockposition3, baseblockposition), BlockPropertyTrackPosition.NORTH_WEST, Pair.of(baseblockposition2, baseblockposition), BlockPropertyTrackPosition.NORTH_EAST, Pair.of(baseblockposition2, baseblockposition1));
+     }));
  
 +    // CraftBukkit start
 +    public boolean slowWhenEmpty = true;
@@ -32,17 +32,8 @@
 +
      protected EntityMinecartAbstract(EntityTypes<?> entitytypes, World world) {
          super(entitytypes, world);
-         this.blocksBuilding = true;
-@@ -101,7 +120,7 @@
- 
-     @Nullable
-     public static <T extends EntityMinecartAbstract> T createMinecart(World world, double d0, double d1, double d2, EntityTypes<T> entitytypes, EntitySpawnReason entityspawnreason, ItemStack itemstack, @Nullable EntityHuman entityhuman) {
--        T t0 = (EntityMinecartAbstract) entitytypes.create(world, entityspawnreason);
-+        T t0 = (T) entitytypes.create(world, entityspawnreason); // CraftBukkit - decompile error
- 
-         if (t0 != null) {
-             t0.setInitialPos(d0, d1, d2);
-@@ -262,6 +281,14 @@
+         this.flipped = false;
+@@ -251,6 +270,14 @@
  
      @Override
      public void tick() {
@@ -57,7 +48,7 @@
          if (this.getHurtTime() > 0) {
              this.setHurtTime(this.getHurtTime() - 1);
          }
-@@ -271,8 +298,20 @@
+@@ -260,8 +287,20 @@
          }
  
          this.checkBelowWorld();
@@ -78,8 +69,8 @@
 +        // CraftBukkit end
          this.updateInWaterStateAndDoFluidPushing();
          if (this.isInLava()) {
-             this.lavaHurt();
-@@ -385,12 +424,16 @@
+             this.lavaIgnite();
+@@ -345,12 +384,16 @@
  
          this.setDeltaMovement(MathHelper.clamp(vec3d.x, -d0, d0), vec3d.y, MathHelper.clamp(vec3d.z, -d0, d0));
          if (this.onGround()) {
@@ -98,7 +89,7 @@
          }
  
      }
-@@ -521,6 +564,14 @@
+@@ -485,6 +528,14 @@
          if (!this.level().isClientSide) {
              if (!entity.noPhysics && !this.noPhysics) {
                  if (!this.hasPassenger(entity)) {
@@ -113,7 +104,7 @@
                      double d0 = entity.getX() - this.getX();
                      double d1 = entity.getZ() - this.getZ();
                      double d2 = d0 * d0 + d1 * d1;
-@@ -645,4 +696,26 @@
+@@ -603,4 +654,26 @@
      public boolean isFurnace() {
          return false;
      }

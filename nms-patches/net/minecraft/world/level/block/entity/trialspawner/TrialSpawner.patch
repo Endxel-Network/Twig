@@ -13,28 +13,28 @@
  public final class TrialSpawner {
  
      public static final String NORMAL_CONFIG_TAG_NAME = "normal_config";
-@@ -219,13 +225,18 @@
-                                 }
- 
-                                 entityinsentient.setPersistenceRequired();
--                                Optional optional1 = mobspawnerdata.getEquipment();
-+                                Optional<net.minecraft.world.entity.EquipmentTable> optional1 = mobspawnerdata.getEquipment(); // CraftBukkit - decompile error
- 
-                                 Objects.requireNonNull(entityinsentient);
-                                 optional1.ifPresent(entityinsentient::equip);
+@@ -214,13 +220,18 @@
                              }
  
--                            if (!worldserver.tryAddFreshEntityWithPassengers(entity)) {
-+                            // CraftBukkit start
-+                            if (org.bukkit.craftbukkit.event.CraftEventFactory.callTrialSpawnerSpawnEvent(entity, blockposition).isCancelled()) {
-+                                return Optional.empty();
-+                            }
-+                            if (!worldserver.tryAddFreshEntityWithPassengers(entity, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.TRIAL_SPAWNER)) {
-+                                // CraftBukkit end
-                                 return Optional.empty();
-                             } else {
-                                 TrialSpawner.a trialspawner_a = this.isOminous ? TrialSpawner.a.OMINOUS : TrialSpawner.a.NORMAL;
-@@ -248,6 +259,15 @@
+                             entityinsentient.setPersistenceRequired();
+-                            Optional optional1 = mobspawnerdata.getEquipment();
++                            Optional<net.minecraft.world.entity.EquipmentTable> optional1 = mobspawnerdata.getEquipment(); // CraftBukkit - decompile error
+ 
+                             Objects.requireNonNull(entityinsentient);
+                             optional1.ifPresent(entityinsentient::equip);
+                         }
+ 
+-                        if (!worldserver.tryAddFreshEntityWithPassengers(entity)) {
++                        // CraftBukkit start
++                        if (org.bukkit.craftbukkit.event.CraftEventFactory.callTrialSpawnerSpawnEvent(entity, blockposition).isCancelled()) {
++                            return Optional.empty();
++                        }
++                        if (!worldserver.tryAddFreshEntityWithPassengers(entity, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.TRIAL_SPAWNER)) {
++                            // CraftBukkit end
+                             return Optional.empty();
+                         } else {
+                             TrialSpawner.a trialspawner_a = this.isOminous ? TrialSpawner.a.OMINOUS : TrialSpawner.a.NORMAL;
+@@ -242,6 +253,15 @@
          ObjectArrayList<ItemStack> objectarraylist = loottable.getRandomItems(lootparams);
  
          if (!objectarraylist.isEmpty()) {

@@ -52,7 +52,7 @@ public final class CraftMinecartTNT extends CraftMinecart implements ExplosiveMi
 
     @Override
     public void ignite() {
-        getHandle().primeFuse();
+        getHandle().primeFuse(null);
     }
 
     @Override

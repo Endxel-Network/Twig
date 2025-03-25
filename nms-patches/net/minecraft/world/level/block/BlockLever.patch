@@ -1,15 +1,15 @@
 --- a/net/minecraft/world/level/block/BlockLever.java
 +++ b/net/minecraft/world/level/block/BlockLever.java
-@@ -32,6 +32,8 @@
- import net.minecraft.world.phys.shapes.VoxelShape;
+@@ -35,6 +35,8 @@
  import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
  
 +import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 +
  public class BlockLever extends BlockAttachable {
  
      public static final MapCodec<BlockLever> CODEC = simpleCodec(BlockLever::new);
-@@ -102,6 +104,20 @@
+@@ -74,6 +76,20 @@
                  makeParticle(iblockdata1, world, blockposition, 1.0F);
              }
          } else {

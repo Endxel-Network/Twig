@@ -18,10 +18,10 @@
 +        return TOTAL_AIR_SUPPLY;
 +    }
 +    // CraftBukkit end
-     private static final DataWatcherObject<BlockPosition> TREASURE_POS = DataWatcher.defineId(EntityDolphin.class, DataWatcherRegistry.BLOCK_POS);
-     private static final DataWatcherObject<Boolean> GOT_FISH = DataWatcher.defineId(EntityDolphin.class, DataWatcherRegistry.BOOLEAN);
-     private static final DataWatcherObject<Integer> MOISTNESS_LEVEL = DataWatcher.defineId(EntityDolphin.class, DataWatcherRegistry.INT);
-@@ -200,7 +212,7 @@
+     private static final DataWatcherObject<Boolean> GOT_FISH = DataWatcher.<Boolean>defineId(EntityDolphin.class, DataWatcherRegistry.BOOLEAN);
+     private static final DataWatcherObject<Integer> MOISTNESS_LEVEL = DataWatcher.<Integer>defineId(EntityDolphin.class, DataWatcherRegistry.INT);
+     static final PathfinderTargetCondition SWIM_WITH_PLAYER_TARGETING = PathfinderTargetCondition.forNonCombat().range(10.0D).ignoreLineOfSight();
+@@ -185,7 +197,7 @@
  
      @Override
      public int getMaxAirSupply() {
@@ -30,7 +30,7 @@
      }
  
      @Override
-@@ -234,11 +246,17 @@
+@@ -219,11 +231,17 @@
              ItemStack itemstack = entityitem.getItem();
  
              if (this.canHoldItem(itemstack)) {
@@ -49,7 +49,7 @@
              }
          }
  
-@@ -495,7 +513,7 @@
+@@ -461,7 +479,7 @@
  
          @Override
          public void start() {
@@ -58,7 +58,7 @@
          }
  
          @Override
-@@ -514,7 +532,7 @@
+@@ -480,7 +498,7 @@
              }
  
              if (this.player.isSwimming() && this.player.level().random.nextInt(6) == 0) {

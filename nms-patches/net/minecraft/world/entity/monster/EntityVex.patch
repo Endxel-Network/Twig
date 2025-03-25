@@ -1,6 +1,15 @@
 --- a/net/minecraft/world/entity/monster/EntityVex.java
 +++ b/net/minecraft/world/entity/monster/EntityVex.java
-@@ -381,7 +381,7 @@
+@@ -108,7 +108,7 @@
+     @Override
+     public void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
+         super.readAdditionalSaveData(nbttagcompound);
+-        this.boundOrigin = (BlockPosition) nbttagcompound.read("bound_pos", BlockPosition.CODEC).orElse((Object) null);
++        this.boundOrigin = (BlockPosition) nbttagcompound.read("bound_pos", BlockPosition.CODEC).orElse(null); // CraftBukkit - decompile error
+         nbttagcompound.getInt("life_ticks").ifPresentOrElse(this::setLimitedLife, () -> {
+             this.hasLimitedLife = false;
+         });
+@@ -372,7 +372,7 @@
  
          @Override
          public void start() {

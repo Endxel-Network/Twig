@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/EntityEvokerFangs.java
 +++ b/net/minecraft/world/entity/projectile/EntityEvokerFangs.java
-@@ -17,6 +17,10 @@
+@@ -16,6 +16,10 @@
  import net.minecraft.world.item.enchantment.EnchantmentManager;
  import net.minecraft.world.level.World;
  
@@ -11,7 +11,16 @@
  public class EntityEvokerFangs extends Entity implements TraceableEntity {
  
      public static final int ATTACK_DURATION = 20;
-@@ -121,7 +125,7 @@
+@@ -70,7 +74,7 @@
+     @Override
+     protected void readAdditionalSaveData(NBTTagCompound nbttagcompound) {
+         this.warmupDelayTicks = nbttagcompound.getIntOr("Warmup", 0);
+-        this.ownerUUID = (UUID) nbttagcompound.read("Owner", UUIDUtil.CODEC).orElse((Object) null);
++        this.ownerUUID = (UUID) nbttagcompound.read("Owner", UUIDUtil.CODEC).orElse(null); // CraftBukkit - decompile error
+     }
+ 
+     @Override
+@@ -111,7 +115,7 @@
              }
  
              if (--this.lifeTicks < 0) {
@@ -20,7 +29,7 @@
              }
          }
  
-@@ -132,7 +136,7 @@
+@@ -122,7 +126,7 @@
  
          if (entityliving.isAlive() && !entityliving.isInvulnerable() && entityliving != entityliving1) {
              if (entityliving1 == null) {

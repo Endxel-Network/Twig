@@ -24,20 +24,20 @@
      }
 @@ -49,7 +55,24 @@
          BlockPosition blockposition = blockactioncontext.getClickedPos();
-         IBlockData iblockdata = world.getBlockState(blockposition);
+         IBlockData iblockdata = iblockaccess.getBlockState(blockposition);
  
--        return shouldSolidify(world, blockposition, iblockdata) ? this.concrete.defaultBlockState() : super.getStateForPlacement(blockactioncontext);
+-        return shouldSolidify(iblockaccess, blockposition, iblockdata) ? this.concrete.defaultBlockState() : super.getStateForPlacement(blockactioncontext);
 +        // CraftBukkit start
-+        if (!shouldSolidify(world, blockposition, iblockdata)) {
++        if (!shouldSolidify(iblockaccess, blockposition, iblockdata)) {
 +            return super.getStateForPlacement(blockactioncontext);
 +        }
 +
 +        // TODO: An event factory call for methods like this
-+        CraftBlockState blockState = CraftBlockStates.getBlockState(world, blockposition);
++        CraftBlockState blockState = CraftBlockStates.getBlockState(blockactioncontext.getLevel(), blockposition);
 +        blockState.setData(this.concrete.defaultBlockState());
 +
 +        BlockFormEvent event = new BlockFormEvent(blockState.getBlock(), blockState);
-+        world.getServer().server.getPluginManager().callEvent(event);
++        blockactioncontext.getLevel().getServer().server.getPluginManager().callEvent(event);
 +
 +        if (!event.isCancelled()) {
 +            return blockState.getHandle();
@@ -48,7 +48,7 @@
      }
  
      private static boolean shouldSolidify(IBlockAccess iblockaccess, BlockPosition blockposition, IBlockData iblockdata) {
-@@ -85,7 +108,25 @@
+@@ -82,7 +105,25 @@
  
      @Override
      protected IBlockData updateShape(IBlockData iblockdata, IWorldReader iworldreader, ScheduledTickAccess scheduledtickaccess, BlockPosition blockposition, EnumDirection enumdirection, BlockPosition blockposition1, IBlockData iblockdata1, RandomSource randomsource) {

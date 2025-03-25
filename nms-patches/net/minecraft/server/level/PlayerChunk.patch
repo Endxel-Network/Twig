@@ -60,20 +60,7 @@
              if (this.changedBlocksPerSection[i] == null) {
                  this.hasChangedSections = true;
                  this.changedBlocksPerSection[i] = new ShortOpenHashSet();
-@@ -224,8 +241,11 @@
-                                 PacketPlayOutMultiBlockChange packetplayoutmultiblockchange = new PacketPlayOutMultiBlockChange(sectionposition, shortset, chunksection);
- 
-                                 this.broadcast(list, packetplayoutmultiblockchange);
-+                                // CraftBukkit start
-+                                List finalList = list;
-                                 packetplayoutmultiblockchange.runUpdates((blockposition1, iblockdata1) -> {
--                                    this.broadcastBlockEntityIfNeeded(list, world, blockposition1, iblockdata1);
-+                                    this.broadcastBlockEntityIfNeeded(finalList, world, blockposition1, iblockdata1);
-+                                    // CraftBukkit end
-                                 });
-                             }
-                         }
-@@ -291,7 +311,7 @@
+@@ -291,7 +308,7 @@
          this.pendingFullStateConfirmation = completablefuture1;
          completablefuture.thenAccept((chunkresult) -> {
              chunkresult.ifSuccess((chunk) -> {
@@ -82,7 +69,7 @@
              });
          });
      }
-@@ -301,6 +321,38 @@
+@@ -301,6 +318,38 @@
          playerchunkmap.onFullChunkStatusChange(this.pos, fullchunkstatus);
      }
  
@@ -121,7 +108,7 @@
      protected void updateFutures(PlayerChunkMap playerchunkmap, Executor executor) {
          FullChunkStatus fullchunkstatus = ChunkLevel.fullStatus(this.oldTicketLevel);
          FullChunkStatus fullchunkstatus1 = ChunkLevel.fullStatus(this.ticketLevel);
-@@ -357,6 +409,26 @@
+@@ -357,6 +406,26 @@
  
          this.onLevelChange.onLevelChange(this.pos, this::getQueueLevel, this.ticketLevel, this::setQueueLevel);
          this.oldTicketLevel = this.ticketLevel;

@@ -1,10 +1,11 @@
 --- a/net/minecraft/world/item/ItemLeash.java
 +++ b/net/minecraft/world/item/ItemLeash.java
-@@ -19,6 +19,12 @@
+@@ -17,6 +17,13 @@
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.phys.AxisAlignedBB;
  
 +// CraftBukkit start
++import java.util.Iterator;
 +import org.bukkit.craftbukkit.CraftEquipmentSlot;
 +import org.bukkit.craftbukkit.block.CraftBlock;
 +import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -13,7 +14,7 @@
  public class ItemLeash extends Item {
  
      public ItemLeash(Item.Info item_info) {
-@@ -35,14 +41,14 @@
+@@ -33,25 +40,46 @@
              EntityHuman entityhuman = itemactioncontext.getPlayer();
  
              if (!world.isClientSide && entityhuman != null) {
@@ -30,13 +31,11 @@
          EntityLeash entityleash = null;
          List<Leashable> list = leashableInArea(world, blockposition, (leashable) -> {
              return leashable.getLeashHolder() == entityhuman;
-@@ -50,22 +56,55 @@
+         });
  
-         Leashable leashable;
- 
--        for (Iterator iterator = list.iterator(); iterator.hasNext(); leashable.setLeashedTo(entityleash, true)) {
+-        for (Leashable leashable : list) {
 +        for (Iterator iterator = list.iterator(); iterator.hasNext();) { // CraftBukkit - handle setLeashedTo at end of loop
-             leashable = (Leashable) iterator.next();
++            Leashable leashable = (Leashable) iterator.next();
              if (entityleash == null) {
                  entityleash = EntityLeash.getOrCreateKnot(world, blockposition);
 +
@@ -52,7 +51,7 @@
 +                // CraftBukkit end
                  entityleash.playPlacementSound();
              }
-+
+ 
 +            // CraftBukkit start
 +            if (leashable instanceof Entity leashed) {
 +                if (org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerLeashEntityEvent(leashed, entityleash, entityhuman, enumhand).isCancelled()) {
@@ -60,13 +59,13 @@
 +                    continue;
 +                }
 +            }
-+
-+            leashable.setLeashedTo(entityleash, true);
 +            // CraftBukkit end
++
+             leashable.setLeashedTo(entityleash, true);
          }
  
-         if (!list.isEmpty()) {
-             world.gameEvent((Holder) GameEvent.BLOCK_ATTACH, blockposition, GameEvent.a.of((Entity) entityhuman));
+@@ -59,10 +87,21 @@
+             world.gameEvent(GameEvent.BLOCK_ATTACH, blockposition, GameEvent.a.of((Entity) entityhuman));
              return EnumInteractionResult.SUCCESS_SERVER;
          } else {
 +            // CraftBukkit start- remove leash if we do not leash any entity because of the cancelled event
