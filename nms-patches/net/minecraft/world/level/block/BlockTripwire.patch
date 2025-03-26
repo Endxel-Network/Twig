@@ -9,32 +9,15 @@
  public class BlockTripwire extends Block {
  
      public static final MapCodec<BlockTripwire> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -107,7 +109,7 @@
-         for (EnumDirection enumdirection : new EnumDirection[]{EnumDirection.SOUTH, EnumDirection.WEST}) {
-             int i = 1;
- 
--            while (true) {
-+            for (; i < 42; i++) { // CraftBukkit - decompile error
-                 if (i < 42) {
-                     BlockPosition blockposition1 = blockposition.relative(enumdirection, i);
-                     IBlockData iblockdata1 = world.getBlockState(blockposition1);
-@@ -116,9 +118,12 @@
-                         if (iblockdata1.getValue(BlockTripwireHook.FACING) == enumdirection.getOpposite()) {
-                             BlockTripwireHook.calculateState(world, blockposition1, iblockdata1, false, true, i, iblockdata);
-                         }
--                    } else if (iblockdata1.is(this)) {
--                        ++i;
--                        continue;
-+                        // CraftBukkit start - decompile error
-+                        break;
-+                    }
-+                    if (!iblockdata1.is(this)) {
-+                        break;
-+                        // CraftBukkit end
+@@ -121,6 +123,7 @@
+                         continue;
                      }
                  }
++                break; // CraftBukkit - decompile error
              }
-@@ -168,6 +173,40 @@
+         }
+ 
+@@ -168,6 +171,40 @@
              }
          }
  
