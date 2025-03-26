@@ -82,7 +82,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
 
     @Override
     public void setColor(ChatColor color) {
-        Preconditions.checkArgument(color != null, "Color cannot be null");
+        Preconditions.checkArgument(color != null && !color.isFormat(), "Color cannot be null or a format");
         checkState();
 
         team.setColor(CraftChatMessage.getColor(color));
