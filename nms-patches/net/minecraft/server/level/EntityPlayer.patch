@@ -1085,7 +1085,7 @@
 +        if (entityplayer_respawnconfig != null) {
 +            WorldServer newWorld = this.server.getLevel(entityplayer_respawnconfig.dimension());
 +            newSpawn = CraftLocation.toBukkit(entityplayer_respawnconfig.pos(), newWorld.getWorld(), entityplayer_respawnconfig.angle(), 0);
-+            forced = respawnConfig.forced();
++            forced = entityplayer_respawnconfig.forced();
 +        }
 +
 +        PlayerSpawnChangeEvent event = new PlayerSpawnChangeEvent(this.getBukkitEntity(), newSpawn, forced, cause);
