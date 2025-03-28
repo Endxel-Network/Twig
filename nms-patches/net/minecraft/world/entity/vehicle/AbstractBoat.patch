@@ -91,15 +91,7 @@
          this.applyEffectsFromBlocks();
          this.applyEffectsFromBlocks();
          this.tickBubbleColumn();
-@@ -444,6 +497,7 @@
-                 } else if (f < 1.0F) {
-                     return (float) blockposition_mutableblockposition.getY() + f;
-                 }
-+                break; // CraftBukkit - decompile error
-             }
-         }
- 
-@@ -733,11 +787,18 @@
+@@ -729,11 +782,18 @@
  
      @Override
      public void remove(Entity.RemovalReason entity_removalreason) {

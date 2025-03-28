@@ -106,7 +106,7 @@
                      this.broadcastChanges();
                  });
              } else {
-@@ -157,17 +219,46 @@
+@@ -159,17 +221,46 @@
                      ItemStack itemstack2 = itemstack;
                      List<WeightedRandomEnchant> list = this.getEnchantmentList(world.registryAccess(), itemstack, i, this.costs[i]);
  

@@ -71,26 +71,26 @@
                  return EnumInteractionResult.SUCCESS;
              } else {
                  if (item instanceof ItemDye) {
-@@ -474,7 +493,9 @@
+@@ -479,7 +498,7 @@
+                             this.setOrderedToSit(!this.isOrderedToSit());
+                             this.jumping = false;
+                             this.navigation.stop();
+-                            this.setTarget((EntityLiving) null);
++                            this.setTarget((EntityLiving) null, EntityTargetEvent.TargetReason.FORGOT_TARGET, true); // CraftBukkit - reason
+                             return EnumInteractionResult.SUCCESS.withoutItem();
+                         } else {
+                             return enuminteractionresult;
+@@ -496,7 +515,9 @@
                      if (world instanceof WorldServer) {
                          WorldServer worldserver = (WorldServer) world;
  
 +                        this.forceDrops = true; // CraftBukkit
-                         this.spawnAtLocation(worldserver, itemstack1);
+                         this.spawnAtLocation(worldserver, itemstack2);
 +                        this.forceDrops = false; // CraftBukkit
                      }
  
                      return EnumInteractionResult.SUCCESS;
-@@ -493,7 +514,7 @@
-                         this.setOrderedToSit(!this.isOrderedToSit());
-                         this.jumping = false;
-                         this.navigation.stop();
--                        this.setTarget((EntityLiving) null);
-+                        this.setTarget((EntityLiving) null, EntityTargetEvent.TargetReason.FORGOT_TARGET, true); // CraftBukkit - reason
-                         return EnumInteractionResult.SUCCESS.withoutItem();
-                     } else {
-                         return enuminteractionresult;
-@@ -510,7 +531,8 @@
+@@ -512,7 +533,8 @@
      }
  
      private void tryToTame(EntityHuman entityhuman) {

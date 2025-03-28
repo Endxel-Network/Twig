@@ -93,7 +93,7 @@
                  }
  
              }
-@@ -1268,6 +1285,11 @@
+@@ -1272,6 +1289,11 @@
              int i = (Integer) iblockdata.getValue(BlockSweetBerryBush.AGE);
  
              iblockdata.setValue(BlockSweetBerryBush.AGE, 1);

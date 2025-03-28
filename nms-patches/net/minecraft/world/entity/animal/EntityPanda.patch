@@ -30,7 +30,7 @@
          }
  
      }
-@@ -964,10 +970,10 @@
+@@ -965,10 +971,10 @@
          private final EntityPanda panda;
  
          public c(EntityPanda entitypanda, Class<T> oclass, float f, double d0, double d1) {
@@ -44,7 +44,7 @@
              this.panda = entitypanda;
          }
  
-@@ -1088,7 +1094,7 @@
+@@ -1089,7 +1095,7 @@
          @Override
          protected void alertOther(EntityInsentient entityinsentient, EntityLiving entityliving) {
              if (entityinsentient instanceof EntityPanda && entityinsentient.isAggressive()) {

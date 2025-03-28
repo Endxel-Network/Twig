@@ -424,15 +424,10 @@
                                  double d11 = d7;
  
                                  d6 = d0 - this.player.getX();
-@@ -1175,10 +1404,76 @@
+@@ -1175,6 +1404,72 @@
                                  }
  
-                                 if (!this.player.noPhysics && !this.player.isSleeping() && (flag3 && worldserver.noCollision(this.player, axisalignedbb) || this.isPlayerCollidingWithAnythingNew(worldserver, axisalignedbb, d0, d1, d2))) {
--                                    this.teleport(d3, d4, d5, f, f1);
-+                                    this.internalTeleport(d3, d4, d5, f, f1); // CraftBukkit - SPIGOT-1807: Don't call teleport event, when the client thinks the player is falling, because the chunks are not loaded on the client yet.
-                                     this.player.doCheckFallDamage(this.player.getX() - d3, this.player.getY() - d4, this.player.getZ() - d5, packetplayinflying.isOnGround());
-                                     this.player.removeLatestMovementRecordingBatch();
-                                 } else {
+                                 if (this.player.noPhysics || this.player.isSleeping() || (!flag3 || !worldserver.noCollision(this.player, axisalignedbb)) && !this.isPlayerCollidingWithAnythingNew(worldserver, axisalignedbb, d0, d1, d2)) {
 +                                    // CraftBukkit start - fire PlayerMoveEvent
 +                                    // Reset to old location first
 +                                    this.player.absSnapTo(prevX, prevY, prevZ, prevYaw, prevPitch);
@@ -502,6 +497,15 @@
                                      this.player.absSnapTo(d0, d1, d2, f, f1);
                                      boolean flag4 = this.player.isAutoSpinAttack();
  
+@@ -1198,7 +1493,7 @@
+                                     this.lastGoodY = this.player.getY();
+                                     this.lastGoodZ = this.player.getZ();
+                                 } else {
+-                                    this.teleport(d3, d4, d5, f, f1);
++                                    this.internalTeleport(d3, d4, d5, f, f1); // CraftBukkit - SPIGOT-1807: Don't call teleport event, when the client thinks the player is falling, because the chunks are not loaded on the client yet.
+                                     this.player.doCheckFallDamage(this.player.getX() - d3, this.player.getY() - d4, this.player.getZ() - d5, packetplayinflying.isOnGround());
+                                     this.player.removeLatestMovementRecordingBatch();
+                                 }
 @@ -1228,6 +1523,7 @@
                  this.awaitingTeleportTime = this.tickCount;
                  this.teleport(this.awaitingPositionFromClient.x, this.awaitingPositionFromClient.y, this.awaitingPositionFromClient.z, this.player.getYRot(), this.player.getXRot());
@@ -1236,7 +1240,7 @@
 -                            if (!(entity instanceof EntityItem) && !(entity instanceof EntityExperienceOrb) && entity != PlayerConnection.this.player) {
 +                            // CraftBukkit
 +                            if (!(entity instanceof EntityItem) && !(entity instanceof EntityExperienceOrb) && (entity != PlayerConnection.this.player || player.isSpectator())) {
-                                 label23:
+                                 label29:
                                  {
                                      if (entity instanceof EntityArrow) {
 @@ -1875,6 +2610,11 @@

@@ -209,7 +209,7 @@
                  this.gameEvent(GameEvent.ENTITY_DIE);
              }
          }
-@@ -788,6 +883,7 @@
+@@ -774,6 +869,7 @@
          super.addAdditionalSaveData(nbttagcompound);
          nbttagcompound.putInt("DragonPhase", this.phaseManager.getCurrentPhase().getPhase().getId());
          nbttagcompound.putInt("DragonDeathTime", this.dragonDeathTime);
@@ -217,7 +217,7 @@
      }
  
      @Override
-@@ -797,6 +893,7 @@
+@@ -783,6 +879,7 @@
              this.phaseManager.setPhase(DragonControllerPhase.getById(integer));
          });
          this.dragonDeathTime = nbttagcompound.getIntOr("DragonDeathTime", 0);

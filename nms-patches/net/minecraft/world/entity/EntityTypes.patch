@@ -93,7 +93,7 @@
              if (t0 instanceof EntityInsentient) {
                  EntityInsentient entityinsentient = (EntityInsentient) t0;
  
-@@ -668,7 +695,7 @@
+@@ -665,7 +692,7 @@
              }
  
              return entity;
@@ -102,7 +102,7 @@
      }
  
      public static Stream<Entity> loadEntitiesRecursive(List<? extends NBTBase> list, World world, EntitySpawnReason entityspawnreason) {
-@@ -786,7 +813,7 @@
+@@ -783,7 +810,7 @@
              this.canSpawnFarFromPlayer = enumcreaturetype == EnumCreatureType.CREATURE || enumcreaturetype == EnumCreatureType.MISC;
          }
  

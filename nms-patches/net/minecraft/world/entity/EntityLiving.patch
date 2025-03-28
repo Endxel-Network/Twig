@@ -1107,7 +1107,7 @@
          Map<EnumItemSlot, ItemStack> map = this.collectEquipmentChanges();
  
          if (map != null) {
-@@ -3005,6 +3560,7 @@
+@@ -3009,6 +3564,7 @@
          this.checkSlowFallDistance();
          if (!this.level().isClientSide) {
              if (!this.canGlide()) {
@@ -1115,7 +1115,7 @@
                  this.setSharedFlag(7, false);
                  return;
              }
-@@ -3192,14 +3748,21 @@
+@@ -3196,14 +3752,21 @@
  
      @Override
      public boolean isPickable() {
@@ -1139,7 +1139,7 @@
      @Override
      public float getYHeadRot() {
          return this.yHeadRot;
-@@ -3404,7 +3967,30 @@
+@@ -3408,7 +3971,30 @@
                  this.releaseUsingItem();
              } else {
                  if (!this.useItem.isEmpty() && this.isUsingItem()) {
@@ -1171,7 +1171,7 @@
  
                      if (itemstack != this.useItem) {
                          this.setItemInHand(enumhand, itemstack);
-@@ -3500,6 +4086,12 @@
+@@ -3504,6 +4090,12 @@
      }
  
      public boolean randomTeleport(double d0, double d1, double d2, boolean flag) {
@@ -1184,7 +1184,7 @@
          double d3 = this.getX();
          double d4 = this.getY();
          double d5 = this.getZ();
-@@ -3524,16 +4116,41 @@
+@@ -3528,16 +4120,41 @@
              }
  
              if (flag2) {
@@ -1229,7 +1229,7 @@
          } else {
              if (flag) {
                  world.broadcastEntityEvent(this, (byte) 46);
-@@ -3545,7 +4162,7 @@
+@@ -3549,7 +4166,7 @@
                  entitycreature.getNavigation().stop();
              }
  
@@ -1238,7 +1238,7 @@
          }
      }
  
-@@ -3638,7 +4255,7 @@
+@@ -3642,7 +4259,7 @@
      }
  
      public void stopSleeping() {
@@ -1247,7 +1247,7 @@
          World world = this.level();
  
          java.util.Objects.requireNonNull(world);
-@@ -3672,7 +4289,7 @@
+@@ -3676,7 +4293,7 @@
  
      @Nullable
      public EnumDirection getBedOrientation() {

@@ -30,11 +30,3 @@
                      world.levelEvent(1505, blockposition1, 15);
                  }
  
-@@ -139,6 +145,7 @@
-                                 }
-                             }
-                         }
-+                        break; // CraftBukkit - decompile error for the while(true)
-                     }
-                 }
- 

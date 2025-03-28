@@ -9,15 +9,7 @@
  public class BlockTripwire extends Block {
  
      public static final MapCodec<BlockTripwire> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-@@ -121,6 +123,7 @@
-                         continue;
-                     }
-                 }
-+                break; // CraftBukkit - decompile error
-             }
-         }
- 
-@@ -168,6 +171,40 @@
+@@ -166,6 +168,40 @@
              }
          }
  

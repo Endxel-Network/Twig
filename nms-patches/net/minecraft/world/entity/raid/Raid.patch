@@ -38,7 +38,7 @@
                      this.stop();
                      return;
                  }
-@@ -368,6 +378,7 @@
+@@ -370,6 +380,7 @@
                      }
  
                      if (j > 5) {
@@ -46,7 +46,7 @@
                          this.stop();
                          break;
                      }
-@@ -379,6 +390,7 @@
+@@ -381,6 +392,7 @@
                      } else {
                          this.status = Raid.Status.VICTORY;
  
@@ -54,7 +54,7 @@
                          for (UUID uuid : this.heroesOfTheVillage) {
                              Entity entity = worldserver.getEntity(uuid);
  
-@@ -392,10 +404,12 @@
+@@ -394,10 +406,12 @@
  
                                          entityplayer.awardStat(StatisticList.RAID_WIN);
                                          CriterionTriggers.RAID_WIN.trigger(entityplayer);
@@ -67,7 +67,7 @@
                      }
                  }
  
-@@ -403,6 +417,7 @@
+@@ -405,6 +419,7 @@
              } else if (this.isOver()) {
                  ++this.celebrationTicks;
                  if (this.celebrationTicks >= 600) {
@@ -75,7 +75,7 @@
                      this.stop();
                      return;
                  }
-@@ -524,6 +539,10 @@
+@@ -526,6 +541,10 @@
          DifficultyDamageScaler difficultydamagescaler = worldserver.getCurrentDifficultyAt(blockposition);
          boolean flag1 = this.shouldSpawnBonusGroup();
  
@@ -86,35 +86,27 @@
          for (Raid.Wave raid_wave : Raid.Wave.VALUES) {
              int j = this.getDefaultNumSpawns(raid_wave, i, flag1) + this.getPotentialBonusSpawns(raid_wave, this.random, i, difficultydamagescaler, flag1);
              int k = 0;
-@@ -538,9 +557,11 @@
-                             entityraider.setPatrolLeader(true);
-                             this.setLeader(i, entityraider);
-                             flag = true;
-+                            leader = entityraider; // CraftBukkit
-                         }
+@@ -541,9 +560,11 @@
+                     entityraider.setPatrolLeader(true);
+                     this.setLeader(i, entityraider);
+                     flag = true;
++                    leader = entityraider; // CraftBukkit
+                 }
  
-                         this.joinRaid(worldserver, i, entityraider, blockposition, false);
+                 this.joinRaid(worldserver, i, entityraider, blockposition, false);
++                raiders.add(entityraider); // CraftBukkit
+                 if (raid_wave.entityType == EntityTypes.RAVAGER) {
+                     EntityRaider entityraider1 = null;
+ 
+@@ -562,6 +583,7 @@
+                         this.joinRaid(worldserver, i, entityraider1, blockposition, false);
+                         entityraider1.snapTo(blockposition, 0.0F, 0.0F);
+                         entityraider1.startRiding(entityraider);
 +                        raiders.add(entityraider); // CraftBukkit
-                         if (raid_wave.entityType == EntityTypes.RAVAGER) {
-                             EntityRaider entityraider1 = null;
- 
-@@ -559,6 +580,7 @@
-                                 this.joinRaid(worldserver, i, entityraider1, blockposition, false);
-                                 entityraider1.snapTo(blockposition, 0.0F, 0.0F);
-                                 entityraider1.startRiding(entityraider);
-+                                raiders.add(entityraider); // CraftBukkit
-                             }
-                         }
- 
-@@ -566,6 +588,7 @@
-                         continue;
                      }
                  }
-+                break; // CraftBukkit - decompile error
              }
-         }
- 
-@@ -573,6 +596,7 @@
+@@ -571,6 +593,7 @@
          ++this.groupsSpawned;
          this.updateBossbar();
          this.setDirty(worldserver);
@@ -122,7 +114,7 @@
      }
  
      public void joinRaid(WorldServer worldserver, int i, EntityRaider entityraider, @Nullable BlockPosition blockposition, boolean flag) {
-@@ -588,7 +612,7 @@
+@@ -586,7 +609,7 @@
                  entityraider.finalizeSpawn(worldserver, worldserver.getCurrentDifficultyAt(blockposition), EntitySpawnReason.EVENT, (GroupDataEntity) null);
                  entityraider.applyRaidBuffs(worldserver, i, false);
                  entityraider.setOnGround(true);
@@ -131,7 +123,7 @@
              }
          }
  
-@@ -811,6 +835,12 @@
+@@ -809,6 +832,12 @@
          this.heroesOfTheVillage.add(entity.getUUID());
      }
  

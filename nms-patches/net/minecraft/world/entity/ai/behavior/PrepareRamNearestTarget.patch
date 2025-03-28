@@ -28,7 +28,7 @@
              this.chooseRamPosition(entitycreature, entityliving);
          });
      }
-@@ -148,7 +162,7 @@
+@@ -142,7 +156,7 @@
              }
  
              NavigationAbstract navigationabstract = entitycreature.getNavigation();

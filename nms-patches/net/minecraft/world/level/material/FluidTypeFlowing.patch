@@ -48,7 +48,7 @@
                  this.spreadTo(worldserver, blockposition1, worldserver.getBlockState(blockposition1), enumdirection, fluid1);
              }
  
-@@ -424,10 +451,24 @@
+@@ -428,10 +455,24 @@
              if (fluid1.isEmpty()) {
                  fluid = fluid1;
                  iblockdata = Blocks.AIR.defaultBlockState();

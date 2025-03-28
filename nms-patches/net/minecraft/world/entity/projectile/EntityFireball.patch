@@ -18,16 +18,7 @@
  
      protected EntityFireball(EntityTypes<? extends EntityFireball> entitytypes, World world) {
          super(entitytypes, world);
-@@ -69,7 +75,7 @@
- 
-         this.applyInertia();
-         if (!this.level().isClientSide && (entity != null && entity.isRemoved() || !this.level().hasChunkAt(this.blockPosition()))) {
--            this.discard();
-+            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
-         } else {
-             MovingObjectPosition movingobjectposition = ProjectileHelper.getHitResultOnMoveVector(this, this::canHitEntity, this.getClipType());
-             Vec3D vec3d;
-@@ -89,7 +95,7 @@
+@@ -87,12 +93,12 @@
              }
  
              if (movingobjectposition.getType() != MovingObjectPosition.EnumMovingObjectType.MISS && this.isAlive()) {
@@ -36,3 +27,9 @@
              }
  
              this.createParticleTrail();
+         } else {
+-            this.discard();
++            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
+         }
+     }
+ 

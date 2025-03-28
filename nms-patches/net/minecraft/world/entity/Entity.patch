@@ -647,10 +647,10 @@
              return false;
          } else {
              for (Entity entity1 = entity; entity1.vehicle != null; entity1 = entity1.vehicle) {
-@@ -2243,6 +2590,27 @@
-             if (!flag && (!this.canRide(entity) || !entity.canAddPassenger(this))) {
-                 return false;
-             } else {
+@@ -2241,6 +2588,27 @@
+             }
+ 
+             if (flag || this.canRide(entity) && entity.canAddPassenger(this)) {
 +                // CraftBukkit start
 +                if (entity.getBukkitEntity() instanceof Vehicle && this.getBukkitEntity() instanceof LivingEntity) {
 +                    VehicleEnterEvent event = new VehicleEnterEvent((Vehicle) entity.getBukkitEntity(), this.getBukkitEntity());
