@@ -25,7 +25,7 @@ public class CraftTameableAnimal extends CraftAnimals implements Tameable, Creat
     }
 
     public void setOwnerUUID(UUID uuid) {
-        getHandle().setOwnerReference(new EntityReference<>(uuid));
+        getHandle().setOwnerReference((uuid) != null ? new EntityReference<>(uuid) : null);
     }
 
     @Override
