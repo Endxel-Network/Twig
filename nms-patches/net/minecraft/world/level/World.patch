@@ -295,7 +295,19 @@
              this.getChunkAt(blockposition).addAndRegisterBlockEntity(tileentity);
          }
      }
-@@ -915,7 +1117,7 @@
+@@ -574,6 +776,11 @@
+     }
+ 
+     protected void prepareWeather() {
++        // CraftBukkit start - SPIGOT-8029: consistent with WorldServer#advanceWeatherCycle
++        if (!this.dimensionType().hasSkyLight()) {
++            return;
++        }
++        // CraftBukkit end
+         if (this.levelData.isRaining()) {
+             this.rainLevel = 1.0F;
+             if (this.levelData.isThundering()) {
+@@ -915,7 +1122,7 @@
  
      public static enum a implements INamable {
  
