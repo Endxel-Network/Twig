@@ -37,10 +37,12 @@
  public abstract class EntityLiving extends Entity implements Attackable {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -246,6 +276,19 @@
+@@ -245,7 +275,20 @@
+     protected BehaviorController<?> brain;
      protected boolean skipDropExperience;
      private final EnumMap<EnumItemSlot, Reference2ObjectMap<Enchantment, Set<EnchantmentLocationBasedEffect>>> activeLocationDependentEnchantments;
-     protected final EntityEquipment equipment;
+-    protected final EntityEquipment equipment;
++    public final EntityEquipment equipment;
 +    // CraftBukkit start
 +    public int expToDrop;
 +    public ArrayList<org.bukkit.inventory.ItemStack> drops = new ArrayList<org.bukkit.inventory.ItemStack>();

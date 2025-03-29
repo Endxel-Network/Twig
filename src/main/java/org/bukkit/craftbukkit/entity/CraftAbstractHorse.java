@@ -111,6 +111,6 @@ public abstract class CraftAbstractHorse extends CraftAnimals implements Abstrac
 
     @Override
     public AbstractHorseInventory getInventory() {
-        return new CraftInventoryAbstractHorse(getHandle().inventory);
+        return new CraftInventoryAbstractHorse(getHandle().inventory, getHandle().equipment);
     }
 }

@@ -1,26 +1,25 @@
 package org.bukkit.craftbukkit.inventory;
 
 import net.minecraft.world.IInventory;
+import net.minecraft.world.entity.EntityEquipment;
+import net.minecraft.world.entity.EnumItemSlot;
 import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftInventoryHorse extends CraftInventoryAbstractHorse implements HorseInventory {
 
-    private final IInventory bodyArmorInventory;
-
-    public CraftInventoryHorse(IInventory inventory, IInventory bodyArmorInventory) {
-        super(inventory);
-        this.bodyArmorInventory = bodyArmorInventory;
+    public CraftInventoryHorse(IInventory inventory, EntityEquipment equipment) {
+        super(inventory, equipment);
     }
 
     @Override
     public ItemStack getArmor() {
-        net.minecraft.world.item.ItemStack item = bodyArmorInventory.getItem(0);
+        net.minecraft.world.item.ItemStack item = equipment.get(EnumItemSlot.BODY);
         return item.isEmpty() ? null : CraftItemStack.asCraftMirror(item);
     }
 
     @Override
     public void setArmor(ItemStack stack) {
-        bodyArmorInventory.setItem(0, CraftItemStack.asNMSCopy(stack));
+        equipment.set(EnumItemSlot.BODY, CraftItemStack.asNMSCopy(stack));
     }
 }
