@@ -1625,7 +1625,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
     @Override
     public void setBlocksAttacks(BlocksAttacksComponent blocksAttacks) {
-        this.blocksAttacks = (this.blocksAttacks == null) ? null : new CraftBlocksAttacksComponent((CraftBlocksAttacksComponent) this.blocksAttacks);
+        this.blocksAttacks = (blocksAttacks == null) ? null : new CraftBlocksAttacksComponent((CraftBlocksAttacksComponent) blocksAttacks);
     }
 
     @Override
