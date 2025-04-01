@@ -1332,21 +1332,29 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
     @Override
     public boolean hasCustomModelData() {
-        return customModelData != null;
+        if (customModelData != null) {
+            List<Float> floats = customModelData.getFloats();
+            return !floats.isEmpty();
+        }
+
+        return false;
     }
 
     @Override
     public int getCustomModelData() {
         Preconditions.checkState(hasCustomModelData(), "We don't have CustomModelData! Check hasCustomModelData first!");
 
-        List<Float> floats = customModelData.getFloats();
-        Preconditions.checkState(!floats.isEmpty(), "No numeric custom model data");
-        return floats.get(0).intValue();
+        return customModelData.getFloats().get(0).intValue();
+    }
+
+    @Override
+    public boolean hasCustomModelDataComponent() {
+        return customModelData != null;
     }
 
     @Override
     public CustomModelDataComponent getCustomModelDataComponent() {
-        return (this.hasCustomModelData()) ? new CraftCustomModelDataComponent(this.customModelData) : new CraftCustomModelDataComponent(new CustomModelData(List.of(), List.of(), List.of(), List.of()));
+        return (this.hasCustomModelDataComponent()) ? new CraftCustomModelDataComponent(this.customModelData) : new CraftCustomModelDataComponent(new CustomModelData(List.of(), List.of(), List.of(), List.of()));
     }
 
     @Override
