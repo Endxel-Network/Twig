@@ -1189,7 +1189,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public void setRespawnLocation(Location location, boolean override) {
         if (location == null) {
-            getHandle().setRespawnPosition(new EntityPlayer.RespawnConfig(null, null, 0.0F, false), override, PlayerSpawnChangeEvent.Cause.PLUGIN);
+            getHandle().setRespawnPosition(null, override, PlayerSpawnChangeEvent.Cause.PLUGIN);
         } else {
             getHandle().setRespawnPosition(new EntityPlayer.RespawnConfig(((CraftWorld) location.getWorld()).getHandle().dimension(), CraftLocation.toBlockPosition(location), location.getYaw(), false), override, PlayerSpawnChangeEvent.Cause.PLUGIN);
         }
