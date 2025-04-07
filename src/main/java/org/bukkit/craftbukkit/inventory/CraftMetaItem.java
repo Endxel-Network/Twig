@@ -327,7 +327,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
             this.lore = new ArrayList<IChatBaseComponent>(meta.lore);
         }
 
-        if (meta.hasCustomModelData()) {
+        if (meta.hasCustomModelDataComponent()) {
             this.customModelData = new CraftCustomModelDataComponent(meta.customModelData);
         }
         this.enchantableValue = meta.enchantableValue;
@@ -950,7 +950,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
             itemTag.put(LORE, new ItemLore(lore));
         }
 
-        if (hasCustomModelData()) {
+        if (hasCustomModelDataComponent()) {
             itemTag.put(CUSTOM_MODEL_DATA, customModelData.getHandle());
         }
 
@@ -1140,7 +1140,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
     @Overridden
     boolean isEmpty() {
-        return !(hasDisplayName() || hasItemName() || hasLocalizedName() || hasEnchants() || (lore != null) || hasCustomModelData() || hasEnchantable() || hasBlockData() || hasRepairCost() || !unhandledTags.build().isEmpty() || !removedTags.isEmpty() || !persistentDataContainer.isEmpty() || hasItemFlags() || isHideTooltip() || hasTooltipStyle() || hasItemModel() || isUnbreakable() || hasEnchantmentGlintOverride() || isGlider() || hasDamageResistant() || hasMaxStackSize() || hasRarity() || hasUseRemainder() || hasUseCooldown() || hasFood() || hasConsumable() || hasTool() || hasBlocksAttacks() || hasWeapon() || hasJukeboxPlayable() || hasBreakSound() || hasEquippable() || hasDamage() || hasMaxDamage() || hasAttributeModifiers() || customTag != null);
+        return !(hasDisplayName() || hasItemName() || hasLocalizedName() || hasEnchants() || (lore != null) || hasCustomModelDataComponent() || hasEnchantable() || hasBlockData() || hasRepairCost() || !unhandledTags.build().isEmpty() || !removedTags.isEmpty() || !persistentDataContainer.isEmpty() || hasItemFlags() || isHideTooltip() || hasTooltipStyle() || hasItemModel() || isUnbreakable() || hasEnchantmentGlintOverride() || isGlider() || hasDamageResistant() || hasMaxStackSize() || hasRarity() || hasUseRemainder() || hasUseCooldown() || hasFood() || hasConsumable() || hasTool() || hasBlocksAttacks() || hasWeapon() || hasJukeboxPlayable() || hasBreakSound() || hasEquippable() || hasDamage() || hasMaxDamage() || hasAttributeModifiers() || customTag != null);
     }
 
     @Override
@@ -1932,7 +1932,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
                 && (this.hasItemName() ? that.hasItemName() && this.itemName.equals(that.itemName) : !that.hasItemName())
                 && (this.hasEnchants() ? that.hasEnchants() && this.enchantments.equals(that.enchantments) : !that.hasEnchants())
                 && (Objects.equals(this.lore, that.lore))
-                && (this.hasCustomModelData() ? that.hasCustomModelData() && this.customModelData.equals(that.customModelData) : !that.hasCustomModelData())
+                && (this.hasCustomModelDataComponent() ? that.hasCustomModelDataComponent() && this.customModelData.equals(that.customModelData) : !that.hasCustomModelDataComponent())
                 && (this.hasEnchantable() ? that.hasEnchantable() && this.enchantableValue.equals(that.enchantableValue) : !that.hasEnchantable())
                 && (this.hasBlockData() ? that.hasBlockData() && this.blockData.equals(that.blockData) : !that.hasBlockData())
                 && (this.hasRepairCost() ? that.hasRepairCost() && this.repairCost == that.repairCost : !that.hasRepairCost())
@@ -1987,7 +1987,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
         hash = 61 * hash + (hasDisplayName() ? this.displayName.hashCode() : 0);
         hash = 61 * hash + (hasItemName() ? this.itemName.hashCode() : 0);
         hash = 61 * hash + ((lore != null) ? this.lore.hashCode() : 0);
-        hash = 61 * hash + (hasCustomModelData() ? this.customModelData.hashCode() : 0);
+        hash = 61 * hash + (hasCustomModelDataComponent() ? this.customModelData.hashCode() : 0);
         hash = 61 * hash + (hasEnchantable() ? this.enchantableValue.hashCode() : 0);
         hash = 61 * hash + (hasBlockData() ? this.blockData.hashCode() : 0);
         hash = 61 * hash + (hasEnchants() ? this.enchantments.hashCode() : 0);
@@ -2031,7 +2031,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
             if (this.lore != null) {
                 clone.lore = new ArrayList<IChatBaseComponent>(this.lore);
             }
-            if (this.hasCustomModelData()) {
+            if (this.hasCustomModelDataComponent()) {
                 clone.customModelData = new CraftCustomModelDataComponent(customModelData);
             }
             clone.enchantableValue = this.enchantableValue;
@@ -2125,7 +2125,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
             builder.put(LORE.BUKKIT, jsonLore);
         }
 
-        if (hasCustomModelData()) {
+        if (hasCustomModelDataComponent()) {
             builder.put(CUSTOM_MODEL_DATA.BUKKIT, customModelData);
         }
         if (hasEnchantable()) {
