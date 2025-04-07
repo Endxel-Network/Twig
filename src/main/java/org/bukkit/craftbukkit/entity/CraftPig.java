@@ -29,7 +29,7 @@ public class CraftPig extends CraftAnimals implements Pig {
 
     @Override
     public void setSaddle(boolean saddled) {
-        getHandle().setItemSlot(EnumItemSlot.SADDLE, new ItemStack(Items.SADDLE));
+        getHandle().setItemSlot(EnumItemSlot.SADDLE, (saddled) ? new ItemStack(Items.SADDLE) : ItemStack.EMPTY);
     }
 
     @Override
