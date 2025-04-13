@@ -132,7 +132,6 @@ import org.bukkit.entity.TippedArrow;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.weather.LightningStrikeEvent;
-import org.bukkit.event.world.SpawnChangeEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
@@ -203,13 +202,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     @Override
     public boolean setSpawnLocation(int x, int y, int z, float angle) {
         try {
-            Location previousLocation = getSpawnLocation();
-            world.levelData.setSpawn(new BlockPosition(x, y, z), angle);
-
-            // Notify anyone who's listening.
-            SpawnChangeEvent event = new SpawnChangeEvent(this, previousLocation);
-            server.getPluginManager().callEvent(event);
-
+            world.setDefaultSpawnPos(new BlockPosition(x, y, z), angle);
             return true;
         } catch (Exception e) {
             return false;
