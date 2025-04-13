@@ -284,6 +284,10 @@ public class CraftInventory implements Inventory {
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             Preconditions.checkArgument(item != null, "ItemStack cannot be null");
+            // SPIGOT-8038: Cannot add/remove air. Probably should be an exception, but ignored for compatibility
+            if (item.getType().isAir()) {
+                continue;
+            }
             while (true) {
                 // Do we already have a stack of it?
                 int firstPartial = firstPartial(item);
@@ -348,6 +352,10 @@ public class CraftInventory implements Inventory {
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             Preconditions.checkArgument(item != null, "ItemStack cannot be null");
+            // SPIGOT-8038: Cannot add/remove air. Probably should be an exception, but ignored for compatibility
+            if (item.getType().isAir()) {
+                continue;
+            }
             int toDelete = item.getAmount();
 
             while (true) {
