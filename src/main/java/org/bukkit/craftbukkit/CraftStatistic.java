@@ -146,29 +146,40 @@ public enum CraftStatistic {
     }
 
     public static net.minecraft.stats.Statistic getMaterialStatistic(org.bukkit.Statistic stat, Material material) {
-        try {
-            if (stat == Statistic.MINE_BLOCK) {
-                return StatisticList.BLOCK_MINED.get(CraftBlockType.bukkitToMinecraft(material));
-            }
-            if (stat == Statistic.CRAFT_ITEM) {
-                return StatisticList.ITEM_CRAFTED.get(CraftItemType.bukkitToMinecraft(material));
-            }
-            if (stat == Statistic.USE_ITEM) {
-                return StatisticList.ITEM_USED.get(CraftItemType.bukkitToMinecraft(material));
-            }
-            if (stat == Statistic.BREAK_ITEM) {
-                return StatisticList.ITEM_BROKEN.get(CraftItemType.bukkitToMinecraft(material));
-            }
-            if (stat == Statistic.PICKUP) {
-                return StatisticList.ITEM_PICKED_UP.get(CraftItemType.bukkitToMinecraft(material));
-            }
-            if (stat == Statistic.DROP) {
-                return StatisticList.ITEM_DROPPED.get(CraftItemType.bukkitToMinecraft(material));
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return null;
+        Type type = stat.getType();
+
+        switch (type) {
+            case BLOCK:
+                Preconditions.checkArgument(material.isBlock(), "statistic type is BLOCK but got non-block Material, %s", material);
+
+                if (stat == Statistic.MINE_BLOCK) {
+                    return StatisticList.BLOCK_MINED.get(CraftBlockType.bukkitToMinecraft(material));
+                }
+                break;
+            case ITEM:
+                Preconditions.checkArgument(material.isItem(), "statistic type is ITEM but got non-item Material, %s", material);
+
+                if (stat == Statistic.CRAFT_ITEM) {
+                    return StatisticList.ITEM_CRAFTED.get(CraftItemType.bukkitToMinecraft(material));
+                }
+                if (stat == Statistic.USE_ITEM) {
+                    return StatisticList.ITEM_USED.get(CraftItemType.bukkitToMinecraft(material));
+                }
+                if (stat == Statistic.BREAK_ITEM) {
+                    return StatisticList.ITEM_BROKEN.get(CraftItemType.bukkitToMinecraft(material));
+                }
+                if (stat == Statistic.PICKUP) {
+                    return StatisticList.ITEM_PICKED_UP.get(CraftItemType.bukkitToMinecraft(material));
+                }
+                if (stat == Statistic.DROP) {
+                    return StatisticList.ITEM_DROPPED.get(CraftItemType.bukkitToMinecraft(material));
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("statistic type must be either BLOCK or ITEM, given " + type);
         }
-        return null;
+
+        throw new IllegalArgumentException("Unknwon material statistic " + stat);
     }
 
     public static net.minecraft.stats.Statistic getEntityStatistic(org.bukkit.Statistic stat, EntityType entity) {
