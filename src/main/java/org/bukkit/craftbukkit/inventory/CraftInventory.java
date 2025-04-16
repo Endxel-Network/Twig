@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.InventoryMerchant;
 import net.minecraft.world.level.block.BlockComposter;
 import net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity;
 import net.minecraft.world.level.block.entity.CrafterBlockEntity;
+import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
 import net.minecraft.world.level.block.entity.IHopper;
 import net.minecraft.world.level.block.entity.TileEntityBarrel;
 import net.minecraft.world.level.block.entity.TileEntityBlastFurnace;
@@ -506,6 +507,8 @@ public class CraftInventory implements Inventory {
             return InventoryType.COMPOSTER;
         } else if (inventory instanceof TileEntityJukeBox) {
             return InventoryType.JUKEBOX;
+        } else if (inventory instanceof DecoratedPotBlockEntity) {
+            return InventoryType.DECORATED_POT;
         } else {
             return InventoryType.CHEST;
         }
