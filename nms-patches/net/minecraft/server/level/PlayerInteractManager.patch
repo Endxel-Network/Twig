@@ -1,11 +1,12 @@
 --- a/net/minecraft/server/level/PlayerInteractManager.java
 +++ b/net/minecraft/server/level/PlayerInteractManager.java
-@@ -26,6 +26,27 @@
+@@ -26,6 +26,28 @@
  import net.minecraft.world.phys.Vec3D;
  import org.slf4j.Logger;
  
 +// CraftBukkit start
 +import java.util.ArrayList;
++import net.minecraft.network.protocol.game.ClientboundBlockChangedAckPacket;
 +import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 +import net.minecraft.server.MinecraftServer;
 +import net.minecraft.world.entity.EnumItemSlot;
@@ -28,7 +29,7 @@
  public class PlayerInteractManager {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -56,9 +77,16 @@
+@@ -56,9 +78,16 @@
          if (enumgamemode == this.gameModeForPlayer) {
              return false;
          } else {
@@ -46,7 +47,7 @@
              this.level.updateSleepingPlayerList();
              if (enumgamemode == EnumGamemode.CREATIVE) {
                  this.player.resetCurrentImpulseContext();
-@@ -92,7 +120,7 @@
+@@ -92,7 +121,7 @@
      }
  
      public void tick() {
@@ -55,7 +56,7 @@
          if (this.hasDelayedDestroy) {
              IBlockData iblockdata = this.level.getBlockState(this.delayedDestroyPos);
  
-@@ -144,11 +172,33 @@
+@@ -144,10 +173,36 @@
          } else {
              if (packetplayinblockdig_enumplayerdigtype == PacketPlayInBlockDig.EnumPlayerDigType.START_DESTROY_BLOCK) {
                  if (!this.level.mayInteract(this.player, blockposition)) {
@@ -63,33 +64,36 @@
 +                    CraftEventFactory.callPlayerInteractEvent(this.player, Action.LEFT_CLICK_BLOCK, blockposition, enumdirection, this.player.getInventory().getSelectedItem(), EnumHand.MAIN_HAND);
                      this.player.connection.send(new PacketPlayOutBlockChange(blockposition, this.level.getBlockState(blockposition)));
                      this.debugLogging(blockposition, false, j, "may not interact");
++                    // SPIGOT-8042: Need to ACK above changes first
++                    this.player.connection.send(new ClientboundBlockChangedAckPacket(j));
 +                    // Update any tile entity data for this block
 +                    TileEntity tileentity = level.getBlockEntity(blockposition);
 +                    if (tileentity != null) {
 +                        this.player.connection.send(tileentity.getUpdatePacket());
 +                    }
 +                    // CraftBukkit end
-                     return;
-                 }
- 
++                    return;
++                }
++
 +                // CraftBukkit start
 +                PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(this.player, Action.LEFT_CLICK_BLOCK, blockposition, enumdirection, this.player.getInventory().getSelectedItem(), EnumHand.MAIN_HAND);
 +                if (event.isCancelled()) {
 +                    // Let the client know the block still exists
 +                    this.player.connection.send(new PacketPlayOutBlockChange(this.level, blockposition));
++                    // SPIGOT-8042: Need to ACK above changes first
++                    this.player.connection.send(new ClientboundBlockChangedAckPacket(j));
 +                    // Update any tile entity data for this block
 +                    TileEntity tileentity = this.level.getBlockEntity(blockposition);
 +                    if (tileentity != null) {
 +                        this.player.connection.send(tileentity.getUpdatePacket());
 +                    }
-+                    return;
-+                }
+                     return;
+                 }
 +                // CraftBukkit end
-+
+ 
                  if (this.player.getAbilities().instabuild) {
                      this.destroyAndAck(blockposition, j, "creative destroy");
-                     return;
-@@ -164,7 +214,19 @@
+@@ -164,7 +219,19 @@
                  float f = 1.0F;
                  IBlockData iblockdata = this.level.getBlockState(blockposition);
  
@@ -110,7 +114,7 @@
                      EnchantmentManager.onHitBlock(this.level, this.player.getMainHandItem(), this.player, this.player, EnumItemSlot.MAINHAND, Vec3D.atCenterOf(blockposition), iblockdata, (item) -> {
                          this.player.onEquippedItemBroken(item, EnumItemSlot.MAINHAND);
                      });
-@@ -172,6 +234,26 @@
+@@ -172,6 +239,26 @@
                      f = iblockdata.getDestroyProgress(this.player, this.player.level(), blockposition);
                  }
  
@@ -137,7 +141,7 @@
                  if (!iblockdata.isAir() && f >= 1.0F) {
                      this.destroyAndAck(blockposition, j, "insta mine");
                  } else {
-@@ -216,13 +298,15 @@
+@@ -216,20 +303,22 @@
              } else if (packetplayinblockdig_enumplayerdigtype == PacketPlayInBlockDig.EnumPlayerDigType.ABORT_DESTROY_BLOCK) {
                  this.isDestroyingBlock = false;
                  if (!Objects.equals(this.destroyPos, blockposition)) {
@@ -154,9 +158,24 @@
              }
  
          }
-@@ -240,10 +324,65 @@
+     }
+ 
+     public void destroyAndAck(BlockPosition blockposition, int i, String s) {
+-        if (this.destroyBlock(blockposition)) {
++        if (this.destroyBlock(blockposition, i)) { // CraftBukkit - add ack
+             this.debugLogging(blockposition, true, i, s);
+         } else {
+             this.player.connection.send(new PacketPlayOutBlockChange(blockposition, this.level.getBlockState(blockposition)));
+@@ -239,11 +328,74 @@
+     }
  
      public boolean destroyBlock(BlockPosition blockposition) {
++        // CraftBukkit start
++        return this.destroyBlock(blockposition, -1);
++    }
++
++    public boolean destroyBlock(BlockPosition blockposition, int ack) {
++        // CraftBukkit end
          IBlockData iblockdata = this.level.getBlockState(blockposition);
 +        // CraftBukkit start - fire BlockBreakEvent
 +        org.bukkit.block.Block bblock = CraftBlock.at(level, blockposition);
@@ -203,6 +222,8 @@
 +                    this.player.connection.send(new PacketPlayOutBlockChange(level, blockposition.relative(dir)));
 +                }
 +
++                // SPIGOT-8042: Need to ACK above changes first
++                this.player.connection.send(new ClientboundBlockChangedAckPacket(ack));
 +                // Update any tile entity data for this block
 +                TileEntity tileentity = this.level.getBlockEntity(blockposition);
 +                if (tileentity != null) {
@@ -221,7 +242,7 @@
              TileEntity tileentity = this.level.getBlockEntity(blockposition);
              Block block = iblockdata.getBlock();
  
-@@ -253,6 +392,10 @@
+@@ -253,6 +405,10 @@
              } else if (this.player.blockActionRestricted(this.level, blockposition, this.gameModeForPlayer)) {
                  return false;
              } else {
@@ -232,7 +253,7 @@
                  IBlockData iblockdata1 = block.playerWillDestroy(this.level, blockposition, iblockdata, this.player);
                  boolean flag = this.level.removeBlock(blockposition, false);
  
-@@ -261,19 +404,32 @@
+@@ -261,19 +417,32 @@
                  }
  
                  if (this.player.preventsBlockDrops()) {
@@ -255,20 +276,20 @@
 +                // CraftBukkit start
 +                if (event.isDropItems()) {
 +                    org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, state, this.player, level.captureDrops);
-+                }
+                 }
 +                level.captureDrops = null;
 +
 +                // Drop event experience
 +                if (flag && event != null) {
 +                    iblockdata.getBlock().popExperience(this.level, blockposition, event.getExpToDrop());
-                 }
++                }
 +
 +                return true;
 +                // CraftBukkit end
              }
          }
      }
-@@ -319,14 +475,53 @@
+@@ -319,14 +488,53 @@
          }
      }
  
@@ -322,7 +343,7 @@
  
              if (itileinventory != null) {
                  entityplayer.openMenu(itileinventory);
-@@ -357,7 +552,7 @@
+@@ -357,7 +565,7 @@
                  }
              }
  
