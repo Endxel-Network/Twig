@@ -386,8 +386,8 @@
      public void removePlayerImmediately(EntityPlayer entityplayer, Entity.RemovalReason entity_removalreason) {
 -        entityplayer.remove(entity_removalreason);
 +        entityplayer.remove(entity_removalreason, null); // CraftBukkit - add Bukkit remove cause
-     }
- 
++    }
++
 +    // CraftBukkit start
 +    public boolean strikeLightning(Entity entitylightning) {
 +        return this.strikeLightning(entitylightning, LightningStrikeEvent.Cause.UNKNOWN);
@@ -401,9 +401,9 @@
 +        }
 +
 +        return this.addFreshEntity(entitylightning);
-+    }
+     }
 +    // CraftBukkit end
-+
+ 
      @Override
      public void destroyBlockProgress(int i, BlockPosition blockposition, int j) {
 +        // CraftBukkit start
@@ -586,16 +586,28 @@
                  String s1 = (String) entry.getKey();
  
                  return s1 + ":" + entry.getIntValue();
-@@ -1754,6 +1978,8 @@
+@@ -1716,7 +1940,11 @@
+ 
+         a() {}
+ 
+-        public void onCreated(Entity entity) {}
++        // CraftBukkit start - Mark entity as in world
++        public void onCreated(Entity entity) {
++            entity.inWorld = true;
++            // CraftBukkit end
++        }
+ 
+         public void onDestroyed(Entity entity) {
+             WorldServer.this.getScoreboard().entityRemoved(entity);
+@@ -1754,6 +1982,7 @@
              }
  
              entity.updateDynamicGameEventListener(DynamicGameEventListener::add);
-+            entity.inWorld = true; // CraftBukkit - Mark entity as in world
 +            entity.valid = true; // CraftBukkit
          }
  
          public void onTrackingEnd(Entity entity) {
-@@ -1780,6 +2006,14 @@
+@@ -1780,6 +2009,14 @@
              }
  
              entity.updateDynamicGameEventListener(DynamicGameEventListener::remove);
