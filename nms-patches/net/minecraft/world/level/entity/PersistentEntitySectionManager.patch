@@ -30,7 +30,19 @@
      void removeSectionIfEmpty(long i, EntitySection<T> entitysection) {
          if (entitysection.isEmpty()) {
              this.sectionStorage.remove(i);
-@@ -200,6 +216,12 @@
+@@ -87,6 +103,11 @@
+             if (!flag) {
+                 this.callbacks.onCreated(t0);
+             }
++            // CraftBukkit - Mark entity as in world
++            if (t0 instanceof Entity entity) {
++                entity.inWorld = true;
++            }
++            // CraftBukkit end
+ 
+             Visibility visibility = getEffectiveStatus(t0, entitysection.getStatus());
+ 
+@@ -200,6 +221,12 @@
      }
  
      private boolean storeChunkSections(long i, Consumer<T> consumer) {
@@ -43,7 +55,7 @@
          PersistentEntitySectionManager.b persistententitysectionmanager_b = (PersistentEntitySectionManager.b) this.chunkLoadStatuses.get(i);
  
          if (persistententitysectionmanager_b == PersistentEntitySectionManager.b.PENDING) {
-@@ -211,6 +233,7 @@
+@@ -211,6 +238,7 @@
  
              if (list.isEmpty()) {
                  if (persistententitysectionmanager_b == PersistentEntitySectionManager.b.LOADED) {
@@ -51,7 +63,7 @@
                      this.permanentStorage.storeEntities(new ChunkEntities(new ChunkCoordIntPair(i), ImmutableList.of()));
                  }
  
-@@ -219,6 +242,7 @@
+@@ -219,6 +247,7 @@
                  this.requestChunkLoad(i);
                  return false;
              } else {
@@ -59,7 +71,7 @@
                  this.permanentStorage.storeEntities(new ChunkEntities(new ChunkCoordIntPair(i), list));
                  list.forEach(consumer);
                  return true;
-@@ -242,7 +266,7 @@
+@@ -242,7 +271,7 @@
      private boolean processChunkUnload(long i) {
          boolean flag = this.storeChunkSections(i, (entityaccess) -> {
              entityaccess.getPassengersAndSelf().forEach(this::unloadEntity);
@@ -68,7 +80,7 @@
  
          if (!flag) {
              return false;
-@@ -253,12 +277,12 @@
+@@ -253,12 +282,12 @@
      }
  
      private void unloadEntity(EntityAccess entityaccess) {
@@ -83,7 +95,7 @@
              return this.chunkVisibility.get(i) != Visibility.HIDDEN ? true : this.processChunkUnload(i);
          });
      }
-@@ -271,6 +295,10 @@
+@@ -271,6 +300,10 @@
                  this.addEntity(entityaccess, true);
              });
              this.chunkLoadStatuses.put(chunkentities.getPos().toLong(), PersistentEntitySectionManager.b.LOADED);
@@ -94,7 +106,7 @@
          }
  
      }
-@@ -296,7 +324,7 @@
+@@ -296,7 +329,7 @@
      }
  
      public void autoSave() {
@@ -103,7 +115,7 @@
              boolean flag = this.chunkVisibility.get(i) == Visibility.HIDDEN;
  
              if (flag) {
-@@ -315,7 +343,7 @@
+@@ -315,7 +348,7 @@
          while (!longset.isEmpty()) {
              this.permanentStorage.flush(false);
              this.processPendingLoads();
@@ -112,7 +124,7 @@
                  boolean flag = this.chunkVisibility.get(i) == Visibility.HIDDEN;
  
                  return flag ? this.processChunkUnload(i) : this.storeChunkSections(i, (entityaccess) -> {
-@@ -327,7 +355,15 @@
+@@ -327,7 +360,15 @@
      }
  
      public void close() throws IOException {
@@ -129,7 +141,7 @@
          this.permanentStorage.close();
      }
  
-@@ -354,7 +390,7 @@
+@@ -354,7 +395,7 @@
      public void dumpSections(Writer writer) throws IOException {
          CSVWriter csvwriter = CSVWriter.builder().addColumn("x").addColumn("y").addColumn("z").addColumn("visibility").addColumn("load_status").addColumn("entity_count").build(writer);
  
@@ -138,7 +150,7 @@
              PersistentEntitySectionManager.b persistententitysectionmanager_b = (PersistentEntitySectionManager.b) this.chunkLoadStatuses.get(i);
  
              this.sectionStorage.getExistingSectionPositionsInChunk(i).forEach((j) -> {
-@@ -398,7 +434,7 @@
+@@ -398,7 +439,7 @@
          private EntitySection<T> currentSection;
  
          a(final EntityAccess entityaccess, final long i, final EntitySection entitysection) {
