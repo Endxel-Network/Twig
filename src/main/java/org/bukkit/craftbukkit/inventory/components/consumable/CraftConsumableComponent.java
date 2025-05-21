@@ -11,6 +11,8 @@ import net.minecraft.sounds.SoundEffects;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.craftbukkit.CraftSound;
@@ -34,9 +36,9 @@ public class CraftConsumableComponent implements ConsumableComponent {
 
     public CraftConsumableComponent(Map<String, Object> map) {
         Float consumeSeconds = SerializableMeta.getObject(Float.class, map, "consume-seconds", false);
-        Animation animation = SerializableMeta.getObject(Animation.class, map, "animation", false);
+        Animation animation = Animation.valueOf(SerializableMeta.getString(map, "animation", false));
         Boolean hasConsumeParticles = SerializableMeta.getBoolean(map, "has-consume-particles");
-        Sound sound = SerializableMeta.getObject(Sound.class, map, "sound", false);
+        Sound sound = Registry.SOUNDS.get(NamespacedKey.fromString(SerializableMeta.getString(map, "sound", false)));
         List<ConsumableEffect> consumableEffects = SerializableMeta.getList(ConsumableEffect.class, map, "effects");
 
         List<ConsumeEffect> consumeEffects = (List<ConsumeEffect>) consumableEffects.stream().map(consumableEffect -> CraftConsumableEffect.bukkitToMinecraftSpecific(((CraftConsumableEffect<?>) consumableEffect))).toList();
@@ -48,8 +50,8 @@ public class CraftConsumableComponent implements ConsumableComponent {
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("consume-seconds", this.getConsumeSeconds());
-        result.put("animation", this.getAnimation());
-        result.put("sound", this.getSound());
+        result.put("animation", this.getAnimation().name());
+        result.put("sound", this.getSound().getKey().toString());
         result.put("has-consume-particles", this.hasConsumeParticles());
         result.put("effects", this.getEffects());
 
