@@ -15,6 +15,7 @@ import net.minecraft.world.level.GeneratorAccess;
 import net.minecraft.world.level.block.ITileEntity;
 import net.minecraft.world.level.block.entity.TileEntity;
 import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.chunk.IChunkProvider;
 import net.minecraft.world.level.dimension.DimensionManager;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.WorldData;
@@ -159,5 +160,11 @@ public class BlockStateListPopulator extends DummyGeneratorAccess {
     @Override
     public RandomSource getRandom() {
         return world.getRandom();
+    }
+
+    // Needed for PaleMossDecorator
+    @Override
+    public IChunkProvider getChunkSource() {
+        return world.getChunkSource();
     }
 }
