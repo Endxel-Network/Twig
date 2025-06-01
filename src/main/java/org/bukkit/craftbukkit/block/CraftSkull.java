@@ -112,7 +112,7 @@ public class CraftSkull extends CraftBlockEntityState<TileEntitySkull> implement
         if (profile == null) {
             this.profile = null;
         } else {
-            this.profile = new ResolvableProfile(CraftPlayerProfile.validateSkullProfile(((CraftPlayerProfile) profile).buildGameProfile()));
+            this.profile = CraftPlayerProfile.validateSkullProfile(((CraftPlayerProfile) profile).buildResolvableProfile());
         }
     }
 
