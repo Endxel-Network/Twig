@@ -1,6 +1,29 @@
 --- a/net/minecraft/commands/arguments/selector/ArgumentParserSelector.java
 +++ b/net/minecraft/commands/arguments/selector/ArgumentParserSelector.java
-@@ -215,8 +215,10 @@
+@@ -31,6 +31,10 @@
+ import net.minecraft.world.phys.AxisAlignedBB;
+ import net.minecraft.world.phys.Vec3D;
+ 
++// CraftBukkit start
++import net.minecraft.commands.CommandListenerWrapper;
++// CraftBukkit end
++
+ public class ArgumentParserSelector {
+ 
+     public static final char SYNTAX_SELECTOR_START = '@';
+@@ -133,6 +137,11 @@
+         boolean flag;
+ 
+         if (s0 instanceof ICompletionProvider icompletionprovider) {
++            // CraftBukkit start
++            if (s0 instanceof CommandListenerWrapper wrapper && wrapper.hasPermission(2, "minecraft.command.selector")) {
++                return true;
++            }
++            // CraftBukkit end
+             if (icompletionprovider.hasPermission(2)) {
+                 flag = true;
+                 return flag;
+@@ -215,8 +224,10 @@
          };
      }
  
@@ -13,7 +36,7 @@
          this.suggestions = this::suggestSelector;
          if (!this.reader.canRead()) {
              throw ArgumentParserSelector.ERROR_MISSING_SELECTOR_TYPE.createWithContext(this.reader);
-@@ -505,6 +507,12 @@
+@@ -505,6 +516,12 @@
      }
  
      public EntitySelector parse() throws CommandSyntaxException {
@@ -26,7 +49,7 @@
          this.startPosition = this.reader.getCursor();
          this.suggestions = this::suggestNameOrSelector;
          if (this.reader.canRead() && this.reader.peek() == '@') {
-@@ -513,7 +521,7 @@
+@@ -513,7 +530,7 @@
              }
  
              this.reader.skip();
