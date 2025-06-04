@@ -123,6 +123,7 @@ public class Main {
                 acceptsAll(asList("forceUpgrade"), "Whether to force a world upgrade");
                 acceptsAll(asList("eraseCache"), "Whether to force cache erase during world upgrade");
                 acceptsAll(asList("recreateRegionFiles"), "Whether to recreate region files during world upgrade");
+                acceptsAll(asList("safeMode"), "Loads level with vanilla datapack only");
                 acceptsAll(asList("nogui"), "Disables the graphical console");
 
                 acceptsAll(asList("nojline"), "Disables jline and emulates the vanilla console");
