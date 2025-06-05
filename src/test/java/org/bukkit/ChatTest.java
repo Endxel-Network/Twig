@@ -38,4 +38,11 @@ public class ChatTest {
         assertEquals("{\"text\":\"\",\"extra\":[\"multiCase \",{\"text\":\"http://SpigotMC.ORg/SpOngeBobMeEMeGoESHeRE\",\"click_event\":{\"url\":\"http://SpigotMC.ORg/SpOngeBobMeEMeGoESHeRE\",\"action\":\"open_url\"}}]}",
                 CraftChatMessage.toJSON(components[0]));
     }
+
+    @Test
+    public void testLong() {
+        IChatBaseComponent components = CraftChatMessage.fromJSON("{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[{\"translate\":\"%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s%1$s\",\"with\":[\"Test\"]}]}]}]}]}]}]}]}]}]}");
+
+        assertThrows(RuntimeException.class, components::getString);
+    }
 }
