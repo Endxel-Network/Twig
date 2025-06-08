@@ -15,11 +15,11 @@ public final class CraftChain extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     // org.bukkit.craftbukkit.block.data.CraftOrientable
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> AXIS = getEnum(net.minecraft.world.level.block.BlockChain.class, "axis");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.Axis> AXIS = getEnum(net.minecraft.world.level.block.BlockChain.class, "axis", org.bukkit.Axis.class);
 
     @Override
     public org.bukkit.Axis getAxis() {
-        return get(AXIS, org.bukkit.Axis.class);
+        return get(AXIS);
     }
 
     @Override
@@ -29,7 +29,7 @@ public final class CraftChain extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     @Override
     public java.util.Set<org.bukkit.Axis> getAxes() {
-        return getValues(AXIS, org.bukkit.Axis.class);
+        return getValues(AXIS);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftWaterlogged

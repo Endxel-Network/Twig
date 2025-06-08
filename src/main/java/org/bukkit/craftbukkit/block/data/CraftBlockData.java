@@ -2,7 +2,6 @@ package org.bukkit.craftbukkit.block.data;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.commands.arguments.blocks.ArgumentBlock;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.core.EnumDirection;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.INamable;
@@ -76,12 +74,12 @@ public class CraftBlockData implements BlockData {
      * Get a given BlockStateEnum's value as its Bukkit counterpart.
      *
      * @param nms the NMS state to convert
-     * @param bukkit the Bukkit class
-     * @param <B> the type
+     * @param <B> the Bukkit type
+     * @param <N> the NMS type
      * @return the matching Bukkit type
      */
-    protected <B extends Enum<B>> B get(BlockStateEnum<?> nms, Class<B> bukkit) {
-        return toBukkit(state.getValue(nms), bukkit);
+    protected <N extends Enum<N> & INamable, B extends Enum<B>> B get(CraftBlockStateEnum<N, B> nms) {
+        return nms.toBukkit(state.getValue(nms.nms()));
     }
 
     /**
@@ -89,19 +87,13 @@ public class CraftBlockData implements BlockData {
      * Bukkit counterpart.
      *
      * @param nms the NMS state to get values from
-     * @param bukkit the bukkit class to convert the values to
-     * @param <B> the bukkit class type
+     * @param <B> the Bukkit type
+     * @param <N> the NMS type
      * @return an immutable Set of values in their appropriate Bukkit type
      */
     @SuppressWarnings("unchecked")
-    protected <B extends Enum<B>> Set<B> getValues(BlockStateEnum<?> nms, Class<B> bukkit) {
-        ImmutableSet.Builder<B> values = ImmutableSet.builder();
-
-        for (Enum<?> e : nms.getPossibleValues()) {
-            values.add(toBukkit(e, bukkit));
-        }
-
-        return values.build();
+    protected <N extends Enum<N> & INamable, B extends Enum<B>> Set<B> getValues(CraftBlockStateEnum<N, B> nms) {
+        return nms.getValues();
     }
 
     /**
@@ -112,9 +104,9 @@ public class CraftBlockData implements BlockData {
      * @param <B> the Bukkit type
      * @param <N> the NMS type
      */
-    protected <B extends Enum<B>, N extends Enum<N> & INamable> void set(BlockStateEnum<N> nms, Enum<B> bukkit) {
+    protected <N extends Enum<N> & INamable, B extends Enum<B>> void set(CraftBlockStateEnum<N, B> nms, B bukkit) {
         this.parsedStates = null;
-        this.state = this.state.setValue(nms, toNMS(bukkit, nms.getValueClass()));
+        this.state = this.state.setValue(nms.nms(), nms.toNMS(bukkit));
     }
 
     @Override
@@ -156,38 +148,6 @@ public class CraftBlockData implements BlockData {
         }
 
         return exactMatch;
-    }
-
-    private static final Map<Class<? extends Enum<?>>, Enum<?>[]> ENUM_VALUES = new HashMap<>();
-
-    /**
-     * Convert an NMS Enum (usually a BlockStateEnum) to its appropriate Bukkit
-     * enum from the given class.
-     *
-     * @throws IllegalStateException if the Enum could not be converted
-     */
-    @SuppressWarnings("unchecked")
-    private static <B extends Enum<B>> B toBukkit(Enum<?> nms, Class<B> bukkit) {
-        if (nms instanceof EnumDirection) {
-            return (B) CraftBlock.notchToBlockFace((EnumDirection) nms);
-        }
-        return (B) ENUM_VALUES.computeIfAbsent(bukkit, Class::getEnumConstants)[nms.ordinal()];
-    }
-
-    /**
-     * Convert a given Bukkit enum to its matching NMS enum type.
-     *
-     * @param bukkit the Bukkit enum to convert
-     * @param nms the NMS class
-     * @return the matching NMS type
-     * @throws IllegalStateException if the Enum could not be converted
-     */
-    @SuppressWarnings("unchecked")
-    private static <N extends Enum<N> & INamable> N toNMS(Enum<?> bukkit, Class<N> nms) {
-        if (bukkit instanceof BlockFace) {
-            return (N) CraftBlock.blockFaceToNotch((BlockFace) bukkit);
-        }
-        return (N) ENUM_VALUES.computeIfAbsent(nms, Class::getEnumConstants)[bukkit.ordinal()];
     }
 
     /**
@@ -287,7 +247,7 @@ public class CraftBlockData implements BlockData {
         throw new AssertionError("Template Method");
     }
 
-    protected static BlockStateEnum<?> getEnum(String name) {
+    protected static <B extends Enum<B>> CraftBlockStateEnum<?, B> getEnum(String name, Class<? extends Enum<B>> bukkit) {
         throw new AssertionError("Template Method");
     }
 
@@ -303,8 +263,8 @@ public class CraftBlockData implements BlockData {
         return (BlockStateBoolean) getState(block, name, optional);
     }
 
-    protected static BlockStateEnum<?> getEnum(Class<? extends Block> block, String name) {
-        return (BlockStateEnum<?>) getState(block, name, false);
+    protected static <B extends Enum<B>> CraftBlockStateEnum<?, B> getEnum(Class<? extends Block> block, String name, Class<B> bukkit) {
+        return new CraftBlockStateEnum<>((BlockStateEnum<?>) getState(block, name, false), bukkit);
     }
 
     protected static BlockStateInteger getInteger(Class<? extends Block> block, String name) {

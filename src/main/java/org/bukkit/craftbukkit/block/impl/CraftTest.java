@@ -15,11 +15,11 @@ public final class CraftTest extends org.bukkit.craftbukkit.block.data.CraftBloc
 
     // org.bukkit.craftbukkit.block.data.type.CraftTestBlock
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> MODE = getEnum(net.minecraft.world.level.block.TestBlock.class, "mode");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.TestBlock.Mode> MODE = getEnum(net.minecraft.world.level.block.TestBlock.class, "mode", org.bukkit.block.data.type.TestBlock.Mode.class);
 
     @Override
     public org.bukkit.block.data.type.TestBlock.Mode getMode() {
-        return get(MODE, org.bukkit.block.data.type.TestBlock.Mode.class);
+        return get(MODE);
     }
 
     @Override

@@ -5,11 +5,11 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 public abstract class CraftTestBlock extends CraftBlockData implements TestBlock {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> MODE = getEnum("mode");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.TestBlock.Mode> MODE = getEnum("mode", org.bukkit.block.data.type.TestBlock.Mode.class);
 
     @Override
     public org.bukkit.block.data.type.TestBlock.Mode getMode() {
-        return get(MODE, org.bukkit.block.data.type.TestBlock.Mode.class);
+        return get(MODE);
     }
 
     @Override

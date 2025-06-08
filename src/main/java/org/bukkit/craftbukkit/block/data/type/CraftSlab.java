@@ -5,11 +5,11 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 public abstract class CraftSlab extends CraftBlockData implements Slab {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> TYPE = getEnum("type");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Slab.Type> TYPE = getEnum("type", org.bukkit.block.data.type.Slab.Type.class);
 
     @Override
     public org.bukkit.block.data.type.Slab.Type getType() {
-        return get(TYPE, org.bukkit.block.data.type.Slab.Type.class);
+        return get(TYPE);
     }
 
     @Override

@@ -16,8 +16,11 @@ public final class CraftMossyCarpet extends org.bukkit.craftbukkit.block.data.Cr
     // org.bukkit.craftbukkit.block.data.type.CraftMossyCarpet
 
     private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean BOTTOM = getBoolean(net.minecraft.world.level.block.MossyCarpetBlock.class, "bottom");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?>[] HEIGHTS = new net.minecraft.world.level.block.state.properties.BlockStateEnum[]{
-        getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "north"), getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "east"), getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "south"), getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "west")
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.MossyCarpet.Height>[] HEIGHTS = new org.bukkit.craftbukkit.block.data.CraftBlockStateEnum[]{
+        getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "north", org.bukkit.block.data.type.MossyCarpet.Height.class),
+        getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "east", org.bukkit.block.data.type.MossyCarpet.Height.class),
+        getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "south", org.bukkit.block.data.type.MossyCarpet.Height.class),
+        getEnum(net.minecraft.world.level.block.MossyCarpetBlock.class, "west", org.bukkit.block.data.type.MossyCarpet.Height.class)
     };
 
     @Override
@@ -32,7 +35,7 @@ public final class CraftMossyCarpet extends org.bukkit.craftbukkit.block.data.Cr
 
     @Override
     public org.bukkit.block.data.type.MossyCarpet.Height getHeight(org.bukkit.block.BlockFace face) {
-        return get(HEIGHTS[face.ordinal()], org.bukkit.block.data.type.MossyCarpet.Height.class);
+        return get(HEIGHTS[face.ordinal()]);
     }
 
     @Override

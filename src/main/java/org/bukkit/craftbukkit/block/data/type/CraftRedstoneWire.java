@@ -5,22 +5,22 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 public abstract class CraftRedstoneWire extends CraftBlockData implements RedstoneWire {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> NORTH = getEnum("north");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> EAST = getEnum("east");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> SOUTH = getEnum("south");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> WEST = getEnum("west");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.RedstoneWire.Connection> NORTH = getEnum("north", org.bukkit.block.data.type.RedstoneWire.Connection.class);
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.RedstoneWire.Connection> EAST = getEnum("east", org.bukkit.block.data.type.RedstoneWire.Connection.class);
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.RedstoneWire.Connection> SOUTH = getEnum("south", org.bukkit.block.data.type.RedstoneWire.Connection.class);
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.RedstoneWire.Connection> WEST = getEnum("west", org.bukkit.block.data.type.RedstoneWire.Connection.class);
 
     @Override
     public org.bukkit.block.data.type.RedstoneWire.Connection getFace(org.bukkit.block.BlockFace face) {
         switch (face) {
             case NORTH:
-                return get(NORTH, org.bukkit.block.data.type.RedstoneWire.Connection.class);
+                return get(NORTH);
             case EAST:
-                return get(EAST, org.bukkit.block.data.type.RedstoneWire.Connection.class);
+                return get(EAST);
             case SOUTH:
-                return get(SOUTH, org.bukkit.block.data.type.RedstoneWire.Connection.class);
+                return get(SOUTH);
             case WEST:
-                return get(WEST, org.bukkit.block.data.type.RedstoneWire.Connection.class);
+                return get(WEST);
             default:
                 throw new IllegalArgumentException("Cannot have face " + face);
         }

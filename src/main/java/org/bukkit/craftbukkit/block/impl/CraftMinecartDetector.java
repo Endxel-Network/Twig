@@ -29,11 +29,11 @@ public final class CraftMinecartDetector extends org.bukkit.craftbukkit.block.da
 
     // org.bukkit.craftbukkit.block.data.CraftRail
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> SHAPE = getEnum(net.minecraft.world.level.block.BlockMinecartDetector.class, "shape");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.Rail.Shape> SHAPE = getEnum(net.minecraft.world.level.block.BlockMinecartDetector.class, "shape", org.bukkit.block.data.Rail.Shape.class);
 
     @Override
     public org.bukkit.block.data.Rail.Shape getShape() {
-        return get(SHAPE, org.bukkit.block.data.Rail.Shape.class);
+        return get(SHAPE);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class CraftMinecartDetector extends org.bukkit.craftbukkit.block.da
 
     @Override
     public java.util.Set<org.bukkit.block.data.Rail.Shape> getShapes() {
-        return getValues(SHAPE, org.bukkit.block.data.Rail.Shape.class);
+        return getValues(SHAPE);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftWaterlogged

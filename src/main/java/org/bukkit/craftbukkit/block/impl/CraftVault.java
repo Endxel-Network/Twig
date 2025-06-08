@@ -15,12 +15,12 @@ public final class CraftVault extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     // org.bukkit.craftbukkit.block.data.type.CraftVault
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> VAULT_STATE = getEnum(net.minecraft.world.level.block.VaultBlock.class, "vault_state");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Vault.State> VAULT_STATE = getEnum(net.minecraft.world.level.block.VaultBlock.class, "vault_state", org.bukkit.block.data.type.Vault.State.class);
     private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean OMINOUS = getBoolean(net.minecraft.world.level.block.VaultBlock.class, "ominous");
 
     @Override
     public org.bukkit.block.data.type.Vault.State getVaultState() {
-        return get(VAULT_STATE, org.bukkit.block.data.type.Vault.State.class);
+        return get(VAULT_STATE);
     }
 
     @Override
@@ -50,11 +50,11 @@ public final class CraftVault extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.VaultBlock.class, "facing");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.BlockFace> FACING = getEnum(net.minecraft.world.level.block.VaultBlock.class, "facing", org.bukkit.block.BlockFace.class);
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {
-        return get(FACING, org.bukkit.block.BlockFace.class);
+        return get(FACING);
     }
 
     @Override
@@ -64,6 +64,6 @@ public final class CraftVault extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     @Override
     public java.util.Set<org.bukkit.block.BlockFace> getFaces() {
-        return getValues(FACING, org.bukkit.block.BlockFace.class);
+        return getValues(FACING);
     }
 }

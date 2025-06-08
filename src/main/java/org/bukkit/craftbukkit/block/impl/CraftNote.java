@@ -15,12 +15,12 @@ public final class CraftNote extends org.bukkit.craftbukkit.block.data.CraftBloc
 
     // org.bukkit.craftbukkit.block.data.type.CraftNoteBlock
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> INSTRUMENT = getEnum(net.minecraft.world.level.block.BlockNote.class, "instrument");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.Instrument> INSTRUMENT = getEnum(net.minecraft.world.level.block.BlockNote.class, "instrument", org.bukkit.Instrument.class);
     private static final net.minecraft.world.level.block.state.properties.BlockStateInteger NOTE = getInteger(net.minecraft.world.level.block.BlockNote.class, "note");
 
     @Override
     public org.bukkit.Instrument getInstrument() {
-        return get(INSTRUMENT, org.bukkit.Instrument.class);
+        return get(INSTRUMENT);
     }
 
     @Override

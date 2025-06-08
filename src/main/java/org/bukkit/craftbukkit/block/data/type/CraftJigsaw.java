@@ -5,11 +5,11 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 public abstract class CraftJigsaw extends CraftBlockData implements Jigsaw {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> ORIENTATION = getEnum("orientation");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Jigsaw.Orientation> ORIENTATION = getEnum("orientation", org.bukkit.block.data.type.Jigsaw.Orientation.class);
 
     @Override
     public org.bukkit.block.data.type.Jigsaw.Orientation getOrientation() {
-        return get(ORIENTATION, org.bukkit.block.data.type.Jigsaw.Orientation.class);
+        return get(ORIENTATION);
     }
 
     @Override

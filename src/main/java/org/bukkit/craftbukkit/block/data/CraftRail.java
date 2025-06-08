@@ -4,11 +4,11 @@ import org.bukkit.block.data.Rail;
 
 public abstract class CraftRail extends CraftBlockData implements Rail {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> SHAPE = getEnum("shape");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.Rail.Shape> SHAPE = getEnum("shape", org.bukkit.block.data.Rail.Shape.class);
 
     @Override
     public org.bukkit.block.data.Rail.Shape getShape() {
-        return get(SHAPE, org.bukkit.block.data.Rail.Shape.class);
+        return get(SHAPE);
     }
 
     @Override
@@ -18,6 +18,6 @@ public abstract class CraftRail extends CraftBlockData implements Rail {
 
     @Override
     public java.util.Set<org.bukkit.block.data.Rail.Shape> getShapes() {
-        return getValues(SHAPE, org.bukkit.block.data.Rail.Shape.class);
+        return getValues(SHAPE);
     }
 }

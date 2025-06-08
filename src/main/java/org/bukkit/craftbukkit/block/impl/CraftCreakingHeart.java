@@ -15,7 +15,7 @@ public final class CraftCreakingHeart extends org.bukkit.craftbukkit.block.data.
 
     // org.bukkit.craftbukkit.block.data.type.CraftCreakingHeart
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> CREAKING_HEART_STATE = getEnum(net.minecraft.world.level.block.CreakingHeartBlock.class, "creaking_heart_state");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.CreakingHeart.State> CREAKING_HEART_STATE = getEnum(net.minecraft.world.level.block.CreakingHeartBlock.class, "creaking_heart_state", org.bukkit.block.data.type.CreakingHeart.State.class);
     private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean NATURAL = getBoolean(net.minecraft.world.level.block.CreakingHeartBlock.class, "natural");
 
     @Override
@@ -40,7 +40,7 @@ public final class CraftCreakingHeart extends org.bukkit.craftbukkit.block.data.
 
     @Override
     public org.bukkit.block.data.type.CreakingHeart.State getCreakingHeartState() {
-        return get(CREAKING_HEART_STATE, org.bukkit.block.data.type.CreakingHeart.State.class);
+        return get(CREAKING_HEART_STATE);
     }
 
     @Override
@@ -50,11 +50,11 @@ public final class CraftCreakingHeart extends org.bukkit.craftbukkit.block.data.
 
     // org.bukkit.craftbukkit.block.data.CraftOrientable
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> AXIS = getEnum(net.minecraft.world.level.block.CreakingHeartBlock.class, "axis");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.Axis> AXIS = getEnum(net.minecraft.world.level.block.CreakingHeartBlock.class, "axis", org.bukkit.Axis.class);
 
     @Override
     public org.bukkit.Axis getAxis() {
-        return get(AXIS, org.bukkit.Axis.class);
+        return get(AXIS);
     }
 
     @Override
@@ -64,6 +64,6 @@ public final class CraftCreakingHeart extends org.bukkit.craftbukkit.block.data.
 
     @Override
     public java.util.Set<org.bukkit.Axis> getAxes() {
-        return getValues(AXIS, org.bukkit.Axis.class);
+        return getValues(AXIS);
     }
 }

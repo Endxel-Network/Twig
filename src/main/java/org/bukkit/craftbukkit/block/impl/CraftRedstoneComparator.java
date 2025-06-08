@@ -15,11 +15,11 @@ public final class CraftRedstoneComparator extends org.bukkit.craftbukkit.block.
 
     // org.bukkit.craftbukkit.block.data.type.CraftComparator
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> MODE = getEnum(net.minecraft.world.level.block.BlockRedstoneComparator.class, "mode");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Comparator.Mode> MODE = getEnum(net.minecraft.world.level.block.BlockRedstoneComparator.class, "mode", org.bukkit.block.data.type.Comparator.Mode.class);
 
     @Override
     public org.bukkit.block.data.type.Comparator.Mode getMode() {
-        return get(MODE, org.bukkit.block.data.type.Comparator.Mode.class);
+        return get(MODE);
     }
 
     @Override
@@ -29,11 +29,11 @@ public final class CraftRedstoneComparator extends org.bukkit.craftbukkit.block.
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockRedstoneComparator.class, "facing");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.BlockFace> FACING = getEnum(net.minecraft.world.level.block.BlockRedstoneComparator.class, "facing", org.bukkit.block.BlockFace.class);
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {
-        return get(FACING, org.bukkit.block.BlockFace.class);
+        return get(FACING);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class CraftRedstoneComparator extends org.bukkit.craftbukkit.block.
 
     @Override
     public java.util.Set<org.bukkit.block.BlockFace> getFaces() {
-        return getValues(FACING, org.bukkit.block.BlockFace.class);
+        return getValues(FACING);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftPowerable

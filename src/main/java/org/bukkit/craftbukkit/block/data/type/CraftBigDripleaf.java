@@ -5,11 +5,11 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 public abstract class CraftBigDripleaf extends CraftBlockData implements BigDripleaf {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> TILT = getEnum("tilt");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.BigDripleaf.Tilt> TILT = getEnum("tilt", org.bukkit.block.data.type.BigDripleaf.Tilt.class);
 
     @Override
     public Tilt getTilt() {
-        return get(TILT, org.bukkit.block.data.type.BigDripleaf.Tilt.class);
+        return get(TILT);
     }
 
     @Override

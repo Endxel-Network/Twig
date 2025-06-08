@@ -15,12 +15,12 @@ public final class CraftPointedDripstone extends org.bukkit.craftbukkit.block.da
 
     // org.bukkit.craftbukkit.block.data.type.CraftPointedDripstone
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> VERTICAL_DIRECTION = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "vertical_direction");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> THICKNESS = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "thickness");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.BlockFace> VERTICAL_DIRECTION = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "vertical_direction", org.bukkit.block.BlockFace.class);
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.PointedDripstone.Thickness> THICKNESS = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "thickness", org.bukkit.block.data.type.PointedDripstone.Thickness.class);
 
     @Override
     public org.bukkit.block.BlockFace getVerticalDirection() {
-        return get(VERTICAL_DIRECTION, org.bukkit.block.BlockFace.class);
+        return get(VERTICAL_DIRECTION);
     }
 
     @Override
@@ -30,12 +30,12 @@ public final class CraftPointedDripstone extends org.bukkit.craftbukkit.block.da
 
     @Override
     public java.util.Set<org.bukkit.block.BlockFace> getVerticalDirections() {
-        return getValues(VERTICAL_DIRECTION, org.bukkit.block.BlockFace.class);
+        return getValues(VERTICAL_DIRECTION);
     }
 
     @Override
     public org.bukkit.block.data.type.PointedDripstone.Thickness getThickness() {
-        return get(THICKNESS, org.bukkit.block.data.type.PointedDripstone.Thickness.class);
+        return get(THICKNESS);
     }
 
     @Override

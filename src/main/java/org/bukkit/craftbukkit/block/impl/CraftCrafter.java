@@ -17,7 +17,7 @@ public final class CraftCrafter extends org.bukkit.craftbukkit.block.data.CraftB
 
     private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean CRAFTING = getBoolean(net.minecraft.world.level.block.CrafterBlock.class, "crafting");
     private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean TRIGGERED = getBoolean(net.minecraft.world.level.block.CrafterBlock.class, "triggered");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> ORIENTATION = getEnum(net.minecraft.world.level.block.CrafterBlock.class, "orientation");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Crafter.Orientation> ORIENTATION = getEnum(net.minecraft.world.level.block.CrafterBlock.class, "orientation", org.bukkit.block.data.type.Crafter.Orientation.class);
 
     @Override
     public boolean isCrafting() {
@@ -41,7 +41,7 @@ public final class CraftCrafter extends org.bukkit.craftbukkit.block.data.CraftB
 
     @Override
     public org.bukkit.block.data.type.Crafter.Orientation getOrientation() {
-        return get(ORIENTATION, org.bukkit.block.data.type.Crafter.Orientation.class);
+        return get(ORIENTATION);
     }
 
     @Override

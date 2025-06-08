@@ -15,11 +15,11 @@ public final class CraftStepAbstract extends org.bukkit.craftbukkit.block.data.C
 
     // org.bukkit.craftbukkit.block.data.type.CraftSlab
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> TYPE = getEnum(net.minecraft.world.level.block.BlockStepAbstract.class, "type");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Slab.Type> TYPE = getEnum(net.minecraft.world.level.block.BlockStepAbstract.class, "type", org.bukkit.block.data.type.Slab.Type.class);
 
     @Override
     public org.bukkit.block.data.type.Slab.Type getType() {
-        return get(TYPE, org.bukkit.block.data.type.Slab.Type.class);
+        return get(TYPE);
     }
 
     @Override

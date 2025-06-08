@@ -5,11 +5,11 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 public abstract class CraftBamboo extends CraftBlockData implements Bamboo {
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> LEAVES = getEnum("leaves");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Bamboo.Leaves> LEAVES = getEnum("leaves", org.bukkit.block.data.type.Bamboo.Leaves.class);
 
     @Override
     public org.bukkit.block.data.type.Bamboo.Leaves getLeaves() {
-        return get(LEAVES, org.bukkit.block.data.type.Bamboo.Leaves.class);
+        return get(LEAVES);
     }
 
     @Override

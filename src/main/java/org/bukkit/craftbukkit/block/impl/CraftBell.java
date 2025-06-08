@@ -15,11 +15,11 @@ public final class CraftBell extends org.bukkit.craftbukkit.block.data.CraftBloc
 
     // org.bukkit.craftbukkit.block.data.type.CraftBell
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> ATTACHMENT = getEnum(net.minecraft.world.level.block.BlockBell.class, "attachment");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.data.type.Bell.Attachment> ATTACHMENT = getEnum(net.minecraft.world.level.block.BlockBell.class, "attachment", org.bukkit.block.data.type.Bell.Attachment.class);
 
     @Override
     public org.bukkit.block.data.type.Bell.Attachment getAttachment() {
-        return get(ATTACHMENT, org.bukkit.block.data.type.Bell.Attachment.class);
+        return get(ATTACHMENT);
     }
 
     @Override
@@ -29,11 +29,11 @@ public final class CraftBell extends org.bukkit.craftbukkit.block.data.CraftBloc
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockBell.class, "facing");
+    private static final org.bukkit.craftbukkit.block.data.CraftBlockStateEnum<?, org.bukkit.block.BlockFace> FACING = getEnum(net.minecraft.world.level.block.BlockBell.class, "facing", org.bukkit.block.BlockFace.class);
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {
-        return get(FACING, org.bukkit.block.BlockFace.class);
+        return get(FACING);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class CraftBell extends org.bukkit.craftbukkit.block.data.CraftBloc
 
     @Override
     public java.util.Set<org.bukkit.block.BlockFace> getFaces() {
-        return getValues(FACING, org.bukkit.block.BlockFace.class);
+        return getValues(FACING);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftPowerable
